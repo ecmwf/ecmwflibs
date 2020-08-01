@@ -1,39 +1,55 @@
 import os
 import tempfile
 import atexit
+from ._ecmwflibs import versions as _versions
 
-__version__ = '0.0.12'
+__version__ = '0.0.13'
 
-here = os.path.join(os.path.dirname(__file__))
+
+_here = os.path.join(os.path.dirname(__file__))
 
 if 'MAGPLUS_HOME' not in os.environ:
-    os.environ['MAGPLUS_HOME'] = here
+    os.environ['MAGPLUS_HOME'] = _here
 
-fonts = """<?xml version="1.0"?>
+_fonts = """<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
 <dir>{ecmwflibs}/share/magics/ttf</dir>
-</fontconfig>""".format(ecmwflibs=here)
+</fontconfig>""".format(ecmwflibs=_here)
 
-fontcfg = tempfile.mktemp("ecmwflibs")
-with open(fontcfg, "w") as f:
-    print(fonts, file=f)
+_fontcfg = tempfile.mktemp("ecmwflibs")
+with open(_fontcfg, "w") as _f:
+    print(_fonts, file=_f)
 
-os.environ['FONTCONFIG_FILE'] = fontcfg
-os.environ['PROJ_LIB'] = os.path.join(here, 'share', 'proj')
+os.environ['FONTCONFIG_FILE'] = _fontcfg
+os.environ['PROJ_LIB'] = os.path.join(_here, 'share', 'proj')
 
 
-def cleanup():
+def _cleanup():
     try:
-        os.unlink(fontcfg)
+        os.unlink(_fontcfg)
     except Exception:
         pass
 
 
-atexit.register(cleanup)
+atexit.register(_cleanup)
+
+
+_MAP = {
+    "magics": "MagPlus",
+    "magplus": "MagPlus",
+    "grib_api": "eccodes",
+    "gribapi": "eccodes",
+}
+
+
+def _lookup(name):
+    return _MAP.get(name, name)
 
 
 def find(name):
+    """Returns the path to the selected library, or None if not found."""
+    name = _lookup(name)
     here = os.path.dirname(__file__)
     for libdir in [here + '.libs', os.path.join(here, '.dylibs')]:
 
@@ -45,3 +61,10 @@ def find(name):
                 if file.endswith('.so') or file.endswith('.dylib'):
                     if name == file.split('-')[0].split('.')[0]:
                         return os.path.join(libdir, file)
+
+
+def versions():
+    """Returns the list of libraries and their version."""
+    v = _versions()
+    v["ecmwflibs"] = __version__
+    return v

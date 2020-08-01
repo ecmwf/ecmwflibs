@@ -2,13 +2,15 @@
 #include <Python.h>
 
 #include <eccodes.h>
-// #include <magics.h>
+#include <magics.h>
 
 
 static PyObject* versions(PyObject *self, PyObject *args) {
     long s = grib_get_api_version();
 
-    Py_RETURN_NONE;
+    return Py_BuildValue("{s:s,s:s}",
+        "eccodes", ECCODES_VERSION_STR,
+        "magics", MAGICS_VERSION_STR);
 }
 
 static PyMethodDef ecmwflibs_methods[] = {
