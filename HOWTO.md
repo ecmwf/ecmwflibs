@@ -9,8 +9,14 @@ First make sure you have the required packages:
 brew install python3
 brew install cmake
 brew install pango cairo proj pkg-config boost
-brew install netcdf
-pip3 install ninja jinja2 delocate wheel
+brew install netcdf ninja
+pip3 install jinja2 delocate wheel
+```
+
+This can be achieved by simply typing:
+
+```bash
+make tools
 ```
 
 Then:
