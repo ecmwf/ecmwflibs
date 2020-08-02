@@ -3,13 +3,11 @@ import tempfile
 import atexit
 from ._ecmwflibs import versions as _versions
 
-__version__ = '0.0.13'
+__version__ = '0.0.14'
 
 
 _here = os.path.join(os.path.dirname(__file__))
 
-if 'MAGPLUS_HOME' not in os.environ:
-    os.environ['MAGPLUS_HOME'] = _here
 
 _fonts = """<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
@@ -23,6 +21,18 @@ with open(_fontcfg, "w") as _f:
 
 os.environ['FONTCONFIG_FILE'] = _fontcfg
 os.environ['PROJ_LIB'] = os.path.join(_here, 'share', 'proj')
+os.environ['MAGPLUS_HOME'] = _here
+
+for env in (
+    "ECCODES_DEFINITION_PATH",
+    # "ECCODES_EXTRA_DEFINITION_PATH",
+    # "ECCODES_EXTRA_SAMPLES_PATH"
+    # "ECCODES_SAMPLES_PATH",
+    "GRIB_DEFINITION_PATH",
+    # "GRIB_SAMPLES_PATH",
+):
+    if env in os.environ:
+        del os.environ[env]
 
 
 def _cleanup():

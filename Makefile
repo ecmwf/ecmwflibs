@@ -1,5 +1,8 @@
+SHELL=/bin/bash
+
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]')
 PYTHON3 := $(shell which python3)
+PIP3 := $(shell which pip3)
 
 
 ifeq ($(ARCH), darwin)
@@ -8,13 +11,11 @@ LIB64=lib
 CMAKE_EXTRA="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
 else
 LIB64=lib64
+# Make sure the right libtool is used (installing gobject-... changes libtool)
+export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
 endif
 
 
-all: wheel.$(ARCH)
-
-# Make sure the right libtool is used (installing gobject-... changes libtool)
-export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
 
 export ACLOCAL_PATH=/usr/share/aclocal
 export NOCONFIGURE=1
@@ -23,6 +24,24 @@ export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64)
 #export DYLD_LIBRARY_PATH=$(CURDIR)/install/lib
 #export RPATH=$(CURDIR)/install/lib
 #export DYLD_FALLBACK_LIBRARY_PATH=$(CURDIR)/install/lib
+
+target: wheel
+all: all.$(ARCH)
+
+wheel: wheel.$(ARCH)
+wheels: wheels.$(ARCH)
+tools: tools.$(ARCH)
+
+
+all.darwin: image
+	rm -fr dist wheelhouse install build-ecmwf wheelhouse.darwin wheelhouse.linux
+	make wheels.darwin
+	mv wheelhouse wheelhouse.darwin
+	rm -fr dist wheelhouse install build-ecmwf
+	./dockcross-build-ecmwflibs make wheels.linux
+	mv wheelhouse wheelhouse.linux
+	ls -l wheelhouse.*
+
 
 #################################################################
 ecbuild: src/ecbuild
@@ -63,6 +82,7 @@ src/magics:
 	git clone --depth 1 https://github.com/ecmwf/magics src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
+	- $(PIP3) install jinja2
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  ../../src/magics -GNinja \
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
@@ -258,15 +278,75 @@ wheel.darwin: .inited eccodes magics
 	delocate-wheel -w wheelhouse dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
 
+
+wheels.darwin: .inited pyenv-versions eccodes magics
+	rm -fr dist wheelhouse ecmwflibs/share
+	cp -r install/share ecmwflibs/
+	strip -S install/lib/*.dylib
+
+	$(HOME)/.pyenv/versions/py35/bin/python setup.py bdist_wheel
+	delocate-wheel -w wheelhouse dist/*.whl
+	rm -fr dist
+
+	$(HOME)/.pyenv/versions/py36/bin/python setup.py bdist_wheel
+	delocate-wheel -w wheelhouse dist/*.whl
+	rm -fr dist
+
+	$(HOME)/.pyenv/versions/py37/bin/python setup.py bdist_wheel
+	delocate-wheel -w wheelhouse dist/*.whl
+	rm -fr dist
+
+	$(HOME)/.pyenv/versions/py38/bin/python setup.py bdist_wheel
+	delocate-wheel -w wheelhouse dist/*.whl
+	rm -fr dist
+
+
+pyenv-versions: $(HOME)/.pyenv/versions/py35/bin/python \
+                $(HOME)/.pyenv/versions/py36/bin/python \
+                $(HOME)/.pyenv/versions/py37/bin/python \
+                $(HOME)/.pyenv/versions/py38/bin/python
+
+
+$(HOME)/.pyenv/versions/py35/bin/python:
+	pyenv install 3.5.9
+	pyenv virtualenv 3.5.9 py35
+	$(HOME)/.pyenv/versions/py35/bin/pip install wheel jinja2
+
+$(HOME)/.pyenv/versions/py36/bin/python:
+	pyenv install 3.6.10
+	pyenv virtualenv 3.6.10 py36
+	$(HOME)/.pyenv/versions/py36/bin/pip install wheel jinja2
+
+$(HOME)/.pyenv/versions/py37/bin/python:
+	pyenv install 3.7.7
+	pyenv virtualenv 3.7.7 py37
+	$(HOME)/.pyenv/versions/py37/bin/pip install wheel jinja2
+
+$(HOME)/.pyenv/versions/py38/bin/python:
+	pyenv install 3.8.3
+	pyenv virtualenv 3.8.3 py38
+	$(HOME)/.pyenv/versions/py38/bin/pip install wheel jinja2
+
+tools.darwin:
+	brew install pyenv pyenv-virtualenv
+	brew install cmake
+	brew install pango cairo proj pkg-config boost
+	brew install netcdf
+
+tools.linux:
+	true
+
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
 
 
-image:
+image: dockcross-build-ecmwflibs
+
+dockcross-build-ecmwflibs: Dockerfile
 	docker build -t build-ecmwflibs .
 	docker run --rm dockcross/manylinux2014-x64:latest | sed 's,dockcross/manylinux2014-x64:latest,build-ecmwflibs:latest,' > dockcross-build-ecmwflibs
 	chmod +x dockcross-build-ecmwflibs
 
-test-wheel:
-	make -C testing
+# test-wheel:
+# 	make -C testing
 
