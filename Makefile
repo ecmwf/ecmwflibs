@@ -328,10 +328,12 @@ $(HOME)/.pyenv/versions/py38/bin/python:
 	$(HOME)/.pyenv/versions/py38/bin/pip install wheel jinja2
 
 tools.darwin:
-	brew install pyenv pyenv-virtualenv
-	brew install cmake
-	brew install pango cairo proj pkg-config boost
-	brew install netcdf
+	- brew install python3
+	- brew install pyenv pyenv-virtualenv
+	- brew install cmake ninja
+	- brew install pango cairo proj pkg-config boost
+	- brew install netcdf
+	- pip3 install jinja2 wheel
 
 tools.linux:
 	true
