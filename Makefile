@@ -212,9 +212,16 @@ pango: cairo harfbuzz fridibi install/$(LIB64)/pkgconfig/pango.pc
 # Versions after 1.43.0 require versions of glib2 higher than
 # the one in the dockcross image
 
+# We undefine G_LOG_USE_STRUCTURED because otherwise we will have a
+# undefined symbol g_log_structured_standard() when renning on recent
+# docker images with recent versions of glib
 src/pango/meson.build:
 	git clone https://gitlab.gnome.org/GNOME/pango.git src/pango
 	(cd src/pango; git checkout 1.43.0)
+	sed 's/.*G_LOG_USE_STRUCTURED.*//' < src/pango/meson.build > src/pango/meson.build.patched
+	cp src/pango/meson.build.patched src/pango/meson.build
+	sed 's/.*G_LOG_USE_STRUCTURED.*//' < src/pango/pango/meson.build > src/pango/pango/meson.build.patched
+	cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
 
 # 		-Dintrospection=false \
 
