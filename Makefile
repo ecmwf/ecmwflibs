@@ -289,6 +289,7 @@ wheel.darwin: .inited eccodes magics
 wheels.darwin: .inited pyenv-versions eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
+	cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
 	strip -S install/lib/*.dylib
 
 	$(HOME)/.pyenv/versions/py35/bin/python setup.py bdist_wheel
