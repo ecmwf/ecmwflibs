@@ -32,6 +32,10 @@ export ACLOCAL_PATH=/usr/share/aclocal
 export NOCONFIGURE=1
 export PKG_CONFIG_PATH=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
 export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64)
+
+export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
+export PKG_CONFIG_PATH_i686_w64_mingw32_shared=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
+
 #export DYLD_LIBRARY_PATH=$(CURDIR)/install/lib
 #export RPATH=$(CURDIR)/install/lib
 #export DYLD_FALLBACK_LIBRARY_PATH=$(CURDIR)/install/lib
@@ -92,6 +96,12 @@ magics-depend-darwin: eccodes
 
 magics-depend-linux: eccodes cairo pango proj
 
+magics-depend-mxe: eccodes # install/lib/libeccodes.so
+
+install/lib/libeccodes.so: install/bin/libeccodes.dll
+	ln -s install/bin/libeccodes.dll install/lib/libeccodes.so
+# 	cp install/bin/libeccodes.dll.a install/lib/libeccodes.a
+
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
@@ -100,10 +110,14 @@ src/magics:
 build-ecmwf/magics/build.ninja: src/magics
 	- $(PIP3) install jinja2
 	mkdir -p build-ecmwf/magics
-	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  ../../src/magics -GNinja \
+	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
+		--cmakebin=$(CMAKEBIN) \
+		../../src/magics -GNinja \
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
+		-DCMAKE_SYSTEM_NAME=CYGWIN \
+		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja

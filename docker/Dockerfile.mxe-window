@@ -6,7 +6,7 @@ RUN apt-get install -y vim
 
 RUN apt-get install -y python3
 RUN apt-get install -y python3-pip
-RUN pip3 install ninja
+RUN pip3 install ninja jinja2
 
 
 RUN echo "deb http://pkg.mxe.cc/repos/apt xenial main" > /etc/apt/sources.list.d/mxeapt.list
@@ -17,11 +17,8 @@ RUN apt-get install -y mxe-i686-w64-mingw32.shared-gcc
 RUN apt-get install -y mxe-i686-w64-mingw32.shared-cairo
 RUN apt-get install -y mxe-i686-w64-mingw32.shared-pango
 RUN apt-get install -y mxe-i686-w64-mingw32.shared-netcdf
-
-# RUN apt-get remove -y cmake
-# RUN wget -q https://cmake.org/files/v3.17/cmake-3.17.0-Linux-x86_64.tar.gz
-# RUN tar zxvf cmake-3.17.0-Linux-x86_64.tar.gz
-# RUN ln -s $(/bin/pwd)/cmake-3.17.0-Linux-x86_64/bin/* /usr/local/bin/
+RUN apt-get install -y mxe-i686-w64-mingw32.shared-proj
+RUN apt-get install -y mxe-i686-w64-mingw32.shared-boost
 
 COPY cmake-mxe.patch .
 RUN patch /usr/lib/mxe/usr/bin/i686-w64-mingw32.shared-cmake < cmake-mxe.patch
