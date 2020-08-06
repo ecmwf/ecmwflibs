@@ -6,16 +6,27 @@ PIP3 := $(shell which pip3)
 
 
 ifeq ($(ARCH), darwin)
+CMAKEBIN=cmake
 LIB64=lib
 # This seems to be needed for py36 and py37, but not anymore from py38
 CMAKE_EXTRA="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
-else
+MEMFS=1
+endif
+
+ifeq ($(ARCH), linux)
 LIB64=lib64
 # Make sure the right libtool is used (installing gobject-... changes libtool)
 export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
+MEMFS=1
+CMAKEBIN=cmake
 endif
 
-
+ifeq ($(ARCH), mxe)
+MEMFS=0
+CMAKEBIN=/usr/lib/mxe/usr/bin/i686-w64-mingw32.shared-cmake
+CMAKE_EXTRA="-C/work/docker/TryRunResults-mxe.cmake"
+# CMAKE_EXTRA2="-C/usr/lib/mxe/src/cmake/modules/TryRunResults.cmake"
+endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
 export NOCONFIGURE=1
@@ -48,6 +59,9 @@ ecbuild: src/ecbuild
 
 src/ecbuild:
 	git clone --depth 1 https://github.com/ecmwf/ecbuild.git src/ecbuild
+	# We don't want that
+	echo true > src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
+	chmod +x src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
 
 #################################################################
 eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
@@ -59,13 +73,15 @@ src/eccodes:
 
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
-	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  ../../src/eccodes -GNinja \
+	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
+		--cmakebin=$(CMAKEBIN) \
+		../../src/eccodes -GNinja \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
-		-DENABLE_MEMFS=1 \
+		-DENABLE_MEMFS=$(MEMFS) \
 		-DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
 		-DENABLE_INSTALL_ECCODES_SAMPLES=0 \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA) $(CMAKE_EXTRA2))
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
@@ -245,6 +261,15 @@ install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
 	touch .inited
 
 #################################################################
+
+wheel.mxe: .inited eccodes magics
+	rm -fr dist wheelhouse ecmwflibs/share
+	cp -r install/share ecmwflibs/
+	strip --strip-debug install/lib/*.so install/lib64/*.so
+	$(PYTHON3) setup.py bdist_wheel
+	auditwheel repair dist/*.whl
+	unzip -l wheelhouse/*.whl | grep /lib
+
 
 wheel.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
