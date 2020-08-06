@@ -1,0 +1,50 @@
+FROM	debian:latest
+
+RUN apt-get -y update 
+RUN apt-get install -y \
+    autoconf \
+    automake \
+    autopoint \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    g++ \
+    g++-multilib \
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libc6-dev-i386 \
+    libgdk-pixbuf2.0-dev \
+    libltdl-dev \
+    libssl-dev \
+    libtool-bin \
+    libxml-parser-perl \
+    lzip \
+    make \
+    openssl \
+    p7zip-full \
+    patch \
+    perl \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget \
+    xz-utils
+
+RUN	groupadd --gid 10000 mxe
+RUN	useradd --uid 10000 --gid 10000 mxe
+
+RUN	mkdir -p /mxe && chown -R mxe:mxe /mxe
+WORKDIR	/mxe
+
+USER	mxe
+
+RUN git clone https://github.com/mxe/mxe.git
+WORKDIR /mxe/mxe
+RUN make cc
+RUN make cairo
+RUN make pango
+RUN make netcdf
