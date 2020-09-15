@@ -301,7 +301,8 @@ tools.darwin:
 tools.linux:
 	sudo apt-get update -y
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
-	sudo apt-get install libproj-dev libboost-all-dev
+	sudo apt-get install libboost-all-dev
+	sudo apt-get install libproj-dev proj-bin
 	pip install setuptools
 	pip install jinja2 wheel auditwheel
 
