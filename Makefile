@@ -301,6 +301,7 @@ tools.darwin:
 tools.linux:
 	- sudo apt-get update -y
 	- sudo apt-get install ninja-build
+	- pip3 install jinja2 wheel delocate
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
