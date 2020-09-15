@@ -293,16 +293,16 @@ wheel.darwin: .inited eccodes magics
 tools.darwin:
 	# - brew install python3
 	# - brew install pyenv pyenv-virtualenv
-	- brew install cmake ninja
-	- brew install pango cairo proj pkg-config boost
-	- brew install netcdf
-	- pip3 install jinja2 wheel delocate
+	brew install cmake ninja
+	brew install pango cairo proj pkg-config boost
+	brew install netcdf
+	pip3 install jinja2 wheel delocate
 
 tools.linux:
-	- sudo apt-get update -y
-	- sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
-	- sudo apt-get install libproj-dev libboost-all-dev
-	- pip3 install jinja2 wheel auditwheel
+	sudo apt-get update -y
+	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
+	sudo apt-get install libproj-dev libboost-all-dev
+	pip3 install jinja2 wheel setuptools auditwheel
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
