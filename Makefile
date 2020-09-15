@@ -116,7 +116,6 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
-		-DCMAKE_SYSTEM_NAME=CYGWIN \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
@@ -375,8 +374,8 @@ $(HOME)/.pyenv/versions/py38/bin/python:
 	$(HOME)/.pyenv/versions/py38/bin/pip install wheel jinja2
 
 tools.darwin:
-	- brew install python3
-	- brew install pyenv pyenv-virtualenv
+	# - brew install python3
+	# - brew install pyenv pyenv-virtualenv
 	- brew install cmake ninja
 	- brew install pango cairo proj pkg-config boost
 	- brew install netcdf
@@ -398,4 +397,3 @@ dockcross-build-ecmwflibs: Dockerfile
 
 # test-wheel:
 # 	make -C testing
-
