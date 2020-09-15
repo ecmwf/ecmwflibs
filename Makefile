@@ -300,7 +300,7 @@ tools.darwin:
 
 tools.linux:
 	- sudo apt-get update -y
-	- sudo apt-get install ninja-build
+	- sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	- pip3 install jinja2 wheel delocate
 
 clean:
