@@ -301,7 +301,8 @@ tools.darwin:
 tools.linux:
 	- sudo apt-get update -y
 	- sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
-	- pip3 install jinja2 wheel delocate
+	- sudo apt-get install libproj-dev libboost-all-dev
+	- pip3 install jinja2 wheel auditwheel
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
