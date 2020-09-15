@@ -1,6 +1,6 @@
 # ecmwflibs
 
-A Python package that wraps some of ECMWF libraries.
+A Python package that wraps some of ECMWF libraries to be used by Python interfaces to ECMWF software.
 
 The snippet of code below should return the path to the *ecCodes* shared library.
 
