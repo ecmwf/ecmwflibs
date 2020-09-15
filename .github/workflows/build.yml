@@ -24,8 +24,8 @@ jobs:
 
       - name: Install tools dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install ninja
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build
 
       - name: Install python dependencies
         run: |
