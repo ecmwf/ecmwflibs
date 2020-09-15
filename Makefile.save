@@ -25,7 +25,7 @@ ifeq ($(ARCH), mxe)
 MEMFS=0
 CMAKEBIN=/usr/lib/mxe/usr/bin/i686-w64-mingw32.shared-cmake
 CMAKE_EXTRA="-C/work/docker/TryRunResults-mxe.cmake"
-# CMAKE_EXTRA2="-C/usr/lib/mxe/src/cmake/modules/TryRunResults.cmake"
+CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=/work/mxe-conf.cmake"
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
@@ -71,16 +71,16 @@ src/ecbuild:
 eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
-	git clone --depth 1 https://github.com/b8raoult/eccodes.git src/eccodes
+	git clone --depth 1 https://github.com/ecmwf/eccodes.git src/eccodes
 
 #-DCMAKE_SKIP_BUILD_RPATH=1 \ -DCMAKE_BUILD_WITH_INSTALL_RPATH=1 \ -DCMAKE_INSTALL_RPATH=$(CURDIR)/lib \ -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=1 \
-
+ #GNinja
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
-		--cmakebin=$(CMAKEBIN) \
-		../../src/eccodes -GNinja \
-		-DENABLE_PYTHON=0 \
+		--cmakebin=$(CMAKEBIN) -GNinja \
+		../../src/eccodes \
+		-DENABLE_PYTHON=0 -DDISABLE_OS_CHECK=ON \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_MEMFS=$(MEMFS) \
 		-DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
@@ -105,8 +105,7 @@ install/lib/libeccodes.so: install/bin/libeccodes.dll
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	# git clone --depth 1 https://github.com/b8raoult/magics src/magics
-	git clone ssh://git@git.ecmwf.int/mag/magics.git src/magics
+	git clone --depth 1 https://github.com/ecmwf/magics src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
 	- $(PIP3) install jinja2
@@ -117,7 +116,9 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
+		-DCMAKE_SYSTEM_NAME=CYGWIN \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
+		-DCMAKE_CXX_FLAGS='-I$(CURDIR)/install/include -DMAGICS_ON_WINDOWS'\
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
@@ -398,3 +399,4 @@ dockcross-build-ecmwflibs: Dockerfile
 
 # test-wheel:
 # 	make -C testing
+

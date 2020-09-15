@@ -3,7 +3,7 @@ import tempfile
 import atexit
 from ._ecmwflibs import versions as _versions
 
-__version__ = '0.0.19'
+__version__ = '0.0.20'
 
 
 _here = os.path.join(os.path.dirname(__file__))

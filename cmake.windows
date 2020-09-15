@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+/usr/src/mxe/usr/x86_64-pc-linux-gnu/bin/cmake \
+              -DCMAKE_TOOLCHAIN_FILE=/usr/src/mxe/usr/x86_64-w64-mingw32.shared.posix/share/cmake/mxe-conf.cmake \
+              -DCMAKE_POLICY_DEFAULT_CMP0017=NEW \
+              -DCMAKE_POLICY_DEFAULT_CMP0020=NEW \
+              "$@"

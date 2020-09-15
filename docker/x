@@ -1,0 +1,6 @@
+set( IEEE_BE
+     "0"
+     CACHE STRING "Output from TRY_RUN" FORCE)
+set( IEEE_LE
+     "1"
+     CACHE STRING "Output from TRY_RUN" FORCE)
