@@ -305,6 +305,7 @@ tools.linux:
 	sudo apt-get install libproj-dev proj-bin
 	pip install setuptools
 	pip install jinja2 wheel auditwheel
+	find / -name '*proj*.so'
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
