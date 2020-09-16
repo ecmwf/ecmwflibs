@@ -1,9 +1,8 @@
 SHELL=/bin/bash
 
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
-PYTHON3 := $(shell which python3)
-PIP3 := $(shell which pip3)
-NINJA=ninja
+
+MAKE=ninja
 MAKEFILES=Ninja
 
 
@@ -13,6 +12,8 @@ LIB64=lib
 # This seems to be needed for py36 and py37, but not anymore from py38
 CMAKE_EXTRA="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
 MEMFS=1
+PYTHON3 := $(shell which python3)
+PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), linux)
@@ -21,14 +22,16 @@ LIB64=lib64
 export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
 MEMFS=1
 CMAKEBIN=cmake
+PYTHON3 := $(shell which python3)
+PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
 PYTHON3=python3
 PIP3=pip
-NINJA=mingw64-make
-MAKEFILES="MinGW Makefiles"
+MAKE=make
+MAKEFILES="Unix Makefiles"
 # CMAKE_EXTRA2="-C/usr/lib/mxe/src/cmake/modules/TryRunResults.cmake"
 endif
 
@@ -87,7 +90,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	$(NINJA) -C build-ecmwf/eccodes install
+	$(MAKE) -C build-ecmwf/eccodes install
 
 #################################################################
 magics-depend-darwin: eccodes
@@ -118,7 +121,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
-	$(NINJA) -C build-ecmwf/magics install
+	$(MAKE) -C build-ecmwf/magics install
 	touch install/lib/pkgconfig/magics.pc
 
 #################################################################
