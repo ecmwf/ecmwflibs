@@ -93,3 +93,21 @@ jobs:
       - name: make wheel
         run: |
           ./dockcross-build-ecmwflibs make wheel
+
+  build-windows:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # - uses: actions/setup-python@v2
+      #   with:
+      #     python-version: ${{ matrix.python-version }}
+
+      # - name: Install python dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+
+      - name: Install tools dependencies
+        run: |
+          make tools
