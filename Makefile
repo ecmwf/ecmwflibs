@@ -321,8 +321,11 @@ tools.linux:
 	pip3 install jinja2 wheel auditwheel
 
 
+# https://repology.org/projects/?search=netcdf&inrepo=vcpkg
+
 tools.mingw64_nt:
-	vcpkg install netcdf-c
+	vcpkg install proj
+	vcpkg install netcdf-cxx
 	vcpkg install pango
 
 
