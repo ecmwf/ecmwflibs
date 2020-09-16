@@ -322,7 +322,7 @@ tools.linux:
 
 
 tools.mingw64_nt:
-	install cairo
+	choco install cairo
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
