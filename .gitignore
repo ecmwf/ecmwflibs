@@ -145,3 +145,6 @@ dockcross-*
 magics.png
 junk/
 *.old
+?
+?.*
+*.save

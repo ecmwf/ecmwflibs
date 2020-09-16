@@ -1,7 +1,0 @@
-FROM dockcross/windows-shared-x64-posix:latest
-
-# RUN apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 wine64
-
-COPY cmake.windows /usr/local/bin/cmake
-COPY cmake.windows /usr/bin/cmake
-RUN chmod +x /usr/local/bin/cmake /usr/bin/cmake

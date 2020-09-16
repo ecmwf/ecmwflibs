@@ -1,2 +1,0 @@
-# These are the requirements for Binder and Deepnote (?)
-climetlab
