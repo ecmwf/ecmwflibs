@@ -316,7 +316,7 @@ tools.linux:
 	sudo apt-get update -y
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
-	sudo apt-get install libproj-dev libopenjp2-7-dev
+	sudo apt-get install proj-bin libopenjp2-7-dev
 	pip3 install setuptools
 	pip3 install jinja2 wheel auditwheel
 
