@@ -160,7 +160,7 @@ tools.darwin:
 	brew install cmake ninja
 	brew install pango cairo proj pkg-config boost
 	brew install netcdf
-	pip install jinja2 wheel delocate
+	pip3 install jinja2 wheel delocate
 
 tools.linux:
 	sudo apt-get clean
