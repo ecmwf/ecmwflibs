@@ -24,6 +24,8 @@ MEMFS=1
 CMAKEBIN=cmake
 PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
+MAKE=make
+MAKEFILES="Unix Makefiles"
 endif
 
 ifeq ($(ARCH), mingw64_nt)
@@ -317,14 +319,13 @@ tools.linux:
 	sudo apt-get update
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
-	sudo apt-get install apt-file
-	sudo apt-file update
-	sudo apt-file list libproj-dev
+	# sudo apt-get install apt-file
+	# sudo apt-file update
+	# sudo apt-file list libproj-dev
 	# sudo apt-file search /usr/include/proj.h
-	sudo apt-get install libproj-dev libopenjp2-7-dev
+	sudo apt-get install libproj-dev proj-data libopenjp2-7-dev
 	pip3 install wheel setuptools
 	pip3 install jinja2 auditwheel
-	ls -l /usr/include/*.h
 
 
 # https://repology.org/projects/?search=netcdf&inrepo=vcpkg
