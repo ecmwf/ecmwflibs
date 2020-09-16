@@ -289,6 +289,8 @@ wheel.darwin: .inited eccodes magics
 	unzip -l wheelhouse/*.whl | grep /lib
 
 
+wheel.mingw64_nt: .inited eccodes magics
+	true
 
 tools.darwin:
 	# - brew install python3
