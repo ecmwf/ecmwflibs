@@ -98,6 +98,9 @@ magics-depend-darwin: eccodes
 
 magics-depend-linux: eccodes #cairo pango proj
 
+magics-depend-mingw64_nt: eccodes #cairo pango proj
+
+
 # magics-depend-mxe: eccodes # install/lib/libeccodes.so
 
 # install/lib/libeccodes.so: install/bin/libeccodes.dll
@@ -118,6 +121,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
+		-DENABLE_BUILD_TOOLS=0 \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
