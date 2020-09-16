@@ -63,7 +63,7 @@ all.darwin: image
 ecbuild: src/ecbuild
 
 src/ecbuild:
-	git clone --depth 1 https://github.com/ecmwf/ecbuild.git src/ecbuild
+	git clone --depth 1 https://github.com/b8raoult/ecbuild.git src/ecbuild
 	# We don't want that
 	echo true > src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
 	chmod +x src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
@@ -97,16 +97,11 @@ magics-depend-darwin: eccodes
 
 magics-depend-linux: eccodes cairo pango proj
 
-magics-depend-mxe: eccodes # install/lib/libeccodes.so
-
-install/lib/libeccodes.so: install/bin/libeccodes.dll
-	ln -s install/bin/libeccodes.dll install/lib/libeccodes.so
-# 	cp install/bin/libeccodes.dll.a install/lib/libeccodes.a
 
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	git clone --depth 1 https://github.com/ecmwf/magics src/magics
+	git clone --depth 1 https://github.com/b8raoult/magics src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
 	- $(PIP3) install jinja2
@@ -117,7 +112,6 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
-		-DCMAKE_SYSTEM_NAME=CYGWIN \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
