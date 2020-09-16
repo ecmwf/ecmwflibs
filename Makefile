@@ -136,7 +136,7 @@ wheel.linux: .inited libraries
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
 	strip --strip-debug install/lib/*.so
-	$(PYTHON3) setup.py bdist_wheel
+	python setup.py bdist_wheel
 	auditwheel repair dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
 
@@ -168,8 +168,8 @@ tools.linux:
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
 	sudo apt-get install libproj-dev proj-data libopenjp2-7-dev
-	pip3 install wheel setuptools
-	pip3 install jinja2 auditwheel
+	pip install wheel setuptools
+	pip install jinja2 auditwheel
 
 
 # https://repology.org/projects/?search=netcdf&inrepo=vcpkg
