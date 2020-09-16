@@ -32,6 +32,12 @@ jobs:
         run: |
           make tools
 
-      - name: make
+      - name: Cache compilations
+        uses: actions/cache@v2
+        with:
+          path: ~/install
+          key: ${{ runner.os }}-build
+
+      - name: make libraries
         run: |
-          make
+          make libraries

@@ -130,8 +130,9 @@ install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
 
 #################################################################
 
+libraries: eccodes magics
 
-wheel.linux: .inited eccodes magics
+wheel.linux: .inited libraries
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
 	strip --strip-debug install/lib/*.so
@@ -139,7 +140,7 @@ wheel.linux: .inited eccodes magics
 	auditwheel repair dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
 
-wheel.darwin: .inited eccodes magics
+wheel.darwin: .inited libraries
 	rm -fr dist wheelhouse ecmwflibs/share
 	mkdir -p install/share/magics
 	cp -r install/share ecmwflibs/
@@ -150,7 +151,7 @@ wheel.darwin: .inited eccodes magics
 	unzip -l wheelhouse/*.whl | grep /lib
 
 
-wheel.mingw64_nt: .inited eccodes magics
+wheel.mingw64_nt: .inited libraries
 	true
 
 #################################################################
