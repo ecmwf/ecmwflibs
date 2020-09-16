@@ -323,6 +323,8 @@ tools.linux:
 
 tools.mingw64_nt:
 	vcpkg install cairo
+	vcpkg install pango
+	vcpkg install netcdf4-cxx
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
