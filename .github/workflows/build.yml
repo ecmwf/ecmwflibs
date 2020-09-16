@@ -8,15 +8,9 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        python-version: [3.6] #, 3.7, 3.8]
-        # on: [macos-latest] #, macos-latest, windows-latest]
-        # on: [ubuntu-16.04, macos-latest, windows-latest] #
-        on: [ubuntu-20.04, macos-latest]
+  build-macos:
 
-    runs-on: ${{ matrix.on }}
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -57,3 +51,14 @@ jobs:
       - name: make wheel
         run: |
           make wheel
+
+  build-manylinux2014:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create docker image
+        run: |
+          make image

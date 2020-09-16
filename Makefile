@@ -183,3 +183,11 @@ tools.mingw64_nt:
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
+
+#######################
+image: dockcross-build-ecmwflibs
+
+dockcross-build-ecmwflibs: Dockerfile
+	docker build -t build-ecmwflibs .
+	docker run --rm dockcross/manylinux2014-x64:latest | sed 's,dockcross/manylinux2014-x64:latest,build-ecmwflibs:latest,' > dockcross-build-ecmwflibs
+	chmod +x dockcross-build-ecmwflibs
