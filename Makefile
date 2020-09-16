@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-ARCH := $(shell uname | tr '[A-Z]' '[a-z]')
+ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
 PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
 
