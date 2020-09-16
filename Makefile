@@ -50,17 +50,6 @@ wheel: wheel.$(ARCH)
 wheels: wheels.$(ARCH)
 tools: tools.$(ARCH)
 
-
-all.darwin: image
-	rm -fr dist wheelhouse install build-ecmwf wheelhouse.darwin wheelhouse.linux
-	make wheels.darwin
-	mv wheelhouse wheelhouse.darwin
-	rm -fr dist wheelhouse install build-ecmwf
-	./dockcross-build-ecmwflibs make wheels.linux
-	mv wheelhouse wheelhouse.linux
-	ls -l wheelhouse.*
-
-
 #################################################################
 ecbuild: src/ecbuild
 
@@ -131,148 +120,6 @@ install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
 	$(MAKE) -C build-ecmwf/magics install
 	touch install/lib/pkgconfig/magics.pc
 
-#################################################################
-
-sqlite: install/lib/pkgconfig/sqlite3.pc
-
-src/sqlite/configure:
-	git clone --depth 1 https://github.com/sqlite/sqlite.git src/sqlite
-
-src/sqlite/config.status: src/sqlite/configure
-	(cd src/sqlite; \
-		./configure \
-		--disable-tcl \
-		--prefix=$(CURDIR)/install )
-
-
-install/lib/pkgconfig/sqlite3.pc: src/sqlite/config.status
-	make -C src/sqlite install
-
-#################################################################
-
-proj: sqlite install/lib/pkgconfig/proj.pc
-
-src/proj/autogen.sh:
-	git clone --depth 1 https://github.com/OSGeo/PROJ.git src/proj
-
-src/proj/config.status: src/proj/autogen.sh
-	(cd src/proj; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install )
-
-
-install/lib/pkgconfig/proj.pc: src/proj/config.status
-	make -C src/proj install
-
-#################################################################
-# Pixman is needed by cairo
-
-pixman: install/lib/pkgconfig/pixman-1.pc
-
-src/pixman/autogen.sh:
-	git clone --depth 1 https://github.com/freedesktop/pixman src/pixman
-
-src/pixman/config.status: src/pixman/autogen.sh
-	(cd src/pixman; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install )
-
-
-install/lib/pkgconfig/pixman-1.pc: src/pixman/config.status
-	make -C src/pixman install
-
-
-#################################################################
-cairo: pixman install/lib/pkgconfig/cairo.pc
-
-src/cairo/autogen.sh:
-	git clone --depth 1 https://github.com/freedesktop/cairo src/cairo
-
-src/cairo/config.status: src/cairo/autogen.sh
-	(cd src/cairo; ./autogen.sh; \
-		./configure \
-		--disable-xlib \
-		--disable-xcb \
-		--disable-qt \
-		--disable-quartz \
-		--disable-gl \
-		--disable-gobject \
-		--prefix=$(CURDIR)/install )
-
-install/lib/pkgconfig/cairo.pc: src/cairo/config.status
-	make -C src/cairo install
-	touch install/lib/pkgconfig/cairo.pc
-
-
-#################################################################
-harfbuzz: cairo install/$(LIB64)/pkgconfig/harfbuzz.pc
-
-src/harfbuzz/meson.build:
-	git clone --depth 1 https://github.com/harfbuzz/harfbuzz.git src/harfbuzz
-
-# 		-Dglib=disabled
-#		-Dgobject=disabled
-
-build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
-	mkdir -p build-other/harfbuzz
-	(cd src/harfbuzz; \
-		meson setup --prefix=$(CURDIR)/install \
-		-Dintrospection=disabled \
-		-Dwrap_mode=nofallback \
-		$(CURDIR)/build-other/harfbuzz )
-
-install/$(LIB64)/pkgconfig/harfbuzz.pc: build-other/harfbuzz/build.ninja
-	ninja -C build-other/harfbuzz install
-	touch install/$(LIB64)/pkgconfig/harfbuzz.pc
-
-#################################################################
-fridibi: harfbuzz install/$(LIB64)/pkgconfig/fridibi.pc
-
-src/fridibi/meson.build:
-	git clone --depth 1 https://github.com/fribidi/fribidi.git src/fridibi
-
-
-build-other/fridibi/build.ninja: src/fridibi/meson.build
-	mkdir -p build-other/fridibi
-	(cd src/fridibi; \
-		meson setup --prefix=$(CURDIR)/install \
-		-Dintrospection=false \
-		-Dwrap_mode=nofallback \
-		-Ddocs=false \
-		$(CURDIR)/build-other/fridibi )
-
-
-install/$(LIB64)/pkgconfig/fridibi.pc: build-other/fridibi/build.ninja
-	ninja -C build-other/fridibi install
-	touch install/$(LIB64)/pkgconfig/fridibi.pc
-
-
-#################################################################
-pango: cairo harfbuzz fridibi install/$(LIB64)/pkgconfig/pango.pc
-
-# Versions after 1.43.0 require versions of glib2 higher than
-# the one in the dockcross image
-
-# We undefine G_LOG_USE_STRUCTURED because otherwise we will have a
-# undefined symbol g_log_structured_standard() when renning on recent
-# docker images with recent versions of glib
-src/pango/meson.build:
-	git clone https://gitlab.gnome.org/GNOME/pango.git src/pango
-	(cd src/pango; git checkout 1.43.0)
-	sed 's/.*G_LOG_USE_STRUCTURED.*//' < src/pango/meson.build > src/pango/meson.build.patched
-	cp src/pango/meson.build.patched src/pango/meson.build
-	sed 's/.*G_LOG_USE_STRUCTURED.*//' < src/pango/pango/meson.build > src/pango/pango/meson.build.patched
-	cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
-
-# 		-Dintrospection=false \
-
-build-other/pango/build.ninja: src/pango/meson.build
-	mkdir -p build-other/pango
-	(cd src/pango; \
-		meson setup --prefix=$(CURDIR)/install \
-		-Dwrap_mode=nofallback \
-		$(CURDIR)/build-other/pango )
-
-
-install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
-	ninja -C build-other/pango install
-	touch install/$(LIB64)/pkgconfig/pango.pc
 
 #################################################################
 # If setup.py is changed, we need to remove
@@ -287,7 +134,7 @@ install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
 wheel.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
-	strip --strip-debug install/lib/*.so install/lib64/*.so
+	strip --strip-debug install/lib/*.so
 	$(PYTHON3) setup.py bdist_wheel
 	auditwheel repair dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
@@ -306,9 +153,9 @@ wheel.darwin: .inited eccodes magics
 wheel.mingw64_nt: .inited eccodes magics
 	true
 
+#################################################################
+
 tools.darwin:
-	# - brew install python3
-	# - brew install pyenv pyenv-virtualenv
 	brew install cmake ninja
 	brew install pango cairo proj pkg-config boost
 	brew install netcdf
@@ -319,10 +166,6 @@ tools.linux:
 	sudo apt-get update
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
-	# sudo apt-get install apt-file
-	# sudo apt-file update
-	# sudo apt-file list libproj-dev
-	# sudo apt-file search /usr/include/proj.h
 	sudo apt-get install libproj-dev proj-data libopenjp2-7-dev
 	pip3 install wheel setuptools
 	pip3 install jinja2 auditwheel
