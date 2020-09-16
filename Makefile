@@ -24,8 +24,8 @@ MEMFS=1
 CMAKEBIN=cmake
 PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
-MAKE=make
-MAKEFILES="Unix Makefiles"
+# MAKE=make
+# MAKEFILES="Unix Makefiles"
 endif
 
 ifeq ($(ARCH), mingw64_nt)
