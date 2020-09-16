@@ -308,5 +308,8 @@ tools.linux:
 	apt list --installed
 	find / -name proj.h
 
+tools.mingw64_nt:
+	true
+
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
