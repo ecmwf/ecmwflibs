@@ -19,7 +19,7 @@ endif
 ifeq ($(ARCH), linux)
 LIB64=lib
 # Make sure the right libtool is used (installing gobject-... changes libtool)
-export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
+export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH):$(HOME)/.local/bin
 MEMFS=1
 CMAKEBIN=cmake
 PYTHON3 := $(shell which python3)
@@ -171,7 +171,6 @@ tools.linux:
 	sudo apt-get install python3-dev
 	pip3 install wheel setuptools
 	pip3 install jinja2 auditwheel
-	- find / -name auditwheel -print
 
 
 # https://repology.org/projects/?search=netcdf&inrepo=vcpkg
