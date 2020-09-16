@@ -169,8 +169,8 @@ tools.linux:
 	sudo apt-get install libboost-dev
 	sudo apt-get install libproj-dev proj-data libopenjp2-7-dev
 	sudo apt-get install python3-dev
-	pip install wheel setuptools
-	pip install jinja2 auditwheel
+	pip3 install wheel setuptools
+	pip3 install jinja2 auditwheel
 
 
 # https://repology.org/projects/?search=netcdf&inrepo=vcpkg
