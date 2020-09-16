@@ -322,7 +322,6 @@ tools.linux:
 
 
 tools.mingw64_nt:
-	vcpkg install cairo
 	vcpkg install pango
 	vcpkg install netcdf4-cxx
 
