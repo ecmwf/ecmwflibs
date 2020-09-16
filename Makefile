@@ -27,8 +27,8 @@ ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
 PYTHON3=python3
 PIP3=pip
-NINJA=make
-MAKEFILES=Makefiles
+NINJA=mingw64-make
+MAKEFILES="MinGW Makefiles"
 # CMAKE_EXTRA2="-C/usr/lib/mxe/src/cmake/modules/TryRunResults.cmake"
 endif
 
