@@ -306,6 +306,7 @@ tools.linux:
 	pip3 install setuptools
 	pip3 install jinja2 wheel auditwheel
 	apt list --installed
+	find /usr /opt -name proj.h
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
