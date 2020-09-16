@@ -319,6 +319,7 @@ tools.linux:
 	sudo apt-get install apt-file
 	sudo apt-file update
 	sudo apt-file list libproj-dev
+	sudo apt-file search /usr/include/proj.h
 	sudo apt-get install libproj-dev libopenjp2-7-dev
 	pip3 install wheel setuptools
 	pip3 install jinja2 auditwheel
