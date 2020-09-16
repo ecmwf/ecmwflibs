@@ -316,6 +316,8 @@ tools.linux:
 	sudo apt-get update -y
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
+	sudo apt-get install apt-file
+	sudo apt-file update
 	sudo apt-file list libproj-dev
 	sudo apt-get install libproj-dev libopenjp2-7-dev
 	pip3 install wheel setuptools
