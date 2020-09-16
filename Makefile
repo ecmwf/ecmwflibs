@@ -136,7 +136,7 @@ wheel.linux: .inited libraries
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
 	strip --strip-debug install/lib/*.so
-	python setup.py bdist_wheel
+	python3 setup.py bdist_wheel
 	auditwheel repair dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
 
