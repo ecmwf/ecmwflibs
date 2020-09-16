@@ -3,6 +3,8 @@ SHELL=/bin/bash
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
 PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
+NINJA=ninja
+MAKEFILES=Ninja
 
 
 ifeq ($(ARCH), darwin)
@@ -21,10 +23,12 @@ MEMFS=1
 CMAKEBIN=cmake
 endif
 
-ifeq ($(ARCH), mxe)
+ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
-CMAKEBIN=/usr/lib/mxe/usr/bin/i686-w64-mingw32.shared-cmake
-CMAKE_EXTRA="-C/work/docker/TryRunResults-mxe.cmake"
+PYTHON3=python3
+PIP3=pip
+NINJA=make
+MAKEFILES=Makefiles
 # CMAKE_EXTRA2="-C/usr/lib/mxe/src/cmake/modules/TryRunResults.cmake"
 endif
 
@@ -73,7 +77,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
-		../../src/eccodes -GNinja \
+		../../src/eccodes -G$(MAKEFILES) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_MEMFS=$(MEMFS) \
@@ -83,7 +87,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	ninja -C build-ecmwf/eccodes install
+	$(NINJA) -C build-ecmwf/eccodes install
 
 #################################################################
 magics-depend-darwin: eccodes
@@ -106,7 +110,7 @@ build-ecmwf/magics/build.ninja: src/magics
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
-		../../src/magics -GNinja \
+		../../src/magics -G$(MAKEFILES) \
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
@@ -114,7 +118,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
-	ninja -C build-ecmwf/magics install
+	$(NINJA) -C build-ecmwf/magics install
 	touch install/lib/pkgconfig/magics.pc
 
 #################################################################
@@ -304,14 +308,13 @@ tools.linux:
 	sudo apt-get update -y
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
-	sudo apt-get install libproj-dev proj-bin libproj9
+	sudo apt-get install libproj-dev libopenjp2-7-dev
 	pip3 install setuptools
 	pip3 install jinja2 wheel auditwheel
-	apt list --installed
-	find / -name proj.h
+
 
 tools.mingw64_nt:
-	apt-get install ninja-build
+	true
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
