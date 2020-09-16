@@ -1,8 +1,7 @@
 SHELL=/bin/bash
 
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
-PYTHON3 := $(shell which python3)
-PIP3 := $(shell which pip3)
+
 
 
 ifeq ($(ARCH), darwin)
@@ -11,6 +10,8 @@ LIB64=lib
 # This seems to be needed for py36 and py37, but not anymore from py38
 CMAKE_EXTRA="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
 MEMFS=1
+PYTHON3 := $(shell which python3)
+PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), linux)
@@ -19,13 +20,12 @@ LIB64=lib64
 export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
 MEMFS=1
 CMAKEBIN=cmake
+PYTHON3 := $(shell which python3)
+PIP3 := $(shell which pip3)
 endif
 
-ifeq ($(ARCH), mxe)
+ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
-CMAKEBIN=/usr/lib/mxe/usr/bin/i686-w64-mingw32.shared-cmake
-CMAKE_EXTRA="-C/work/docker/TryRunResults-mxe.cmake"
-# CMAKE_EXTRA2="-C/usr/lib/mxe/src/cmake/modules/TryRunResults.cmake"
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
@@ -385,6 +385,13 @@ tools.darwin:
 
 tools.linux:
 	true
+
+tools.mingw64_nt:
+	vcpkg install proj
+	vcpkg install netcdf-c
+	vcpkg install pango
+	vcpkg install ninja
+
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
