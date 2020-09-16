@@ -13,7 +13,8 @@ jobs:
       matrix:
         python-version: [3.6] #, 3.7, 3.8]
         # on: [macos-latest] #, macos-latest, windows-latest]
-        on: [ubuntu-16.04, macos-latest, windows-latest] #
+        # on: [ubuntu-16.04, macos-latest, windows-latest] #
+        on: [windows-latest]
 
     runs-on: ${{ matrix.on }}
 
@@ -25,7 +26,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          python3 -m pip install --upgrade pip
+          python -m pip install --upgrade pip
 
       - name: Install tools dependencies
         run: |
