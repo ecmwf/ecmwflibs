@@ -17,7 +17,7 @@ PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), linux)
-LIB64=lib64
+LIB64=lib
 # Make sure the right libtool is used (installing gobject-... changes libtool)
 export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
 MEMFS=1
