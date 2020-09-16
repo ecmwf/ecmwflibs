@@ -31,6 +31,8 @@ jobs:
       - name: Install tools dependencies
         run: |
           make tools
+          pwd
+          echo $HOME
 
       - name: Cache compilations (src)
         uses: actions/cache@v2
