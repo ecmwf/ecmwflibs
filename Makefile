@@ -311,7 +311,7 @@ tools.linux:
 	find / -name proj.h
 
 tools.mingw64_nt:
-	true
+	apt-get install ninja-build
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
