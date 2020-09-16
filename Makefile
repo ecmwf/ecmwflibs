@@ -33,12 +33,6 @@ export NOCONFIGURE=1
 export PKG_CONFIG_PATH=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
 export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64)
 
-export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-export PKG_CONFIG_PATH_i686_w64_mingw32_shared=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-
-#export DYLD_LIBRARY_PATH=$(CURDIR)/install/lib
-#export RPATH=$(CURDIR)/install/lib
-#export DYLD_FALLBACK_LIBRARY_PATH=$(CURDIR)/install/lib
 
 target: wheel
 all: all.$(ARCH)
@@ -94,12 +88,12 @@ install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
 #################################################################
 magics-depend-darwin: eccodes
 
-magics-depend-linux: eccodes cairo pango proj
+magics-depend-linux: eccodes #cairo pango proj
 
-magics-depend-mxe: eccodes # install/lib/libeccodes.so
+# magics-depend-mxe: eccodes # install/lib/libeccodes.so
 
-install/lib/libeccodes.so: install/bin/libeccodes.dll
-	ln -s install/bin/libeccodes.dll install/lib/libeccodes.so
+# install/lib/libeccodes.so: install/bin/libeccodes.dll
+# 	ln -s install/bin/libeccodes.dll install/lib/libeccodes.so
 # 	cp install/bin/libeccodes.dll.a install/lib/libeccodes.a
 
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
@@ -276,14 +270,6 @@ install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
 
 #################################################################
 
-wheel.mxe: .inited eccodes magics
-	rm -fr dist wheelhouse ecmwflibs/share
-	cp -r install/share ecmwflibs/
-	strip --strip-debug install/lib/*.so install/lib64/*.so
-	$(PYTHON3) setup.py bdist_wheel
-	auditwheel repair dist/*.whl
-	unzip -l wheelhouse/*.whl | grep /lib
-
 
 wheel.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
@@ -292,27 +278,6 @@ wheel.linux: .inited eccodes magics
 	$(PYTHON3) setup.py bdist_wheel
 	auditwheel repair dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
-
-wheels.linux: .inited eccodes magics
-	rm -fr dist wheelhouse ecmwflibs/share
-	cp -r install/share ecmwflibs/
-	strip --strip-debug install/lib/*.so install/lib64/*.so
-
-	/opt/python/cp35-cp35m/bin/python3 setup.py bdist_wheel
-	auditwheel repair dist/*.whl
-	rm -fr dist
-
-	/opt/python/cp36-cp36m/bin/python3 setup.py bdist_wheel
-	auditwheel repair dist/*.whl
-	rm -fr dist
-
-	/opt/python/cp37-cp37m/bin/python3 setup.py bdist_wheel
-	auditwheel repair dist/*.whl
-	rm -fr dist
-
-	/opt/python/cp38-cp38/bin/python3 setup.py bdist_wheel
-	auditwheel repair dist/*.whl
-	rm -fr dist
 
 wheel.darwin: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
@@ -325,76 +290,23 @@ wheel.darwin: .inited eccodes magics
 	unzip -l wheelhouse/*.whl | grep /lib
 
 
-wheels.darwin: .inited pyenv-versions eccodes magics
-	rm -fr dist wheelhouse ecmwflibs/share
-	cp -r install/share ecmwflibs/
-	cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
-	strip -S install/lib/*.dylib
-
-	$(HOME)/.pyenv/versions/py35/bin/python setup.py bdist_wheel
-	delocate-wheel -w wheelhouse dist/*.whl
-	rm -fr dist
-
-	$(HOME)/.pyenv/versions/py36/bin/python setup.py bdist_wheel
-	delocate-wheel -w wheelhouse dist/*.whl
-	rm -fr dist
-
-	$(HOME)/.pyenv/versions/py37/bin/python setup.py bdist_wheel
-	delocate-wheel -w wheelhouse dist/*.whl
-	rm -fr dist
-
-	$(HOME)/.pyenv/versions/py38/bin/python setup.py bdist_wheel
-	delocate-wheel -w wheelhouse dist/*.whl
-	rm -fr dist
-
-
-pyenv-versions: $(HOME)/.pyenv/versions/py35/bin/python \
-                $(HOME)/.pyenv/versions/py36/bin/python \
-                $(HOME)/.pyenv/versions/py37/bin/python \
-                $(HOME)/.pyenv/versions/py38/bin/python
-
-
-$(HOME)/.pyenv/versions/py35/bin/python:
-	pyenv install 3.5.9
-	pyenv virtualenv 3.5.9 py35
-	$(HOME)/.pyenv/versions/py35/bin/pip install wheel jinja2
-
-$(HOME)/.pyenv/versions/py36/bin/python:
-	pyenv install 3.6.10
-	pyenv virtualenv 3.6.10 py36
-	$(HOME)/.pyenv/versions/py36/bin/pip install wheel jinja2
-
-$(HOME)/.pyenv/versions/py37/bin/python:
-	pyenv install 3.7.7
-	pyenv virtualenv 3.7.7 py37
-	$(HOME)/.pyenv/versions/py37/bin/pip install wheel jinja2
-
-$(HOME)/.pyenv/versions/py38/bin/python:
-	pyenv install 3.8.3
-	pyenv virtualenv 3.8.3 py38
-	$(HOME)/.pyenv/versions/py38/bin/pip install wheel jinja2
 
 tools.darwin:
-	- brew install python3
-	- brew install pyenv pyenv-virtualenv
-	- brew install cmake ninja
-	- brew install pango cairo proj pkg-config boost
-	- brew install netcdf
-	- pip3 install jinja2 wheel delocate
+	# - brew install python3
+	# - brew install pyenv pyenv-virtualenv
+	brew install cmake ninja
+	brew install pango cairo proj pkg-config boost
+	brew install netcdf
+	pip install jinja2 wheel delocate
 
 tools.linux:
-	true
+	sudo apt-get update -y
+	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
+	sudo apt-get install libboost-all-dev
+	sudo apt-get install libproj-dev proj-bin
+	pip install setuptools
+	pip install jinja2 wheel auditwheel
+	find / -name '*proj*.so'
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
-
-
-image: dockcross-build-ecmwflibs
-
-dockcross-build-ecmwflibs: Dockerfile
-	docker build -t build-ecmwflibs .
-	docker run --rm dockcross/manylinux2014-x64:latest | sed 's,dockcross/manylinux2014-x64:latest,build-ecmwflibs:latest,' > dockcross-build-ecmwflibs
-	chmod +x dockcross-build-ecmwflibs
-
-# test-wheel:
-# 	make -C testing
