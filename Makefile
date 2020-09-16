@@ -166,7 +166,7 @@ tools.linux:
 	sudo apt-get clean
 	sudo apt-get update
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
-	sudo apt-get install libboost-dev
+	sudo apt-get install libboost-dev python3-dev
 	sudo apt-get install libproj-dev proj-data libopenjp2-7-dev
 	pip install wheel setuptools
 	pip install jinja2 auditwheel
