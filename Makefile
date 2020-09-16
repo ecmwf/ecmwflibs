@@ -302,10 +302,10 @@ tools.darwin:
 tools.linux:
 	sudo apt-get update -y
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
-	sudo apt-get install libboost-all-dev
+	sudo apt-get install libboost-dev
 	sudo apt-get install libproj-dev proj-bin libproj9
-	pip install setuptools
-	pip install jinja2 wheel auditwheel
+	pip3 install setuptools
+	pip3 install jinja2 wheel auditwheel
 
 clean:
 	rm -fr build install dist *.so *.whl *.egg-info wheelhouse build-ecmwf build-other src build-other
