@@ -325,7 +325,7 @@ tools.linux:
 
 tools.mingw64_nt:
 	vcpkg install proj
-	vcpkg install netcdf-cxx
+	vcpkg install netcdf-c
 	vcpkg install pango
 
 
