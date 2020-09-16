@@ -32,11 +32,23 @@ jobs:
         run: |
           make tools
 
-      - name: Cache compilations
+      - name: Cache compilations (src)
         uses: actions/cache@v2
         with:
-          path: ~/install
-          key: ${{ runner.os }}-build
+          path: ~/src
+          key: ${{ runner.os }}-src
+
+      - name: Cache compilations (build)
+        uses: actions/cache@v2
+        with:
+          path: ~/build-ecmwf
+          key: ${{ runner.os }}-build-ecmwf
+
+      - name: Cache compilations (install)
+        uses: actions/cache@v2
+        with:
+          path: ~/build-ecmwf
+          key: ${{ runner.os }}-install
 
       - name: make libraries
         run: |
