@@ -99,8 +99,7 @@ magics-depend-linux: eccodes #cairo pango proj
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	# git clone --depth 1 https://github.com/b8raoult/magics src/magics
-	git clone ssh://git@git.ecmwf.int/mag/magics.git src/magics
+	git clone --depth 1 https://github.com/b8raoult/magics src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
 	- $(PIP3) install jinja2
