@@ -316,10 +316,11 @@ tools.linux:
 	sudo apt-get update -y
 	sudo apt-get install ninja-build  libnetcdf-dev libpango1.0-dev
 	sudo apt-get install libboost-dev
+	sudo apt-file list libproj-dev
 	sudo apt-get install libproj-dev libopenjp2-7-dev
 	pip3 install wheel setuptools
 	pip3 install jinja2 auditwheel
-	ls -lrt /usr/include/*.h
+	ls -l /usr/include/*.h
 
 
 # https://repology.org/projects/?search=netcdf&inrepo=vcpkg
