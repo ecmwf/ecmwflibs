@@ -171,6 +171,7 @@ tools.linux:
 	sudo apt-get install python3-dev
 	pip3 install wheel setuptools
 	pip3 install jinja2 auditwheel
+	- find / -name auditwheel -print
 
 
 # https://repology.org/projects/?search=netcdf&inrepo=vcpkg
