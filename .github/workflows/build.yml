@@ -41,3 +41,7 @@ jobs:
       - name: make libraries
         run: |
           make libraries
+
+      - name: make wheel
+        run: |
+          make wheel
