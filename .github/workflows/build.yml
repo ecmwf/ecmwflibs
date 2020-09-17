@@ -143,6 +143,15 @@ jobs:
         run: |
           make wheel
 
+      - name: list2
+        run: |
+          import os
+          for root, _, files in os.walk("install"):
+              for file in files:
+                  if file.endswith(".whl"):
+                      print(os.path.join(root, file))
+        shell: python
+
       - uses: actions/upload-artifact@v2
         if: false
         with:
