@@ -371,7 +371,8 @@ tools.mingw64_nt:
 	vcpkg install proj
 	vcpkg install netcdf-c
 	vcpkg install pango
-	vcpkg install ninja
+	pip install ninja
+	pip install jinja2 wheel
 
 
 clean:

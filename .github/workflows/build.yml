@@ -59,6 +59,8 @@ jobs:
           path: wheelhouse/*
 
 
+  # TODO: prepare the docker image:
+  # https://docs.github.com/en/actions/guides/publishing-docker-images
   build-manylinux2014:
 
     runs-on: ubuntu-latest
