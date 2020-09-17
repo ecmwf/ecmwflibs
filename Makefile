@@ -1,3 +1,5 @@
+include VERSIONS.make
+
 SHELL=/bin/bash
 
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
@@ -64,7 +66,7 @@ all.darwin: image
 ecbuild: src/ecbuild
 
 src/ecbuild:
-	git clone --depth 1 https://github.com/b8raoult/ecbuild.git src/ecbuild
+	git clone --depth 1 $(GIT_ECBUILD) src/ecbuild
 	# We don't want that
 	echo true > src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
 	chmod +x src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
@@ -73,9 +75,7 @@ src/ecbuild:
 eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
-	git clone --depth 1 https://github.com/ecmwf/eccodes.git src/eccodes
-
-#-DCMAKE_SKIP_BUILD_RPATH=1 \ -DCMAKE_BUILD_WITH_INSTALL_RPATH=1 \ -DCMAKE_INSTALL_RPATH=$(CURDIR)/lib \ -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=1 \
+	git clone --depth 1 $(GIT_ECCODES) src/eccodes
 
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
@@ -101,7 +101,7 @@ magics-depend-linux: eccodes cairo pango proj
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	git clone --depth 1 https://github.com/b8raoult/magics src/magics
+	git clone --depth 1 $(GIT_MAGICS) src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
 	- $(PIP3) install jinja2
@@ -124,7 +124,7 @@ install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
 sqlite: install/lib/pkgconfig/sqlite3.pc
 
 src/sqlite/configure:
-	git clone --depth 1 https://github.com/sqlite/sqlite.git src/sqlite
+	git clone --depth 1 $(GIT_SQLITE) src/sqlite
 
 src/sqlite/config.status: src/sqlite/configure
 	(cd src/sqlite; \
@@ -141,7 +141,7 @@ install/lib/pkgconfig/sqlite3.pc: src/sqlite/config.status
 proj: sqlite install/lib/pkgconfig/proj.pc
 
 src/proj/autogen.sh:
-	git clone --depth 1 https://github.com/OSGeo/PROJ.git src/proj
+	git clone --depth 1 $(GIT_PROJ) src/proj
 
 src/proj/config.status: src/proj/autogen.sh
 	(cd src/proj; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install )
@@ -156,7 +156,7 @@ install/lib/pkgconfig/proj.pc: src/proj/config.status
 pixman: install/lib/pkgconfig/pixman-1.pc
 
 src/pixman/autogen.sh:
-	git clone --depth 1 https://github.com/freedesktop/pixman src/pixman
+	git clone --depth 1 $(GIT_PIXMAN) src/pixman
 
 src/pixman/config.status: src/pixman/autogen.sh
 	(cd src/pixman; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install )
@@ -170,7 +170,7 @@ install/lib/pkgconfig/pixman-1.pc: src/pixman/config.status
 cairo: pixman install/lib/pkgconfig/cairo.pc
 
 src/cairo/autogen.sh:
-	git clone --depth 1 https://github.com/freedesktop/cairo src/cairo
+	git clone --depth 1 $(GIT_CAIRO) src/cairo
 
 src/cairo/config.status: src/cairo/autogen.sh
 	(cd src/cairo; ./autogen.sh; \
@@ -192,7 +192,7 @@ install/lib/pkgconfig/cairo.pc: src/cairo/config.status
 harfbuzz: cairo install/$(LIB64)/pkgconfig/harfbuzz.pc
 
 src/harfbuzz/meson.build:
-	git clone --depth 1 https://github.com/harfbuzz/harfbuzz.git src/harfbuzz
+	git clone --depth 1 $(GIT_HARFBUZZ) src/harfbuzz
 
 build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 	mkdir -p build-other/harfbuzz
@@ -210,7 +210,7 @@ install/$(LIB64)/pkgconfig/harfbuzz.pc: build-other/harfbuzz/build.ninja
 fridibi: harfbuzz install/$(LIB64)/pkgconfig/fridibi.pc
 
 src/fridibi/meson.build:
-	git clone --depth 1 https://github.com/fribidi/fribidi.git src/fridibi
+	git clone --depth 1 $(GIT_FRIBIDI) src/fridibi
 
 
 build-other/fridibi/build.ninja: src/fridibi/meson.build
@@ -238,7 +238,7 @@ pango: cairo harfbuzz fridibi install/$(LIB64)/pkgconfig/pango.pc
 # undefined symbol g_log_structured_standard() when running on recent
 # docker images with recent versions of glib
 src/pango/meson.build:
-	git clone https://gitlab.gnome.org/GNOME/pango.git src/pango
+	git clone $(GIT_PANGO) src/pango
 	(cd src/pango; git checkout 1.43.0)
 	sed 's/.*G_LOG_USE_STRUCTURED.*//' < src/pango/meson.build > src/pango/meson.build.patched
 	cp src/pango/meson.build.patched src/pango/meson.build

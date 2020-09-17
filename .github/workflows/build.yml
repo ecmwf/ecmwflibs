@@ -31,19 +31,19 @@ jobs:
         uses: actions/cache@v2
         with:
           path: src
-          key: ${{ runner.os }}-src
+          key: ${{ runner.os }}-src-${{ hashFiles('VERSIONS.make') }}
 
       - name: Cache compilations (build)
         uses: actions/cache@v2
         with:
           path: build-ecmwf
-          key: ${{ runner.os }}-build-ecmwf
+          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('VERSIONS.make') }}
 
       - name: Cache compilations (install)
         uses: actions/cache@v2
         with:
           path: install
-          key: ${{ runner.os }}-install
+          key: ${{ runner.os }}-install-${{ hashFiles('VERSIONS.make') }}
 
       - name: make libraries
         run: |
@@ -80,19 +80,19 @@ jobs:
         uses: actions/cache@v2
         with:
           path: src
-          key: ${{ runner.os }}-src-2
+          key: ${{ runner.os }}-src-${{ hashFiles('VERSIONS.make') }}
 
       - name: Cache compilations (build)
         uses: actions/cache@v2
         with:
           path: build-ecmwf
-          key: ${{ runner.os }}-build-ecmwf-2
+          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('VERSIONS.make') }}
 
       - name: Cache compilations (install)
         uses: actions/cache@v2
         with:
           path: install
-          key: ${{ runner.os }}-install-2
+          key: ${{ runner.os }}-install-${{ hashFiles('VERSIONS.make') }}
 
       - name: make pango/cairo
         # if: steps.cache.outputs.cache-hit != 'true'
