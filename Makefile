@@ -38,6 +38,7 @@ ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
 # Create .lib files
 CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
+# See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake"
 endif
 
