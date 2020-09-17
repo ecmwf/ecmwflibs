@@ -131,6 +131,10 @@ jobs:
         run: |
           make eccodes
 
+      - name: magics
+        run: |
+          make magics
+
       - name: list
         run: |
           import os
