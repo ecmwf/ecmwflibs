@@ -2,10 +2,10 @@ SHELL=/bin/bash
 
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
 
-
+MAKEFILES=Ninja
+MAKE=ninja
 
 ifeq ($(ARCH), darwin)
-CMAKEBIN=cmake
 LIB64=lib
 # This seems to be needed for py36 and py37, but not anymore from py38
 CMAKE_EXTRA="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
@@ -19,13 +19,14 @@ LIB64=lib64
 # Make sure the right libtool is used (installing gobject-... changes libtool)
 export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
 MEMFS=1
-CMAKEBIN=cmake
 PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
+MAKEFILES="Unix Makefiles"
+MAKE=make
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
@@ -33,8 +34,8 @@ export NOCONFIGURE=1
 export PKG_CONFIG_PATH=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
 export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64)
 
-export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-export PKG_CONFIG_PATH_i686_w64_mingw32_shared=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
+# export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
+# export PKG_CONFIG_PATH_i686_w64_mingw32_shared=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
 
 #export DYLD_LIBRARY_PATH=$(CURDIR)/install/lib
 #export RPATH=$(CURDIR)/install/lib
@@ -79,18 +80,17 @@ src/eccodes:
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
-		--cmakebin=$(CMAKEBIN) \
-		../../src/eccodes -GNinja \
+		../../src/eccodes -G$(MAKEFILES) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_MEMFS=$(MEMFS) \
 		-DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
 		-DENABLE_INSTALL_ECCODES_SAMPLES=0 \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA) $(CMAKE_EXTRA2))
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	ninja -C build-ecmwf/eccodes install
+	$(MAKE) -C build-ecmwf/eccodes install
 
 #################################################################
 magics-depend-darwin: eccodes
@@ -108,7 +108,7 @@ build-ecmwf/magics/build.ninja: src/magics
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
-		../../src/magics -GNinja \
+		../../src/magics -G$(MAKEFILES) \
 		-DPYTHON_EXECUTABLE=$(PYTHON3) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
@@ -116,7 +116,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
-	ninja -C build-ecmwf/magics install
+	$(MAKE) -C build-ecmwf/magics install
 	touch install/lib/pkgconfig/magics.pc
 
 #################################################################
@@ -194,9 +194,6 @@ harfbuzz: cairo install/$(LIB64)/pkgconfig/harfbuzz.pc
 src/harfbuzz/meson.build:
 	git clone --depth 1 https://github.com/harfbuzz/harfbuzz.git src/harfbuzz
 
-# 		-Dglib=disabled
-#		-Dgobject=disabled
-
 build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 	mkdir -p build-other/harfbuzz
 	(cd src/harfbuzz; \
@@ -206,7 +203,7 @@ build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 		$(CURDIR)/build-other/harfbuzz )
 
 install/$(LIB64)/pkgconfig/harfbuzz.pc: build-other/harfbuzz/build.ninja
-	ninja -C build-other/harfbuzz install
+	$(MAKE) -C build-other/harfbuzz install
 	touch install/$(LIB64)/pkgconfig/harfbuzz.pc
 
 #################################################################
@@ -227,7 +224,7 @@ build-other/fridibi/build.ninja: src/fridibi/meson.build
 
 
 install/$(LIB64)/pkgconfig/fridibi.pc: build-other/fridibi/build.ninja
-	ninja -C build-other/fridibi install
+	$(MAKE) -C build-other/fridibi install
 	touch install/$(LIB64)/pkgconfig/fridibi.pc
 
 
@@ -238,7 +235,7 @@ pango: cairo harfbuzz fridibi install/$(LIB64)/pkgconfig/pango.pc
 # the one in the dockcross image
 
 # We undefine G_LOG_USE_STRUCTURED because otherwise we will have a
-# undefined symbol g_log_structured_standard() when renning on recent
+# undefined symbol g_log_structured_standard() when running on recent
 # docker images with recent versions of glib
 src/pango/meson.build:
 	git clone https://gitlab.gnome.org/GNOME/pango.git src/pango
@@ -247,8 +244,6 @@ src/pango/meson.build:
 	cp src/pango/meson.build.patched src/pango/meson.build
 	sed 's/.*G_LOG_USE_STRUCTURED.*//' < src/pango/pango/meson.build > src/pango/pango/meson.build.patched
 	cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
-
-# 		-Dintrospection=false \
 
 build-other/pango/build.ninja: src/pango/meson.build
 	mkdir -p build-other/pango
@@ -259,25 +254,17 @@ build-other/pango/build.ninja: src/pango/meson.build
 
 
 install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
-	ninja -C build-other/pango install
+	$(MAKE) -C build-other/pango install
 	touch install/$(LIB64)/pkgconfig/pango.pc
 
 #################################################################
-# If setup.py is changed, we need to remove
+# If setup.py is changed, we need to remove `build`
 
 .inited: setup.py ecmwflibs/__init__.py ecmwflibs/_ecmwflibs.cc
 	rm -fr build
 	touch .inited
 
 #################################################################
-
-wheel.mxe: .inited eccodes magics
-	rm -fr dist wheelhouse ecmwflibs/share
-	cp -r install/share ecmwflibs/
-	strip --strip-debug install/lib/*.so install/lib64/*.so
-	$(PYTHON3) setup.py bdist_wheel
-	auditwheel repair dist/*.whl
-	unzip -l wheelhouse/*.whl | grep /lib
 
 
 wheel.linux: .inited eccodes magics
@@ -397,6 +384,3 @@ dockcross-build-ecmwflibs: Dockerfile
 	docker build -t build-ecmwflibs .
 	docker run --rm dockcross/manylinux2014-x64:latest | sed 's,dockcross/manylinux2014-x64:latest,build-ecmwflibs:latest,' > dockcross-build-ecmwflibs
 	chmod +x dockcross-build-ecmwflibs
-
-# test-wheel:
-# 	make -C testing
