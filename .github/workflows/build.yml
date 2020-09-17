@@ -95,6 +95,7 @@ jobs:
           key: ${{ runner.os }}-install-2
 
       - name: make pango/cairo
+        # if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./dockcross-build-ecmwflibs make pango
 
@@ -133,6 +134,10 @@ jobs:
       - name: Install tools dependencies
         run: |
           make tools
+
+      - name: eccodes
+        run: |
+          make eccodes
 
       - uses: actions/upload-artifact@v2
         if: false

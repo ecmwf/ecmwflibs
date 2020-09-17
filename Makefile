@@ -25,8 +25,8 @@ endif
 
 ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
-MAKEFILES="Unix Makefiles"
-MAKE=make
+# MAKEFILES="Unix Makefiles"
+# MAKE=make
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
