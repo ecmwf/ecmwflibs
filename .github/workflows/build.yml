@@ -125,7 +125,7 @@ jobs:
 
       - name: Install tools dependencies
         run: |
-          setup-x86.exe --help
+          setup-x86_64.exe --help
           make tools
 
       - name: eccodes
