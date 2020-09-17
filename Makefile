@@ -19,7 +19,7 @@ MAKE=ninja
 ifeq ($(ARCH), darwin)
 LIB64=lib
 # This seems to be needed for py36 and py37, but not anymore from py38
-CMAKE_EXTRA="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
+CMAKE_EXTRA1="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
 MEMFS=1
 PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
@@ -37,7 +37,8 @@ endif
 ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
 # Create .lib files
-CMAKE_EXTRA="-DCMAKE_GNUtoMS=1"
+CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
+CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake"
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
@@ -96,7 +97,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 		-DENABLE_MEMFS=$(MEMFS) \
 		-DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
 		-DENABLE_INSTALL_ECCODES_SAMPLES=0 \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2))
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
@@ -125,7 +126,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA))
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
 	$(MAKE) -C build-ecmwf/magics install
