@@ -36,8 +36,6 @@ endif
 
 ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
-# MAKEFILES="Unix Makefiles"
-# MAKE=make
 # Create .lib files
 CMAKE_EXTRA="-DCMAKE_GNUtoMS=1"
 endif
