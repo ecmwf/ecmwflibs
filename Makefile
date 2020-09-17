@@ -35,7 +35,7 @@ PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), mingw64_nt)
-MEMFS=0
+MEMFS=1
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
 endif
