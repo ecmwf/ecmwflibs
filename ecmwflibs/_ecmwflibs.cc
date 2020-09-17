@@ -2,8 +2,7 @@
 #include <Python.h>
 
 #include <eccodes.h>
-// #include <magics.h>
-#define MAGICS_VERSION_STR "xxx"
+#include <magics.h>
 
 static PyObject* versions(PyObject *self, PyObject *args) {
     long s = grib_get_api_version();
