@@ -8,7 +8,7 @@
 # nor does it submit to any jurisdiction.
 #
 
-
+import os
 import io
 import os.path
 
@@ -28,18 +28,21 @@ for line in read("ecmwflibs/__init__.py").split("\n"):
 libdir = os.path.realpath("install/lib")
 incdir = os.path.realpath("install/include")
 
+if os.name == "nt":
+    libs = ["libeccodes"]
+else:
+    libs = ["eccodes", "MagPlus"]
+
+
 # https://docs.python.org/3/distutils/apiref.html
 ext_modules = [
     Extension(
         "ecmwflibs._ecmwflibs",
         sources=["ecmwflibs/_ecmwflibs.cc"],
         language="c++",
-        # libraries=["eccodes", "MagPlus"],
-        libraries=["libeccodes"],
-        #              libraries=['eccodes', 'eccodes_memfs', 'MagPlus'],  # Unix-like specific
+        libraries=libs,
         library_dirs=[libdir],
         include_dirs=[incdir, os.path.join(incdir, "magics")],
-        #              runtime_library_dirs=[libdir],
         extra_link_args=["-Wl,-rpath," + libdir],
     )
 ]

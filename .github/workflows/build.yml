@@ -146,6 +146,7 @@ jobs:
       - name: list2
         run: |
           import os
+          print(os.name)
           for root, _, files in os.walk("."):
               for file in files:
                   if file.endswith(".whl"):
