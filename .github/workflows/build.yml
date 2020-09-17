@@ -123,6 +123,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: debug
+        run: |
+          env
+          echo %VCPKG_ROOT%
+          echo $VCPKG_ROOT
+
       - name: Install tools dependencies
         run: |
           make tools
