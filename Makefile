@@ -379,9 +379,9 @@ tools.linux:
 	true
 
 tools.mingw64_nt:
-	vcpkg install proj
-	vcpkg install netcdf-c
-	vcpkg install pango
+	# vcpkg install proj
+	# vcpkg install netcdf-c
+	# vcpkg install pango
 	pip install ninja
 	pip install jinja2 wheel
 
