@@ -34,7 +34,8 @@ ext_modules = [
         "ecmwflibs._ecmwflibs",
         sources=["ecmwflibs/_ecmwflibs.cc"],
         language="c++",
-        libraries=["eccodes", "MagPlus"],
+        # libraries=["eccodes", "MagPlus"],
+        libraries=["libeccodes"],
         #              libraries=['eccodes', 'eccodes_memfs', 'MagPlus'],  # Unix-like specific
         library_dirs=[libdir],
         include_dirs=[incdir, os.path.join(incdir, "magics")],

@@ -35,9 +35,11 @@ PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), mingw64_nt)
-MEMFS=1
+MEMFS=0
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
+# Create .lib files
+CMAKE_EXTRA="-DCMAKE_GNUtoMS=1"
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
@@ -281,7 +283,6 @@ wheel.mingw64_nt: .inited eccodes
 	rm -fr dist wheelhouse ecmwflibs/share
 	# cp -r install/share ecmwflibs/
 	python setup.py bdist_wheel
-	auditwheel repair dist/*.whl
 	unzip -l wheelhouse/*.whl | grep /lib
 
 wheel.linux: .inited eccodes magics
