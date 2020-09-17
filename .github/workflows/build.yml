@@ -130,7 +130,10 @@ jobs:
       - name: eccodes
         run: |
           make eccodes
-          find install -type f -print
+
+      - name: wheel
+        run: |
+          make wheel
 
       - uses: actions/upload-artifact@v2
         if: false
