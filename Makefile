@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# (C) Copyright 2020 ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
 include VERSIONS.make
 
 SHELL=/bin/bash
@@ -83,6 +92,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 		../../src/eccodes -G$(MAKEFILES) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
+		-DENABLE_BUILD_TOOLS=0 \
 		-DENABLE_MEMFS=$(MEMFS) \
 		-DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
 		-DENABLE_INSTALL_ECCODES_SAMPLES=0 \
@@ -102,6 +112,7 @@ magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
 	git clone --depth 1 $(GIT_MAGICS) src/magics
+		# -DPYTHON_EXECUTABLE=$(PYTHON3)
 
 build-ecmwf/magics/build.ninja: src/magics
 	- $(PIP3) install jinja2
@@ -109,7 +120,7 @@ build-ecmwf/magics/build.ninja: src/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
 		../../src/magics -G$(MAKEFILES) \
-		-DPYTHON_EXECUTABLE=$(PYTHON3) \
+		-DENABLE_BUILD_TOOLS=0 \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
