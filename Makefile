@@ -109,6 +109,7 @@ magics-depend-darwin: eccodes
 
 magics-depend-linux: eccodes cairo pango proj
 
+magics-depend-mingw64_nt: eccodes
 
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
