@@ -35,9 +35,10 @@ PIP3 := $(shell which pip3)
 endif
 
 ifeq ($(ARCH), mingw64_nt)
-MEMFS=1
+MEMFS=0
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
+CMAKE_EXTRA="-DCMAKE_GNUtoMS=1"
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
