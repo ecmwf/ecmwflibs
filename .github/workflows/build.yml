@@ -146,7 +146,7 @@ jobs:
       - name: list2
         run: |
           import os
-          for root, _, files in os.walk("install"):
+          for root, _, files in os.walk("."):
               for file in files:
                   if file.endswith(".whl"):
                       print(os.path.join(root, file))
