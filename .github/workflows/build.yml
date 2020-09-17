@@ -130,7 +130,7 @@ jobs:
       - name: eccodes
         run: |
           make eccodes
-          find install
+          find install -type f -print
 
       - uses: actions/upload-artifact@v2
         if: false
