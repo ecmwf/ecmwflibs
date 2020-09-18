@@ -144,12 +144,7 @@ jobs:
         shell: python
 
       - uses: actions/checkout@v2
-
-      - name: debug
-        run: |
-          env
-          echo %VCPKG_ROOT%
-          echo $VCPKG_ROOT
+      - uses: seanmiddleditch/gha-setup-vsdevenv@master
 
       - name: Install tools dependencies
         run: |

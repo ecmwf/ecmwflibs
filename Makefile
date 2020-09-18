@@ -42,7 +42,7 @@ CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # Use VCPKG_INSTALLATION_ROOT
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
 
-# CMAKE_EXTRA3=""
+CMAKE_EXTRA3="-CMAKE_CXX_COMPILER=cl.exe"
 # c:\msys64\mingw32\bin\i686-w64-mingw32-pkg-config.exe
 # c:\msys64\mingw64\bin\pkg-config.exe
 # :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
