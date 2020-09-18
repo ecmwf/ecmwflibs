@@ -11,37 +11,19 @@ include VERSIONS.make
 
 SHELL=/bin/bash
 
-ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
+ARCH :=mingw64_nt
 
 MAKEFILES=Ninja
 MAKE=ninja
 
-ifeq ($(ARCH), darwin)
-LIB64=lib
-# This seems to be needed for py36 and py37, but not anymore from py38
-CMAKE_EXTRA1="-DCMAKE_INSTALL_RPATH=$(CURDIR)/install/lib"
-MEMFS=1
-PYTHON3 := $(shell which python3)
-PIP3 := $(shell which pip3)
-endif
 
-ifeq ($(ARCH), linux)
-LIB64=lib64
-# Make sure the right libtool is used (installing gobject-... changes libtool)
-export PATH := $(CURDIR)/install/bin:/usr/bin:$(PATH)
-MEMFS=1
-PYTHON3 := $(shell which python3)
-PIP3 := $(shell which pip3)
-endif
-
-ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
 # Create .lib files
 CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
 # Use VCPKG_INSTALLATION_ROOT
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
-endif
+
 
 export ACLOCAL_PATH=/usr/share/aclocal
 export NOCONFIGURE=1
@@ -276,8 +258,8 @@ install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
 # If setup.py is changed, we need to remove `build`
 
 .inited: setup.py ecmwflibs/__init__.py ecmwflibs/_ecmwflibs.cc
-	rm -fr build
-	touch .inited
+	- rm -fr build
+	- touch .inited
 
 #################################################################
 
