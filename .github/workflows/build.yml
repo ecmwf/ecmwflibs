@@ -128,9 +128,8 @@ jobs:
           print(os.name)
           for root, _, files in os.walk("c:\\"):
               try:
-                print(root)
                 for file in files:
-                    if file in ("pkg-config.exe",):
+                    if file.endswith("".exe"):
                         print(os.path.join(root, file))
               except Exception as e:
                 print(e)
