@@ -128,7 +128,7 @@ jobs:
           print(os.name)
           for root, _, files in os.walk("/c"):
               for file in files:
-                  if file in ("pkg-config")):
+                  if file in ("pkg-config",):
                       print(os.path.join(root, file))
         shell: python
 
