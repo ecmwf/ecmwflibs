@@ -34,6 +34,13 @@ PYTHON3 := $(shell which python3)
 PIP3 := $(shell which pip3)
 endif
 
+
+export ACLOCAL_PATH=/usr/share/aclocal
+export NOCONFIGURE=1
+export PKG_CONFIG_PATH=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
+export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):C:/vcpkg\installed\x86-windows\lib\
+
+
 ifeq ($(ARCH), mingw64_nt)
 MEMFS=0
 # Create .lib files
@@ -49,13 +56,8 @@ CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # c:\msys64\usr\bin\pkg-config.exe
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
-
+export PKG_CONFIG_PATH=C:\vcpkg\installed\x86-windows\lib\pkgconfig
 endif
-
-export ACLOCAL_PATH=/usr/share/aclocal
-export NOCONFIGURE=1
-export PKG_CONFIG_PATH=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64)
 
 # export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
 # export PKG_CONFIG_PATH_i686_w64_mingw32_shared=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
