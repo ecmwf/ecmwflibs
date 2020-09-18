@@ -16,6 +16,7 @@ on:
 
 jobs:
   build-macos:
+    if: false
 
     runs-on: macos-latest
 
@@ -61,6 +62,7 @@ jobs:
   # TODO: prepare the docker image:
   # https://docs.github.com/en/actions/guides/publishing-docker-images
   build-manylinux2014:
+    if: false
 
     runs-on: ubuntu-latest
 
@@ -124,10 +126,10 @@ jobs:
     steps:
 
       - name: configure
-        if: false
+        # if: false
         run: |
           echo "::add-path::c:\msys64\mingw64\bin"
-          cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          # cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 
       - name: find
