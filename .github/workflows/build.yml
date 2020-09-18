@@ -151,6 +151,7 @@ jobs:
 
       - name: Cache install tools
         uses: actions/cache@v2
+        if: false
         with:
           path: c:\vcpkg
           key: ${{ runner.os }}-install-tools-${{ hashFiles('VERSIONS.make') }}

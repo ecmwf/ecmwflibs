@@ -404,8 +404,9 @@ tools.linux:
 
 tools.mingw64_nt:
 	vcpkg install proj
-	# vcpkg install netcdf-c
+	vcpkg install netcdf-c
 	vcpkg install pango
+	vcpkg install boost
 	pip install ninja
 	pip install jinja2 wheel
 
