@@ -56,7 +56,7 @@ CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # c:\msys64\usr\bin\pkg-config.exe
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
-export PKG_CONFIG_PATH=C:\vcpkg\installed\x86-windows\lib\pkgconfig
+export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 endif
 
 # export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
@@ -130,7 +130,6 @@ src/magics:
 		# -DPYTHON_EXECUTABLE=$(PYTHON3)
 
 build-ecmwf/magics/build.ninja: src/magics
-	- $(PIP3) install jinja2
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
