@@ -126,7 +126,7 @@ jobs:
         run: |
           import os
           print(os.name)
-          for root, _, files in os.walk("/c"):
+          for root, _, files in os.walk("c:\\"):
               for file in files:
                   if file in ("pkg-config.exe",):
                       print(os.path.join(root, file))
