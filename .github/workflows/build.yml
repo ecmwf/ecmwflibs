@@ -126,6 +126,8 @@ jobs:
       - name: configure
         run: |
           echo "::add-path::c:\msys64\mingw64\bin"
+          cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+
 
       - name: find
         if: false
@@ -152,6 +154,15 @@ jobs:
       - name: Install tools dependencies
         run: |
           make tools
+
+      - name: vcpkg
+        run: |
+          import os
+          for root, _, files in os.walk("C:/vcpkg"):
+              for file in files:
+                  print(os.path.join(root, file))
+        shell: python
+
 
       - name: eccodes
         run: |
