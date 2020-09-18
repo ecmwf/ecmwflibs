@@ -57,6 +57,7 @@ CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
+export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
 
 # export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
