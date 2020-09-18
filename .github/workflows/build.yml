@@ -121,6 +121,17 @@ jobs:
     runs-on: windows-latest
 
     steps:
+
+      - name: find
+        run: |
+          import os
+          print(os.name)
+          for root, _, files in os.walk("/c"):
+              for file in files:
+                  if file in ("pkg-config")):
+                      print(os.path.join(root, file))
+        shell: python
+
       - uses: actions/checkout@v2
 
       - name: debug
