@@ -42,6 +42,8 @@ export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):C:/vcpkg
 
 
 ifeq ($(ARCH), mingw64_nt)
+PYTHON3=python
+PIP3=pip
 MEMFS=0
 # Create .lib files
 CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
@@ -131,6 +133,7 @@ src/magics:
 		# -DPYTHON_EXECUTABLE=$(PYTHON3)
 
 build-ecmwf/magics/build.ninja: src/magics
+	- $(PIP3) install jinja2
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
