@@ -146,6 +146,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
 
+      - name: Cache install tools
+        uses: actions/cache@v2
+        with:
+          path: c:\vcpkg
+          key: ${{ runner.os }}-install-tools-${{ hashFiles('VERSIONS.make') }}
+
+
       - name: Install tools dependencies
         run: |
           make tools
