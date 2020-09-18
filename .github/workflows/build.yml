@@ -161,7 +161,7 @@ jobs:
           make tools
 
       - name: vcpkg
-        if: false
+        # if: false
         run: |
           import os
           for root, _, files in os.walk("C:/vcpkg"):
