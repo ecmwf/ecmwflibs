@@ -124,6 +124,7 @@ jobs:
     steps:
 
       - name: configure
+        if: false
         run: |
           echo "::add-path::c:\msys64\mingw64\bin"
           cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
