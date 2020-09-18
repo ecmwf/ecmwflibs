@@ -127,10 +127,13 @@ jobs:
           import os
           print(os.name)
           for root, _, files in os.walk("c:\\"):
-              print(root)
-              for file in files:
-                  if file in ("pkg-config.exe",):
-                      print(os.path.join(root, file))
+              try:
+                print(root)
+                for file in files:
+                    if file in ("pkg-config.exe",):
+                        print(os.path.join(root, file))
+              except Exception as e:
+                print(e)
         shell: python
 
       - uses: actions/checkout@v2
