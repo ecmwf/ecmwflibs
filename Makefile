@@ -41,6 +41,12 @@ CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
 # Use VCPKG_INSTALLATION_ROOT
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
+
+CMAKE_EXTRA3=""
+# c:\msys64\mingw32\bin\i686-w64-mingw32-pkg-config.exe
+# c:\msys64\mingw64\bin\pkg-config.exe
+# :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
+# c:\msys64\usr\bin\pkg-config.exe
 endif
 
 export ACLOCAL_PATH=/usr/share/aclocal
@@ -99,7 +105,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 		-DENABLE_MEMFS=$(MEMFS) \
 		-DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
 		-DENABLE_INSTALL_ECCODES_SAMPLES=0 \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2))
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
@@ -128,7 +134,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2))
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
 	$(MAKE) -C build-ecmwf/magics install

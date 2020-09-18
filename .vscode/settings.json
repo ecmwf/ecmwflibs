@@ -1,4 +1,4 @@
 {
     "python.formatting.provider": "black",
-    "python.pythonPath": "C:\\Users\\baudo\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe"
+    "python.pythonPath": "/usr/local/bin/python3"
 }

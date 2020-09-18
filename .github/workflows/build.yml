@@ -120,9 +120,15 @@ jobs:
 
     runs-on: windows-latest
 
+
     steps:
 
+      - name: configure
+        run: |
+          echo "::add-path::c:\msys64\mingw64\bin"
+
       - name: find
+        if: false
         run: |
           import os
           print(os.name)
