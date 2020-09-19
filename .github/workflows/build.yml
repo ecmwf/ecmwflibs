@@ -180,14 +180,6 @@ jobs:
         run: |
           make magics
 
-      # - name: list
-      #   run: |
-      #     import os
-      #     for root, _, files in os.walk("install"):
-      #         for file in files:
-      #             print(os.path.join(root, file))
-      #   shell: python
-
       - name: wheel
         if: false
         run: |
