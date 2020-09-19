@@ -38,7 +38,7 @@ endif
 export ACLOCAL_PATH=/usr/share/aclocal
 export NOCONFIGURE=1
 export PKG_CONFIG_PATH=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):C:/vcpkg\installed\x86-windows\lib\
+export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):/c/vcpkg/installed/x86-windows/lib
 
 
 ifeq ($(ARCH), mingw64_nt)
