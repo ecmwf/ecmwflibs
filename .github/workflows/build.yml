@@ -151,7 +151,6 @@ jobs:
 
       - name: Cache install tools
         uses: actions/cache@v2
-        if: false
         with:
           path: c:\vcpkg
           key: ${{ runner.os }}-install-tools-${{ hashFiles('VERSIONS.make') }}
@@ -161,14 +160,14 @@ jobs:
         run: |
           make tools
 
-      - name: vcpkg
-        # if: false
-        run: |
-          import os
-          for root, _, files in os.walk("C:/vcpkg"):
-              for file in files:
-                  print(os.path.join(root, file))
-        shell: python
+      # - name: vcpkg
+      #   # if: false
+      #   run: |
+      #     import os
+      #     for root, _, files in os.walk("C:/vcpkg"):
+      #         for file in files:
+      #             print(os.path.join(root, file))
+      #   shell: python
 
 
       - name: eccodes
@@ -181,13 +180,13 @@ jobs:
         run: |
           make magics
 
-      - name: list
-        run: |
-          import os
-          for root, _, files in os.walk("install"):
-              for file in files:
-                  print(os.path.join(root, file))
-        shell: python
+      # - name: list
+      #   run: |
+      #     import os
+      #     for root, _, files in os.walk("install"):
+      #         for file in files:
+      #             print(os.path.join(root, file))
+      #   shell: python
 
       - name: wheel
         if: false
