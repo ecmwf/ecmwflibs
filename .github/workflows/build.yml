@@ -147,7 +147,7 @@ jobs:
         shell: python
 
       - uses: actions/checkout@v2
-      # - uses: seanmiddleditch/gha-setup-vsdevenv@master
+      - uses: seanmiddleditch/gha-setup-vsdevenv@master
 
       - name: Cache install tools
         uses: actions/cache@v2
