@@ -55,8 +55,8 @@ CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
 # c:\msys64\mingw64\bin\pkg-config.exe
 # :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
 # c:\msys64\usr\bin\pkg-config.exe
-MAKEFILES="Unix Makefiles"
-MAKE=make
+# MAKEFILES="Unix Makefiles"
+# MAKE=make
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
@@ -102,12 +102,13 @@ eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 src/eccodes:
 	git clone --depth 1 $(GIT_ECCODES) src/eccodes
 
-# -G$(MAKEFILES)
+#
 
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
 		../../src/eccodes \
+		-G$(MAKEFILES) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_BUILD_TOOLS=0 \
@@ -118,7 +119,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	$(MAKE) -C build-ecmwf/eccodes install
+	$(MAKE) VERBOSE=1 -C build-ecmwf/eccodes install
 
 #################################################################
 magics-depend-darwin: eccodes
