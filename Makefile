@@ -57,6 +57,7 @@ CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
 # c:\msys64\usr\bin\pkg-config.exe
 # MAKEFILES="Unix Makefiles"
 # MAKE=make
+CMAKE_EXTRA2="-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
@@ -119,7 +120,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	$(MAKE) VERBOSE=1 -C build-ecmwf/eccodes install
+	$(MAKE) -C build-ecmwf/eccodes install
 
 #################################################################
 magics-depend-darwin: eccodes
