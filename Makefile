@@ -14,7 +14,6 @@ SHELL=/bin/bash
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
 
 MAKEFILES=Ninja
-MAKE=ninja
 
 ifeq ($(ARCH), darwin)
 LIB64=lib
@@ -152,7 +151,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
 install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
-	$(MAKE) -C build-ecmwf/magics install
+	cmake --build build-ecmwf/magics --target install
 	touch install/lib/pkgconfig/magics.pc
 
 #################################################################
