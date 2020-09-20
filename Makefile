@@ -121,7 +121,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	cmake --build build-ecmwf/eccodes install
+	cmake --build build-ecmwf/eccodes --target install
 
 #################################################################
 magics-depend-darwin: eccodes
