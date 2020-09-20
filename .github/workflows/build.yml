@@ -151,7 +151,6 @@ jobs:
 
       - name: Cache install tools
         uses: actions/cache@v2
-        if: false
         with:
           path: c:\vcpkg
           key: ${{ runner.os }}-install-tools-${{ hashFiles('VERSIONS.make') }}
@@ -173,17 +172,10 @@ jobs:
 
 
       - name: eccodes
-        # if: false
         run: |
           make eccodes
-      - name: error
-        run: |
-          type build-ecmwf/eccodes/src/CMakeFiles/eccodes.dir/exports.def
-          type build-ecmwf/eccodes/src/CMakeFiles/eccodes.dir/exports.def.objs
-        if: always()
 
       - name: magics
-        # if: false
         env:
           PYTHONPATH: c:\hostedtoolcache\windows\python\3.7.9\x64\lib\site-packages
         run: |
