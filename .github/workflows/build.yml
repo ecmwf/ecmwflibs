@@ -132,21 +132,6 @@ jobs:
           # cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
           vcpkg search boost
 
-
-      - name: find
-        if: false
-        run: |
-          import os
-          print(os.name)
-          for root, _, files in os.walk("c:\\"):
-              try:
-                for file in files:
-                    if file.endswith(".exe"):
-                        print(os.path.join(root, file))
-              except Exception as e:
-                print(e)
-        shell: python
-
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
 
@@ -158,19 +143,9 @@ jobs:
 
 
       - name: Install tools dependencies
-        if: false
+        # if: false
         run: |
           make tools
-
-      # - name: vcpkg
-      #   # if: false
-      #   run: |
-      #     import os
-      #     for root, _, files in os.walk("C:/vcpkg"):
-      #         for file in files:
-      #             print(os.path.join(root, file))
-      #   shell: python
-
 
       - name: eccodes
         run: |
