@@ -177,7 +177,7 @@ jobs:
       - name: error
         run: |
           cat src/CMakeFiles/eccodes.dir/exports.def
-        if: failed()
+        if: always()
 
       - name: magics
         # if: false
