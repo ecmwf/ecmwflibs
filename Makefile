@@ -46,7 +46,7 @@ PYTHON3=python
 PIP3=pip
 MEMFS=0
 # Create .lib files
-# CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"	
+# CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
 # Use VCPKG_INSTALLATION_ROOT
 # CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
@@ -101,11 +101,11 @@ eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
 	git clone --depth 1 $(GIT_ECCODES) src/eccodes
+		# ../../src/eccodes -G$(MAKEFILES) \
 
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
-		../../src/eccodes -G$(MAKEFILES) \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_BUILD_TOOLS=0 \
