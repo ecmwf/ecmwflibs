@@ -112,6 +112,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
 		../../src/eccodes \
 		-G$(MAKEFILES) \
+		-DCMAKE_BUILD_TYPE=Release \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_BUILD_TOOLS=0 \
