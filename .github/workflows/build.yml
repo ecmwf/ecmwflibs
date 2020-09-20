@@ -176,7 +176,7 @@ jobs:
           make eccodes
       - name: error
         run: |
-          cat src/CMakeFiles/eccodes.dir/exports.def
+          cat build-ecmwf/eccodes/src/CMakeFiles/eccodes.dir/exports.def
         if: always()
 
       - name: magics
