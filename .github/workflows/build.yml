@@ -177,6 +177,7 @@ jobs:
       - name: error
         run: |
           type build-ecmwf/eccodes/src/CMakeFiles/eccodes.dir/exports.def
+          type build-ecmwf/eccodes/src/CMakeFiles/eccodes.dir/exports.def.objs
         if: always()
 
       - name: magics
