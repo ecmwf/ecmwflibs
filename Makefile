@@ -101,11 +101,13 @@ eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
 	git clone --depth 1 $(GIT_ECCODES) src/eccodes
-		# ../../src/eccodes -G$(MAKEFILES) \
+
+# -G$(MAKEFILES)
 
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
+		../../src/eccodes \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_BUILD_TOOLS=0 \
