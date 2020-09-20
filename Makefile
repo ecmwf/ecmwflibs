@@ -49,16 +49,16 @@ MEMFS=0
 # CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
 # See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
 # Use VCPKG_INSTALLATION_ROOT
-# CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
-CMAKE_EXTRA1="-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE"
+CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
+# CMAKE_EXTRA1="-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE"
 CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
 # c:\msys64\mingw32\bin\i686-w64-mingw32-pkg-config.exe
 # c:\msys64\mingw64\bin\pkg-config.exe
 # :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
 # c:\msys64\usr\bin\pkg-config.exe
-# MAKEFILES="Unix Makefiles"
+MAKEFILES="Visual Studio 16 2019"
 # MAKE=make
-CMAKE_EXTRA2="-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+# CMAKE_EXTRA2="-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
@@ -121,7 +121,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 
 
 install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
-	$(MAKE) -C build-ecmwf/eccodes install
+	cmake --build build-ecmwf/eccodes install
 
 #################################################################
 magics-depend-darwin: eccodes
