@@ -55,8 +55,8 @@ CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
 # c:\msys64\mingw64\bin\pkg-config.exe
 # :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
 # c:\msys64\usr\bin\pkg-config.exe
-# MAKEFILES="Unix Makefiles"
-# MAKE=make
+MAKEFILES="Unix Makefiles"
+MAKE=make VERSBOSE=1
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
