@@ -130,6 +130,7 @@ jobs:
         run: |
           echo "::add-path::c:\msys64\mingw64\bin"
           # cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          vcpkg search boost
 
 
       - name: find
