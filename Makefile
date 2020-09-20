@@ -46,7 +46,7 @@ PYTHON3=python
 PIP3=pip
 MEMFS=0
 # Create .lib files
-CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
+# CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"	
 # See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
 # Use VCPKG_INSTALLATION_ROOT
 # CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake"
@@ -56,7 +56,7 @@ CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
 # :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
 # c:\msys64\usr\bin\pkg-config.exe
 MAKEFILES="Unix Makefiles"
-MAKE=make VERSBOSE=1
+MAKE=make
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
