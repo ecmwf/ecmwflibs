@@ -229,7 +229,8 @@ install/lib/pkgconfig/cairo.pc: src/cairo/config.status
 harfbuzz: cairo install/$(LIB64)/pkgconfig/harfbuzz.pc
 
 src/harfbuzz/meson.build:
-	git clone --depth 1 $(GIT_HARFBUZZ) src/harfbuzz
+	git clone $(GIT_HARFBUZZ) src/harfbuzz
+	(cd src/harfbuzz; git checkout 2.7.1)
 
 build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 	mkdir -p build-other/harfbuzz
