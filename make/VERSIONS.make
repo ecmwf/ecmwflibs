@@ -1,6 +1,6 @@
 GIT_ECBUILD=https://github.com/b8raoult/ecbuild.git
 GIT_ECCODES=https://github.com/b8raoult/eccodes.git
-GIT_MAGICS=https://github.com/b8raoult/magics.git
+BuilGIT_MAGICS=https://github.com/ecmwf/magics.git
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 GIT_PROJ=https://github.com/OSGeo/PROJ.git
 GIT_PIXMAN=https://github.com/freedesktop/pixman.git
