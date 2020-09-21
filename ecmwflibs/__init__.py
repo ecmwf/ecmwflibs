@@ -73,14 +73,14 @@ def find(name):
     """Returns the path to the selected library, or None if not found."""
     name = _lookup(name)
     here = os.path.dirname(__file__)
-    for libdir in [here + ".libs", os.path.join(here, ".dylibs")]:
+    for libdir in [here + ".libs", os.path.join(here, ".dylibs"), here]:
 
         if not name.startswith("lib"):
             name = "lib" + name
 
         if os.path.exists(libdir):
             for file in os.listdir(libdir):
-                if file.endswith(".so") or file.endswith(".dylib"):
+                if file.endswith(".so") or file.endswith(".dylib") or file.endswith(".dll"):
                     if name == file.split("-")[0].split(".")[0]:
                         return os.path.join(libdir, file)
 

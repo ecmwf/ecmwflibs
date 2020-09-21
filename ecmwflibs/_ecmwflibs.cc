@@ -4,8 +4,12 @@
 #include <eccodes.h>
 #include <magics.h>
 
+extern "C" const char* knowndrivers_();
+
 static PyObject* versions(PyObject *self, PyObject *args) {
-    long s = grib_get_api_version();
+    long s = grib_get_api_version(); // Force linking
+    auto p = knowndrivers_();
+
 
     return Py_BuildValue("{s:s,s:s}",
         "eccodes", ECCODES_VERSION_STR,
