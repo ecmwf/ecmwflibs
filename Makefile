@@ -135,10 +135,7 @@ magics-depend-mingw64_nt: eccodes
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	# git clone --depth 1 $(GIT_MAGICS) src/magics
-	git clone  $(GIT_MAGICS) src/magics
-	(cd src/magics; git checkout noboost)
-		# -DPYTHON_EXECUTABLE=$(PYTHON3)
+	git clone --branch noboost --depth 1 $(GIT_MAGICS) src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
 	- pip install --user jinja2
@@ -229,8 +226,7 @@ install/lib/pkgconfig/cairo.pc: src/cairo/config.status
 harfbuzz: cairo install/$(LIB64)/pkgconfig/harfbuzz.pc
 
 src/harfbuzz/meson.build:
-	git clone $(GIT_HARFBUZZ) src/harfbuzz
-	(cd src/harfbuzz; git checkout 2.7.1)
+	git clone --branch 2.7.1 --depth 1 $(GIT_HARFBUZZ) src/harfbuzz
 
 build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 	mkdir -p build-other/harfbuzz
