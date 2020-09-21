@@ -64,9 +64,9 @@ jobs:
   # https://github.com/marketplace/actions/build-docker-images-using-cache
 
   build-manylinux2014:
-    if: false
 
     runs-on: ubuntu-latest
+    if: false
 
     steps:
       - uses: actions/checkout@v2
@@ -127,12 +127,6 @@ jobs:
 
     steps:
 
-      - name: configure
-        # if: false
-        run: |
-          echo "::add-path::c:\msys64\mingw64\bin"
-          # cat "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
-          vcpkg search boost
 
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
@@ -145,35 +139,36 @@ jobs:
 
 
       - name: Install tools dependencies
-        # if: false
         run: |
           make tools
 
-      - name: eccodes
-        run: |
-          make eccodes
+      - name: Cache compilations (src)
+        uses: actions/cache@v2
+        with:
+          path: src
+          key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
 
-      - name: magics
-        # if: false
+      - name: Cache compilations (build)
+        uses: actions/cache@v2
+        with:
+          path: build-ecmwf
+          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
+
+      - name: Cache compilations (install)
+        uses: actions/cache@v2
+        with:
+          path: install
+          key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
+
+      - name: make libraries
         env:
           PYTHONPATH: c:\hostedtoolcache\windows\python\3.7.9\x64\lib\site-packages
         run: |
-          make magics
+          make libraries
 
-      - name: wheel
-        if: false
+      - name: make wheel
         run: |
           make wheel
-
-      - name: list2
-        run: |
-          import os
-          print(os.name)
-          for root, _, files in os.walk("."):
-              for file in files:
-                  if file.endswith(".whl"):
-                      print(os.path.join(root, file))
-        shell: python
 
       - uses: actions/upload-artifact@v2
         with:
