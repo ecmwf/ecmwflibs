@@ -8,7 +8,7 @@ First make sure you have the required packages:
 ```bash
 brew install python3
 brew install cmake
-brew install pango cairo proj pkg-config boost
+brew install pango cairo proj pkg-config
 brew install netcdf ninja
 pip3 install jinja2 delocate wheel
 ```

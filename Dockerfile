@@ -2,7 +2,6 @@ FROM dockcross/manylinux2014-x64:latest
 
 # ENV DEFAULT_DOCKCROSS_IMAGE my_cool_image
 
-RUN yum install -y boost-devel
 RUN yum install -y netcdf-devel netcdf-cxx-devel
 #RUN yum install -y jasper-devel
 RUN yum install -y libpng-devel

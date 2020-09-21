@@ -16,7 +16,7 @@ on:
 
 jobs:
   build-macos:
-    if: false
+    # if: false
 
     runs-on: macos-latest
 
@@ -66,7 +66,7 @@ jobs:
   build-manylinux2014:
 
     runs-on: ubuntu-latest
-    if: false
+    # if: false
 
     steps:
       - uses: actions/checkout@v2
