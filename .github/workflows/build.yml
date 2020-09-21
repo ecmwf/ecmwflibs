@@ -139,7 +139,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: c:\vcpkg
-          key: ${{ runner.os }}-install-tools-${{ hashFiles('VERSIONS.make') }}
+          key: ${{ runner.os }}-install-tools-${{ hashFiles('make/tools-windows.make') }}
 
 
       - name: Install tools dependencies

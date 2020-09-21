@@ -398,28 +398,11 @@ $(HOME)/.pyenv/versions/py38/bin/python:
 	pyenv virtualenv 3.8.3 py38
 	$(HOME)/.pyenv/versions/py38/bin/pip install wheel jinja2
 
-tools.darwin:
-	- brew install python3
-	- brew install pyenv pyenv-virtualenv
-	- brew install cmake ninja
-	- brew install pango cairo proj pkg-config boost
-	- brew install netcdf
-	- pip3 install jinja2 wheel delocate
 
-tools.linux:
-	true
 
-tools.mingw64_nt:
-	vcpkg install proj:x64-windows
-	vcpkg install netcdf-c:x64-windows
-	vcpkg install pango:x64-windows
-	vcpkg install boost-property-tree:x64-windows
-	vcpkg install proj:x86-windows
-	vcpkg install netcdf-c:x86-windows
-	vcpkg install pango:x86-windows
-	vcpkg install boost-property-tree:x86-windows
-	pip install ninja
-	pip install jinja2 wheel
+include make/tools-macos.make
+include make/tools-windows.make
+include make/tools-linux.make
 
 
 clean:
