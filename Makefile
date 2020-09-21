@@ -13,6 +13,7 @@ SHELL=/bin/bash
 
 ARCH := $(shell uname | tr '[A-Z]' '[a-z]' | sed 's/-.*//')
 
+MAKE=ninja
 MAKEFILES=Ninja
 
 ifeq ($(ARCH), darwin)
@@ -226,7 +227,7 @@ install/lib/pkgconfig/cairo.pc: src/cairo/config.status
 harfbuzz: cairo install/$(LIB64)/pkgconfig/harfbuzz.pc
 
 src/harfbuzz/meson.build:
-	git clone --branch 2.7.1 --depth 1 $(GIT_HARFBUZZ) src/harfbuzz
+	git clone --depth 1 $(GIT_HARFBUZZ) src/harfbuzz
 
 build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 	mkdir -p build-other/harfbuzz
