@@ -137,7 +137,7 @@ magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 src/magics:
 	# git clone --depth 1 $(GIT_MAGICS) src/magics
 	git clone  $(GIT_MAGICS) src/magics
-	git checkout noboost
+	(cd src/magics; git checkout noboost)
 		# -DPYTHON_EXECUTABLE=$(PYTHON3)
 
 build-ecmwf/magics/build.ninja: src/magics
