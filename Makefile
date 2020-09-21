@@ -141,7 +141,7 @@ src/magics:
 		# -DPYTHON_EXECUTABLE=$(PYTHON3)
 
 build-ecmwf/magics/build.ninja: src/magics
-	- pip3 install jinja2
+	- pip install --user jinja2
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
