@@ -29,7 +29,7 @@ libdir = os.path.realpath("install/lib")
 incdir = os.path.realpath("install/include")
 
 if os.name == "nt":
-    libs = ["libeccodes"]
+    libs = ["eccodes", "MagPlus"]
 else:
     libs = ["eccodes", "MagPlus"]
 

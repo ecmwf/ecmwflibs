@@ -167,7 +167,7 @@ jobs:
           make libraries
 
       - name: make wheel
-        if: false
+        # if: false
         run: |
           make wheel
 
