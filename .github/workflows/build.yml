@@ -152,7 +152,7 @@ jobs:
           make eccodes
 
       - name: magics
-        # if: false
+        if: false
         env:
           PYTHONPATH: c:\hostedtoolcache\windows\python\3.7.9\x64\lib\site-packages
         run: |

@@ -1,6 +1,4 @@
 tools.mingw64_nt:
-	vcpkg install boost-property-tree:x64-windows
-	vcpkg install boost-property-tree:x86-windows
 	vcpkg install netcdf-c:x64-windows
 	vcpkg install netcdf-c:x86-windows
 	vcpkg install pango:x64-windows
