@@ -120,6 +120,7 @@ magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
 	git clone --branch noboost --depth 1 $(GIT_MAGICS) src/magics
+	(cd src/magics && git pull)
 
 build-ecmwf/magics/build.ninja: src/magics
 	$(PIP3) install --user jinja2
