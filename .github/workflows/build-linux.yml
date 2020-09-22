@@ -64,12 +64,12 @@ jobs:
           ./dockcross-build-ecmwflibs make proj
 
       - name: make libraries
-        if: false
+        # if: false
         run: |
           ./dockcross-build-ecmwflibs make libraries
 
       - name: make wheels
-        if: false
+        # if: false
         run: |
           ./dockcross-build-ecmwflibs make wheels
 
