@@ -44,33 +44,15 @@ export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):/c/vcpkg
 ifeq ($(ARCH), mingw64_nt)
 PYTHON3=python
 PIP3=pip
-MEMFS=0
-# Create .lib files
-# CMAKE_EXTRA1="-DCMAKE_GNUtoMS=1"
-# See https://docs.microsoft.com/en-us/cpp/build/vcpkg?view=vs-2019
-# Use VCPKG_INSTALLATION_ROOT
+MEMFS=1
+
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake"
-# CMAKE_EXTRA1="-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE"
 CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
-# c:\msys64\mingw32\bin\i686-w64-mingw32-pkg-config.exe
-# c:\msys64\mingw64\bin\pkg-config.exe
-# :\msys64\mingw64\bin\x86_64-w64-mingw32-pkg-config.exe
-# c:\msys64\usr\bin\pkg-config.exe
-# MAKEFILES="Visual Studio 16 2019"
-# MAKEFILES="Ninja Multi-Config"
 MAKEFILES="NMake Makefiles"
-# MAKE=make
-# CMAKE_EXTRA2="-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
 endif
 
-# export PKG_CONFIG_PATH_i686_w64_mingw32_static=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-# export PKG_CONFIG_PATH_i686_w64_mingw32_shared=$(CURDIR)/install/lib/pkgconfig:$(CURDIR)/install/$(LIB64)/pkgconfig
-
-#export DYLD_LIBRARY_PATH=$(CURDIR)/install/lib
-#export RPATH=$(CURDIR)/install/lib
-#export DYLD_FALLBACK_LIBRARY_PATH=$(CURDIR)/install/lib
 
 target: wheel
 all: all.$(ARCH)
@@ -238,7 +220,7 @@ build-other/harfbuzz/build.ninja: src/harfbuzz/meson.build
 		$(CURDIR)/build-other/harfbuzz )
 
 install/$(LIB64)/pkgconfig/harfbuzz.pc: build-other/harfbuzz/build.ninja
-	$(MAKE) -C build-other/harfbuzz install
+	ninja -C build-other/harfbuzz install
 	touch install/$(LIB64)/pkgconfig/harfbuzz.pc
 
 #################################################################
@@ -259,7 +241,7 @@ build-other/fridibi/build.ninja: src/fridibi/meson.build
 
 
 install/$(LIB64)/pkgconfig/fridibi.pc: build-other/fridibi/build.ninja
-	$(MAKE) -C build-other/fridibi install
+	ninja -C build-other/fridibi install
 	touch install/$(LIB64)/pkgconfig/fridibi.pc
 
 
@@ -289,7 +271,7 @@ build-other/pango/build.ninja: src/pango/meson.build
 
 
 install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
-	$(MAKE) -C build-other/pango install
+	ninja -C build-other/pango install
 	touch install/$(LIB64)/pkgconfig/pango.pc
 
 #################################################################
