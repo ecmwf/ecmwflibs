@@ -86,5 +86,6 @@ jobs:
         shell: python
 
       - name: depends
+        continue-on-error: true
         run: |
           python tools/list-dlls.py ecmwflibs/MagPlus.dll

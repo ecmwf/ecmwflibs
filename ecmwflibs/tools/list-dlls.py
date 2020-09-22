@@ -9,12 +9,11 @@ VCPKG = "C:/vcpkg/installed/{}-windows/bin/{}"
 
 def scan_module(module, depth):
     print(" " * depth, "SCANNING", module)
-    try:
-        header = ModuleHeader(module)
-    except Exception as e:
-        print(" " * depth, "... not found", e)
+    if not os.path.exists(module):
+        print(" " * depth, "... not found")
         return
 
+    header = ModuleHeader(module)
     cwd = os.path.dirname(module)
     architecture = header.getArchitecture()
     for dll in header.listAllImports():
