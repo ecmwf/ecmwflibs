@@ -11,8 +11,8 @@ def scan_module(module, depth):
     print(" " * depth, "SCANNING", module)
     try:
         header = ModuleHeader(module)
-    except FileNotFoundError:
-        print(" " * depth, "... not found")
+    except Exception as e:
+        print(" " * depth, "... not found", e)
         return
 
     cwd = os.path.dirname(module)
