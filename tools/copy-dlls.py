@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import shutil
 
 from dlldiag.common import ModuleHeader, WindowsApi
 
@@ -36,4 +37,7 @@ def scan_module(module, depth, seen):
 seen = {}
 scan_module(sys.argv[1], 0, seen)
 
-print(json.dumps(seen, sort_keys=True, indent=4))
+for k, v in seen.items():
+    target = sys.argv[2] + "/" + k
+    print("Copy", v, "to", target)
+    shutil.copyfile(v, target)
