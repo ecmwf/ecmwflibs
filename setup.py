@@ -8,11 +8,11 @@
 # nor does it submit to any jurisdiction.
 #
 
-import os
 import io
+import os
 import os.path
 
-from setuptools import setup, Extension, find_packages
+from setuptools import Extension, find_packages, setup
 
 
 def read(fname):

@@ -8,9 +8,10 @@
 # nor does it submit to any jurisdiction.
 #
 
+import atexit
 import os
 import tempfile
-import atexit
+
 from ._ecmwflibs import versions as _versions
 
 __version__ = "0.0.20"
@@ -80,7 +81,11 @@ def find(name):
 
         if os.path.exists(libdir):
             for file in os.listdir(libdir):
-                if file.endswith(".so") or file.endswith(".dylib") or file.endswith(".dll"):
+                if (
+                    file.endswith(".so")
+                    or file.endswith(".dylib")
+                    or file.endswith(".dll")
+                ):
                     if name == file.split("-")[0].split(".")[0]:
                         return os.path.join(libdir, file)
 

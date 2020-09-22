@@ -14,10 +14,10 @@ def scan_module(module, depth, seen):
 
     seen.add(module)
 
-    print(" " * depth, "SCANNING", module)
     if not os.path.exists(module):
-        print(" " * depth, "... not found")
         return
+
+    print(" " * depth, module)
 
     header = ModuleHeader(module)
     cwd = os.path.dirname(module)
