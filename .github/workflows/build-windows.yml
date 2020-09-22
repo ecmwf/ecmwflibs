@@ -22,67 +22,66 @@ jobs:
     strategy:
       # fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
+        python-version: ["3.6"] #, "3.7", "3.8"]
+        architecture: ["x86"] #, "x64"]
 
-    name: Python ${{ matrix.python-version }}
+    name: Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     steps:
 
-
       - uses: actions/checkout@v2
+
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
+        with:
+          arch: ${{ matrix.architecture }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.architecture }}
 
       - name: Cache install tools
         uses: actions/cache@v2
         with:
           path: c:\vcpkg
-          key: ${{ runner.os }}-install-tools-${{ hashFiles('make/tools-windows.make') }}
+          key: ${{ runner.os }}${{ matrix.architecture }}-tools-${{ hashFiles('make/tools-windows.make') }}
 
 
       - name: Install tools dependencies
-        run: |
-          make tools
+        run: make tools
+        env:
+          WINARCH: ${{ matrix.architecture }}
 
       - name: Cache compilations (src)
         uses: actions/cache@v2
         with:
           path: src
-          key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
+          key: ${{ runner.os }}${{ matrix.architecture }}-src-${{ hashFiles('make/VERSIONS.make') }}
 
       - name: Cache compilations (build)
         uses: actions/cache@v2
         with:
           path: build-ecmwf
-          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
+          key: ${{ runner.os }}${{ matrix.architecture }}-build-${{ hashFiles('make/VERSIONS.make') }}-
 
       - name: Cache compilations (install)
         uses: actions/cache@v2
         with:
           path: install
-          key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
+          key: ${{ runner.os }}${{ matrix.architecture }}-install-${{ hashFiles('make/VERSIONS.make') }}
 
       - name: make libraries
+        run: make libraries
         env:
-          PYTHONPATH: c:\hostedtoolcache\windows\python\3.7.9\x64\lib\site-packages
-        run: |
-          make libraries
+          WINARCH: ${{ matrix.architecture }}
 
       - name: make wheel
-        # if: false
-        run: |
-          make wheel
+        run: make wheel
+        env:
+          WINARCH: ${{ matrix.architecture }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: wheel-windows-${{ matrix.python-version }}
+          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
           path: dist/*
-
-      - name: depends
-        continue-on-error: true
-        run: |
-          dlldiag deps ecmwflibs/MagPlus.dll
