@@ -85,6 +85,6 @@ jobs:
                 print(e)
         shell: python
 
-      - name: depends
-        run: |
-          python tools/list-dll.py ecmwflibs/MagPlus.dll
+      # - name: depends
+      #   run: |
+      #     python tools/list-dll.py ecmwflibs/MagPlus.dll
