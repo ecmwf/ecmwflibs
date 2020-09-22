@@ -1,0 +1,60 @@
+# (C) Copyright 2020 ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-macos:
+    # if: false
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install tools dependencies
+        run: |
+          make tools
+
+      - name: Cache compilations (src)
+        uses: actions/cache@v2
+        with:
+          path: src
+          key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
+
+      - name: Cache compilations (build)
+        uses: actions/cache@v2
+        with:
+          path: build-ecmwf
+          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
+
+      - name: Cache compilations (install)
+        uses: actions/cache@v2
+        with:
+          path: install
+          key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
+
+      - name: make libraries
+        run: |
+          make libraries
+
+      - name: make wheel
+        run: |
+          make wheel
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheel-macos
+          path: wheelhouse/*
+

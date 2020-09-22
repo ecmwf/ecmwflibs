@@ -80,6 +80,10 @@ Not tried, but the docker-based solution should work.
 
 # Usefull links
 
+On wheels:
+
+https://snarky.ca/the-challenges-in-designing-a-library-for-pep-425/
+
 * https://stackoverflow.com/questions/47042483/how-to-build-and-distribute-a-python-cython-package-that-depends-on-third-party
 * https://cython.readthedocs.io/en/latest/src/tutorial/cython_tutorial.html
 * https://malramsay.com/post/perils_of_packaging/
