@@ -1,12 +1,7 @@
 tools.mingw64_nt:
-	vcpkg install netcdf-c:x64-windows
-	vcpkg install netcdf-c:x86-windows
-	vcpkg install pango:x64-windows
-	vcpkg install pango:x86-windows
-	vcpkg install proj:x64-windows
-	vcpkg install proj:x86-windows
-	vcpkg install pthread:x64-windows
+	vcpkg install netcdf-c:$(WINARCH)-windows
+	vcpkg install pango:$(WINARCH)-windows
+	vcpkg install proj:$(WINARCH)-windows
+	vcpkg install pthread:$(WINARCH)-windows
 	vcpkg install pthread:x86-windows
-	pip install ninja
-	pip install jinja2 wheel
-	pip install dll-diagnostics
+	pip install ninja wheel dll-diagnostics

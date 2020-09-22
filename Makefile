@@ -42,6 +42,10 @@ export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):/c/vcpkg
 
 
 ifeq ($(ARCH), mingw64_nt)
+
+WINARCH ?= x64
+
+
 PYTHON3=python
 PIP3=pip
 MEMFS=1

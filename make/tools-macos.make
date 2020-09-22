@@ -4,4 +4,4 @@ tools.darwin:
 	- brew install cmake ninja
 	- brew install pango cairo proj pkg-config
 	- brew install netcdf
-	- pip3 install jinja2 wheel delocate
+	- pip3 install wheel delocate
