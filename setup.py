@@ -62,6 +62,11 @@ shared_files += [x[len("install/") :] for x in shared("install/share/magics")]
 shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/share/proj")]
 shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/etc")]
 
+if os.name == "nt":
+    for n in os.listdir("ecmwflibs"):
+        if n.endswith(".dll"):
+            shared_files.append(n)
+
 # print(shared_files)
 
 setup(
@@ -86,11 +91,10 @@ setup(
         "Intended Audience :: Developers",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
         "Operating System :: OS Independent",
     ],
     #    cmdclass={'build_ext': ecmwflibs_build_ext},

@@ -71,8 +71,3 @@ jobs:
         with:
           name: wheel-windows
           path: dist/*
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: dll-windows
-          path: install/**/*.dll
