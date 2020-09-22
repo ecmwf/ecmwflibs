@@ -304,6 +304,8 @@ install/$(LIB64)/pkgconfig/pango.pc: build-other/pango/build.ninja
 wheel.mingw64_nt: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
+	cp install/bin/eccodes.dll ecmwflibs/
+	cp install/bin/MagPlus.dll ecmwflibs/
 	mkdir -p install/include
 	python setup.py bdist_wheel
 	# unzip -l wheelhouse/*.whl | grep /lib
