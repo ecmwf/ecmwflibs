@@ -48,7 +48,7 @@ WINARCH ?= x64
 
 PYTHON3=python
 PIP3=pip
-MEMFS=1
+MEMFS=0
 
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake"
 CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
