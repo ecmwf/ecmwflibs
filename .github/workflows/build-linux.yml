@@ -53,7 +53,6 @@ on:
           key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
 
       - name: make pango/cairo
-        # if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./dockcross-build-ecmwflibs make pango
 
@@ -65,9 +64,9 @@ on:
         run: |
           ./dockcross-build-ecmwflibs make libraries
 
-      - name: make wheel
+      - name: make wheels
         run: |
-          ./dockcross-build-ecmwflibs make wheel
+          ./dockcross-build-ecmwflibs make wheels
 
       - uses: actions/upload-artifact@v2
         with:
