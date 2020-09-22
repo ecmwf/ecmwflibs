@@ -21,7 +21,7 @@ on:
 jobs:
   build-manylinux2014:
 
-    if: false
+    # if: false
 
     runs-on: ubuntu-latest
     # if: false
@@ -64,10 +64,12 @@ jobs:
           ./dockcross-build-ecmwflibs make proj
 
       - name: make libraries
+        if: false
         run: |
           ./dockcross-build-ecmwflibs make libraries
 
       - name: make wheels
+        if: false
         run: |
           ./dockcross-build-ecmwflibs make wheels
 
