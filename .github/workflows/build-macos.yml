@@ -71,3 +71,12 @@ jobs:
           name: wheel-macos-${{ matrix.python-version }}
 
       - run: ls -l
+
+      - run: pip install --user *.whl
+
+      - run: |
+          import ecmwflibs
+          print(ecmwflibs.versions())
+          print(ecmwflibs.find("eccodes"))
+          print(ecmwflibs.find("magics"))
+        shell: python
