@@ -75,6 +75,11 @@ jobs:
         run: make libraries
         env:
           WINARCH: ${{ matrix.architecture }}
+        continue-on-error: true
+
+      - name: debug
+        run: cat D:\a\ecmwflibs\ecmwflibs\build-ecmwf\eccodes\memfs\memfs_gen_001.c
+
 
       - name: make wheel
         run: make wheel
