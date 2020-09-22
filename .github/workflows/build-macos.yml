@@ -17,6 +17,8 @@ on:
 jobs:
   build:
 
+    if: false
+
     runs-on: macos-latest
     strategy:
       fail-fast: true
