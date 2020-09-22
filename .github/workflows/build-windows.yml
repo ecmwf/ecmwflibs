@@ -19,13 +19,23 @@ jobs:
   build-windows:
 
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.6", "3.7", "3.8"]
 
+    name: Python ${{ matrix.python-version }}
 
     steps:
 
 
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Cache install tools
         uses: actions/cache@v2
@@ -69,7 +79,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: wheel-windows
+          name: wheel-windows-${{ matrix.python-version }}
           path: dist/*
 
       - name: depends
