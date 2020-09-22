@@ -139,7 +139,7 @@ src/magics:
 	git clone --branch noboost --depth 1 $(GIT_MAGICS) src/magics
 
 build-ecmwf/magics/build.ninja: src/magics
-	- pip install --user jinja2
+	$(PIP3) install --user jinja2
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
