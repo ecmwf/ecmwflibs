@@ -15,9 +15,7 @@ def scan_module(module, depth, seen):
     if name in seen:
         return
 
-
     if not os.path.exists(module):
-        seen[name] = "<not-found>"
         return
 
     print(" " * depth, module)
