@@ -6,7 +6,8 @@ import shutil
 
 from dlldiag.common import ModuleHeader, WindowsApi
 
-VCPKG = "C:/vcpkg/installed/{}-windows/bin/{}"
+VCPKG1 = "C:/vcpkg/installed/{}-windows/bin/{}"
+VCPKG2 = "C:/vcpkg/installed/{}-windows/debug/bin/{}"
 
 
 def scan_module(module, depth, seen):
@@ -31,7 +32,8 @@ def scan_module(module, depth, seen):
         #     continue
 
         scan_module((cwd + "/" + dll), depth + 3, seen)
-        scan_module(VCPKG.format(architecture, dll), depth + 3, seen)
+        scan_module(VCPKG1.format(architecture, dll), depth + 3, seen)
+        scan_module(VCPKG2.format(architecture, dll), depth + 3, seen)
 
 
 seen = {}

@@ -72,20 +72,20 @@ jobs:
           name: wheel-windows
           path: dist/*
 
-      - name: list
-        run: |
-          import os
-          print(os.name)
-          for root, _, files in os.walk("C:/vcpkg"):
-              try:
-                for file in files:
-                    if file.endswith(".dll"):
-                        print(os.path.join(root, file))
-              except Exception as e:
-                print(e)
-        shell: python
+      # - name: list
+      #   run: |
+      #     import os
+      #     print(os.name)
+      #     for root, _, files in os.walk("C:/vcpkg"):
+      #         try:
+      #           for file in files:
+      #               if file.endswith(".dll"):
+      #                   print(os.path.join(root, file))
+      #         except Exception as e:
+      #           print(e)
+      #   shell: python
 
       - name: depends
         continue-on-error: true
         run: |
-          python tools/list-dlls.py ecmwflibs/MagPlus.dll
+          dlldiag deps ecmwflibs/MagPlus.dll
