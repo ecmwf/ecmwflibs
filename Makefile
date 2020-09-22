@@ -44,7 +44,7 @@ export LD_LIBRARY_PATH=$(CURDIR)/install/lib:$(CURDIR)/install/$(LIB64):/c/vcpkg
 ifeq ($(ARCH), mingw64_nt)
 PYTHON3=python
 PIP3=pip
-MEMFS=0
+MEMFS=1
 
 CMAKE_EXTRA2="-DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake"
 CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
