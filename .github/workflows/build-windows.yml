@@ -84,3 +84,7 @@ jobs:
               except Exception as e:
                 print(e)
         shell: python
+
+      - name: depends
+        run: |
+          dlldiag deps ecmwflibs/MagPlus.dll
