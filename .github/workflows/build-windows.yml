@@ -63,10 +63,6 @@ jobs:
 
       - run: make wheel
 
-      # - name: debug
-      #   run: cat D:\a\ecmwflibs\ecmwflibs\build-ecmwf\eccodes\memfs\memfs_gen_001.c
-      #   continue-on-error: true
-
       - uses: actions/upload-artifact@v2
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
