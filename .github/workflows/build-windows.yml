@@ -20,12 +20,14 @@ jobs:
 
     runs-on: windows-latest
     strategy:
-      # fail-fast: false
+      fail-fast: true
       matrix:
         python-version: ["3.6"] #, "3.7", "3.8"]
         architecture: ["x86", "x64"]
 
     name: Python ${{ matrix.python-version }} ${{ matrix.architecture }}
+    env:
+      WINARCH: ${{ matrix.architecture }}
 
     steps:
 
@@ -47,46 +49,25 @@ jobs:
           path: c:\vcpkg
           key: ${{ runner.os }}${{ matrix.architecture }}-tools-${{ hashFiles('make/tools-windows.make') }}
 
+      - run: make tools
 
-      - name: Install tools dependencies
-        run: make tools
-        env:
-          WINARCH: ${{ matrix.architecture }}
+      - name: Cache compilations
+        uses: actions/cache@v2
+        with:
+          path: |
+            src
+            build-ecmwf
+            install
+          key: ${{ runner.os }}${{ matrix.architecture }}-cache-${{ hashFiles('make/VERSIONS.make') }}
 
-      # - name: Cache compilations (src)
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: src
-      #     key: ${{ runner.os }}${{ matrix.architecture }}-src-${{ hashFiles('make/VERSIONS.make') }}
+      - run: make wheel
+        continue-on-error: true
 
-      # - name: Cache compilations (build)
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: build-ecmwf
-      #     key: ${{ runner.os }}${{ matrix.architecture }}-build-${{ hashFiles('make/VERSIONS.make') }}-
+      - name: debug
+        run: cat D:\a\ecmwflibs\ecmwflibs\build-ecmwf\eccodes\memfs\memfs_gen_001.c
+        continue-on-error: true
 
-      # - name: Cache compilations (install)
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: install
-      #     key: ${{ runner.os }}${{ matrix.architecture }}-install-${{ hashFiles('make/VERSIONS.make') }}
-
-      # - name: make libraries
-      #   run: make libraries
-      #   env:
-      #     WINARCH: ${{ matrix.architecture }}
-      #   continue-on-error: true
-
-      # - name: debug
-      #   run: cat D:\a\ecmwflibs\ecmwflibs\build-ecmwf\eccodes\memfs\memfs_gen_001.c
-
-
-      # - name: make wheel
-      #   run: make wheel
-      #   env:
-      #     WINARCH: ${{ matrix.architecture }}
-
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
-      #     path: dist/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+          path: dist/*

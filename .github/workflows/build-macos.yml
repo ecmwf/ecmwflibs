@@ -17,11 +17,9 @@ on:
 jobs:
   build:
 
-    # if: false
-
     runs-on: macos-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         python-version: ["3.6", "3.7", "3.8"]
 
@@ -35,35 +33,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install tools dependencies
-        run: |
-          make tools
+      - run: make tools
 
-      - name: Cache compilations (src)
+      - name: Cache compilations
         uses: actions/cache@v2
         with:
-          path: src
-          key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
+          path: |
+            src
+            build-ecmwf
+            install
+          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}
 
-      - name: Cache compilations (build)
-        uses: actions/cache@v2
-        with:
-          path: build-ecmwf
-          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
-
-      - name: Cache compilations (install)
-        uses: actions/cache@v2
-        with:
-          path: install
-          key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
-
-      - name: make libraries
-        run: |
-          make libraries
-
-      - name: make wheel
-        run: |
-          make wheel
+      - run: make
 
       - uses: actions/upload-artifact@v2
         with:
