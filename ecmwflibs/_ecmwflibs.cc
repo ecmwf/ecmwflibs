@@ -2,7 +2,7 @@
 #include <Python.h>
 
 #include <eccodes.h>
-#include <magics.h>
+#include <magics_config.h>
 
 extern "C" const char* knowndrivers_();
 
