@@ -87,4 +87,4 @@ jobs:
 
       - name: depends
         run: |
-          dlldiag deps ecmwflibs/MagPlus.dll
+          python tools/list-dll.py ecmwflibs/MagPlus.dll
