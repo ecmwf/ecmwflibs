@@ -62,7 +62,6 @@ jobs:
           key: ${{ runner.os }}${{ matrix.architecture }}-cache-${{ hashFiles('make/VERSIONS.make') }}
 
       - run: make wheel
-        # continue-on-error: true
 
       # - name: debug
       #   run: cat D:\a\ecmwflibs\ecmwflibs\build-ecmwf\eccodes\memfs\memfs_gen_001.c
