@@ -7,7 +7,13 @@ from dlldiag.common import ModuleHeader, WindowsApi
 VCPKG = "C:/vcpkg/installed/{}-windows/bin/{}"
 
 
-def scan_module(module, depth):
+def scan_module(module, depth, seen):
+
+    if module in seen:
+        return
+
+    seen.add(module)
+
     print(" " * depth, "SCANNING", module)
     if not os.path.exists(module):
         print(" " * depth, "... not found")
@@ -21,8 +27,8 @@ def scan_module(module, depth):
             print(" " * depth, "ERROR cannot load", dll)
             continue
 
-        scan_module((cwd + "/" + dll), depth + 3)
-        scan_module(VCPKG.format(architecture, dll), depth + 3)
+        scan_module((cwd + "/" + dll), depth + 3, seen)
+        scan_module(VCPKG.format(architecture, dll), depth + 3, seen)
 
 
-scan_module(sys.argv[1], 0)
+scan_module(sys.argv[1], 0, set())
