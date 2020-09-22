@@ -22,8 +22,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"] #, "3.7", "3.8"]
-        architecture: ["x86"] #, "x64"]
+        python-version: ["3.6", "3.7", "3.8"]
+        architecture: ["x86", "x64"]
 
     name: Python ${{ matrix.python-version }} ${{ matrix.architecture }}
     env:
@@ -52,7 +52,7 @@ jobs:
       - run: make tools
 
       - name: find
-        # if: false
+        if: false
         run: |
           import os
           print(os.name)
