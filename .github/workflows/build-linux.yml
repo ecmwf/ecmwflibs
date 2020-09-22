@@ -68,10 +68,10 @@ jobs:
         run: |
           ./dockcross-build-ecmwflibs make libraries
 
-      - name: make wheels
+      - name: make wheel
         # if: false
         run: |
-          ./dockcross-build-ecmwflibs make wheels
+          ./dockcross-build-ecmwflibs make wheel
 
       - uses: actions/upload-artifact@v2
         with:
