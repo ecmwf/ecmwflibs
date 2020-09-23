@@ -1,4 +1,5 @@
 tools.linux:
+	sudo yum update -y
 	sudo yum install -y netcdf-devel netcdf-cxx-devel
 	sudo yum install -y libpng-devel
 	sudo yum install -y libtiff-devel
