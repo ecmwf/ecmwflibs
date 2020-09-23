@@ -16,7 +16,7 @@ on:
 
 jobs:
 
-  build-windows:
+  build:
 
     runs-on: windows-latest
     strategy:
@@ -25,7 +25,7 @@ jobs:
         python-version: ["3.6", "3.7", "3.8"]
         architecture: ["x86", "x64"]
 
-    name: Python ${{ matrix.python-version }} ${{ matrix.architecture }}
+    name: Build with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
     env:
       WINARCH: ${{ matrix.architecture }}
 
@@ -81,3 +81,36 @@ jobs:
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
           path: dist/*
+
+  test:
+    needs: build
+    runs-on: windows-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.6", "3.7", "3.8"]
+        architecture: ["x86", "x64"]
+
+    name: Test with Python ${{ matrix.python-version }}
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.architecture }}
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+
+      - run: ls -l
+
+      - run: pip install --user *.whl
+
+      - run: pip install --user -r tests/requirements.txt
+
+      - run: pytest tests
