@@ -117,6 +117,7 @@ jobs:
       - run: dir
 
       - run: pip install *.whl
+        shell: bash
 
       - run: pip install -r tests/requirements.txt
 
