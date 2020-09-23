@@ -23,7 +23,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.6"] #, "3.7", "3.8"]
-        architecture: ["x86", "x64"]
+        architecture: ["x86"] #, "x64"]
 
     name: Build with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
     env:
@@ -90,7 +90,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.6"] #, "3.7", "3.8"]
-        architecture: ["x86", "x64"]
+        architecture: ["x86"] #, "x64"]
 
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
@@ -119,6 +119,8 @@ jobs:
         shell: bash
 
       - run: pip install -r tests/requirements.txt
+
+      - run: pip freeze
 
       - name: Get data.grib
         run: curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib

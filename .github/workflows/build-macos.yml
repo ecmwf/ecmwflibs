@@ -81,6 +81,8 @@ jobs:
 
       - run: pip install -r tests/requirements.txt
 
+      - run: pip freeze
+
       - name: Get data.grib
         run: curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
 

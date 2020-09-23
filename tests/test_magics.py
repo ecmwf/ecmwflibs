@@ -6,7 +6,6 @@ from Magics.Magics import MagicsError
 
 
 def test_magics_plot():
-    return
 
     name = "magics"
     # Setting of the output file name
