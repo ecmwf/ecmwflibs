@@ -90,8 +90,8 @@ eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
 	git clone --depth 1 $(GIT_ECCODES) src/eccodes
-	(cd src/magics && git checkout $(ECCODES_VERSION))
-	(cd src/magics && git pull)
+	(cd src/eccodes && git checkout $(ECCODES_VERSION))
+	(cd src/eccodes && git pull)
 
 #
 
