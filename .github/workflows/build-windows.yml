@@ -121,7 +121,7 @@ jobs:
       - run: pip install -r tests/requirements.txt
 
       - name: Get data.grib
-        run: wget -O tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
+        run: curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
 
       - run: pytest
         working-directory: tests
