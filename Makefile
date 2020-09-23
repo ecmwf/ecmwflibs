@@ -127,7 +127,6 @@ src/magics:
 	(cd src/magics && git pull)
 
 build-ecmwf/magics/build.ninja: src/magics
-	$(PIP3) install --user jinja2
 	mkdir -p build-ecmwf/magics
 	(cd build-ecmwf/magics; ../../src/ecbuild/bin/ecbuild  \
 		--cmakebin=$(CMAKEBIN) \
@@ -370,22 +369,22 @@ pyenv-versions: $(HOME)/.pyenv/versions/py35/bin/python \
 $(HOME)/.pyenv/versions/py35/bin/python:
 	pyenv install 3.5.9
 	pyenv virtualenv 3.5.9 py35
-	$(HOME)/.pyenv/versions/py35/bin/pip install wheel jinja2
+	$(HOME)/.pyenv/versions/py35/bin/pip install wheel
 
 $(HOME)/.pyenv/versions/py36/bin/python:
 	pyenv install 3.6.10
 	pyenv virtualenv 3.6.10 py36
-	$(HOME)/.pyenv/versions/py36/bin/pip install wheel jinja2
+	$(HOME)/.pyenv/versions/py36/bin/pip install wheel
 
 $(HOME)/.pyenv/versions/py37/bin/python:
 	pyenv install 3.7.7
 	pyenv virtualenv 3.7.7 py37
-	$(HOME)/.pyenv/versions/py37/bin/pip install wheel jinja2
+	$(HOME)/.pyenv/versions/py37/bin/pip install wheel
 
 $(HOME)/.pyenv/versions/py38/bin/python:
 	pyenv install 3.8.3
 	pyenv virtualenv 3.8.3 py38
-	$(HOME)/.pyenv/versions/py38/bin/pip install wheel jinja2
+	$(HOME)/.pyenv/versions/py38/bin/pip install wheel
 
 
 

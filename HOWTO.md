@@ -10,7 +10,7 @@ brew install python3
 brew install cmake
 brew install pango cairo proj pkg-config
 brew install netcdf ninja
-pip3 install jinja2 delocate wheel
+pip3 install delocate wheel
 ```
 
 This can be achieved by simply typing:
@@ -37,7 +37,7 @@ pyenv install 3.6.5
 pyenv virtualenv 3.6.5 py36
 
 pyenv activate py36
-pip3 install ninja jinja2 delocate wheel
+pip3 install ninja delocate wheel
 cd ~/git/ecmwflibs
 make clean
 make

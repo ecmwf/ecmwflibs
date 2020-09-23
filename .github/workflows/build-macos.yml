@@ -84,7 +84,7 @@ jobs:
       - name: Get data.grib
         run: curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
 
-      - run: pytest -s
+      - run: pytest -v -s
         working-directory: tests
 
       - uses: actions/upload-artifact@v2

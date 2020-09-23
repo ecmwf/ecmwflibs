@@ -13,7 +13,7 @@ RUN yum install -y gobject-introspection-devel
 RUN ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
 RUN ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
 RUN ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
-RUN pip3 install jinja2 meson ninja auditwheel
+RUN pip3 install meson ninja auditwheel
 RUN ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 RUN ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 # RUN yum install -y ack
