@@ -16,7 +16,7 @@ on:
 
 jobs:
 
-  # if: false
+  if: false
 
   build:
     runs-on: macos-latest

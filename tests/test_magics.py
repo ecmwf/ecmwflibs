@@ -6,7 +6,6 @@ from Magics import macro as magics
 
 
 def test_magics():
-    return
 
     name = "magics"
     # Setting of the output file name
@@ -21,7 +20,8 @@ def test_magics():
         grib_input_file_name="data.grib",
     )
 
-    proj = magics.mmap(subpage_map_projection="mollweide")
+    # proj = magics.mmap(subpage_map_projection="mollweide")
+    proj = magics.mmap(subpage_map_projection="cylindrical")
 
     # Apply an automatic styling
     contour = magics.mcont(
