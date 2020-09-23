@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"] #, "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8"]
 
     name: Build with Python ${{ matrix.python-version }}
 
@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"] #, "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8"]
 
     name: Test with Python ${{ matrix.python-version }}
 
@@ -76,8 +76,8 @@ jobs:
 
       - run: ls -l
 
-      - run: pip install --user *.whl
+      - run: pip install *.whl
 
-      - run: pip install --user -r tests/requirements.txt
+      - run: pip install -r tests/requirements.txt
 
       - run: pytest tests

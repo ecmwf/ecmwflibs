@@ -83,6 +83,7 @@ jobs:
           path: dist/*
 
   test:
+    if: false
     needs: build
     runs-on: windows-latest
     strategy:
