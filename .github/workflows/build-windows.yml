@@ -115,8 +115,8 @@ jobs:
         working-directory: tests
         timeout-minutes: 2
         env:
-          ECCODES_DEBUG=1
-          GRIB_API_DEBUG=1
+          ECCODES_DEBUG: 1
+          GRIB_API_DEBUG: 1
 
       - uses: actions/upload-artifact@v2
         with:
