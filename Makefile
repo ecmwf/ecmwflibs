@@ -301,7 +301,7 @@ wheel.mingw64_nt: .inited eccodes magics
 wheel.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
-	cp -r /usr/proj71/*/share ecmwflibs/
+	cp /usr/proj71/share/proj/* ecmwflibs/share/
 	strip --strip-debug install/lib/*.so install/lib64/*.so
 	$(PYTHON3) setup.py bdist_wheel
 	auditwheel repair dist/*.whl
