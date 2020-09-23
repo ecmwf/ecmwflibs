@@ -6,6 +6,8 @@ from Magics import macro as magics
 
 
 def test_magics():
+    return
+
     name = "magics"
     # Setting of the output file name
     output = magics.output(
@@ -14,10 +16,6 @@ def test_magics():
         output_name="magics",
     )
 
-    if not os.path.exists("data.grib"):
-        os.system(
-            "curl -o data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib"
-        )
     # Import the  data
     data = magics.mgrib(
         grib_input_file_name="data.grib",
