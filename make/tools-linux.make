@@ -1,8 +1,7 @@
 tools.linux:
-	ls -l /usr/local/lib
-	rm /usr/local/lib/libcurl.* # There are two copies!!!
+	# There are two copies of libcurl, this confuses yum
+	rm /usr/local/lib/libcurl.*
 	ldconfig
-	ldconfig -v | grep libcurl
 	yum install -y netcdf-devel netcdf-cxx-devel
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
