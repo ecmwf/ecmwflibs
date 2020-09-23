@@ -66,6 +66,7 @@ tools: tools.$(ARCH)
 libraries: eccodes magics
 
 
+
 all.darwin: image
 	rm -fr dist wheelhouse install build-ecmwf wheelhouse.darwin wheelhouse.linux
 	make wheels.darwin
@@ -89,8 +90,7 @@ src/ecbuild:
 eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
-	git clone --depth 1 $(GIT_ECCODES) src/eccodes
-	(cd src/eccodes && git checkout $(ECCODES_VERSION))
+	git clone --branch $(ECCODES_VERSION) --depth 1 $(GIT_ECCODES) src/eccodes
 	(cd src/eccodes && git pull)
 
 #
@@ -123,8 +123,7 @@ magics-depend-mingw64_nt: eccodes
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	git clone --depth 1 $(GIT_MAGICS) src/magics
-	(cd src/magics && git checkout $(MAGICS_VERSION))
+	git clone --branch $(MAGICS_VERSION) --depth 1 $(GIT_MAGICS) src/magics
 	(cd src/magics && git pull)
 
 build-ecmwf/magics/build.ninja: src/magics
