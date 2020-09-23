@@ -16,7 +16,7 @@ on:
 
 jobs:
 
-  if: false
+  # if: false
 
   build:
     runs-on: macos-latest
@@ -77,10 +77,14 @@ jobs:
         with:
           name: wheel-macos-${{ matrix.python-version }}
 
-
       - run: pip install *.whl
 
       - run: pip install -r tests/requirements.txt
+
+      - name: wget data.grib
+        uses: wei/wget@v1
+        with:
+          args: -O tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
 
       - run: pytest
         working-directory: tests

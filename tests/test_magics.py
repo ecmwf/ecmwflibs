@@ -15,7 +15,9 @@ def test_magics():
     )
 
     if not os.path.exists("data.grib"):
-        os.system("curl -o data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib")
+        os.system(
+            "curl -o data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib"
+        )
     # Import the  data
     data = magics.mgrib(
         grib_input_file_name="data.grib",
