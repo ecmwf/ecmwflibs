@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import pytest
 
 from Magics import macro as magics
 from Magics.Magics import MagicsError
