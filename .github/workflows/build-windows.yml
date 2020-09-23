@@ -51,22 +51,8 @@ jobs:
 
       - run: make tools
 
-      - name: find
-        if: false
-        run: |
-          import os
-          print(os.name)
-          for root, _, files in os.walk("c:/vcpkg"):
-              try:
-                for file in files:
-                    if file.endswith(".db"):
-                        print(os.path.join(root, file))
-              except Exception as e:
-                print(e)
-        shell: python
-
       - name: Cache compilations
-        # if: false
+        if: false
         uses: actions/cache@v2
         with:
           path: |
