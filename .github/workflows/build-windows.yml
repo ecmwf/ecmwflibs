@@ -108,9 +108,11 @@ jobs:
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
 
-      - run: pip install --user *.whl
+      - run: dir
 
-      - run: pip install --user -r tests/requirements.txt
+      - run: pip install *.whl
+
+      - run: pip install -r tests/requirements.txt
 
       - run: pytest
         working-directory: tests

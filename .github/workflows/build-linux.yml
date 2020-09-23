@@ -21,7 +21,7 @@ on:
 jobs:
   build-manylinux2014:
 
-    if: false
+    # if: false
 
     runs-on: ubuntu-latest
     # if: false

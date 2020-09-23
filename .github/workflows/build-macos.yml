@@ -15,6 +15,9 @@ on:
     branches: [ master ]
 
 jobs:
+
+  if: false
+
   build:
     runs-on: macos-latest
     strategy:
