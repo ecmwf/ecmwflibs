@@ -90,7 +90,8 @@ eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
 	git clone --depth 1 $(GIT_ECCODES) src/eccodes
-	(cd src/eccodes && git pull)
+	(cd src/magics && git checkout $(ECCODES_VERSION))
+	(cd src/magics && git pull)
 
 #
 
@@ -122,7 +123,8 @@ magics-depend-mingw64_nt: eccodes
 magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
-	git clone --branch noboost --depth 1 $(GIT_MAGICS) src/magics
+	git clone --depth 1 $(GIT_MAGICS) src/magics
+	(cd src/magics && git checkout $(MAGICS_VERSION))
 	(cd src/magics && git pull)
 
 build-ecmwf/magics/build.ninja: src/magics
