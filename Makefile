@@ -116,7 +116,7 @@ install/lib/pkgconfig/eccodes.pc: build-ecmwf/eccodes/build.ninja
 #################################################################
 magics-depend-darwin: eccodes
 
-magics-depend-linux: eccodes cairo pango proj
+magics-depend-linux: eccodes # cairo pango proj
 
 magics-depend-mingw64_nt: eccodes
 
