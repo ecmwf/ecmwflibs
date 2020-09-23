@@ -105,9 +105,14 @@ jobs:
           architecture: ${{ matrix.architecture }}
 
       - uses: actions/download-artifact@v2
+        id: download
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
           # path: ecmwflibs.whl
+
+      - name: 'Echo download path'
+        run: echo ${{steps.download.outputs.download-path}}
+
 
       - run: dir
 

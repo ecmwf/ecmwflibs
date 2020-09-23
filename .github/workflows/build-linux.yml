@@ -37,23 +37,23 @@ jobs:
         run: |
           ./dockcross-build-ecmwflibs make tools
 
-      - name: Cache compilations (src)
-        uses: actions/cache@v2
-        with:
-          path: src
-          key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
+      # - name: Cache compilations (src)
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: src
+      #     key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
 
-      - name: Cache compilations (build)
-        uses: actions/cache@v2
-        with:
-          path: build-ecmwf
-          key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
+      # - name: Cache compilations (build)
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: build-ecmwf
+      #     key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
 
-      - name: Cache compilations (install)
-        uses: actions/cache@v2
-        with:
-          path: install
-          key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
+      # - name: Cache compilations (install)
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: install
+      #     key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
 
       - name: make pango/cairo
         run: |
