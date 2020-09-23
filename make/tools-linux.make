@@ -1,6 +1,6 @@
 tools.linux:
+	rm /lib64/libcurl.so.4 # There are two copies!!!
 	ldconfig -v | grep libcurl
-	cat /etc/ld.so.conf
 	yum install -y netcdf-devel netcdf-cxx-devel
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
