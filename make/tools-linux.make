@@ -8,3 +8,4 @@ tools.linux:
 	yum install -y fontconfig-devel
 	yum install -y flex bison
 	yum install -y gobject-introspection-devel
+	pip install meson ninja

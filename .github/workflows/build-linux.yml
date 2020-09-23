@@ -14,10 +14,6 @@ on:
   pull_request:
     branches: [ master ]
 
-  # TODO: prepare the docker image:
-  # https://docs.github.com/en/actions/guides/publishing-docker-images
-  # https://github.com/marketplace/actions/build-docker-images-using-cache
-
 jobs:
   build-manylinux2014:
 
@@ -38,51 +34,21 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # - name: Create docker image
-      #   run: |
-      #     make dockcross-build-ecmwflibs
+      - name: make tools
 
-      - name: Install tools dependencies
-        run: |
-          make tools
+      - name: Cache compilations
+        if: false
+        uses: actions/cache@v2
+        with:
+          path: |
+            src
+            build-ecmwf
+            install
+          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}
 
-      # - name: Cache compilations (src)
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: src
-      #     key: ${{ runner.os }}-src-${{ hashFiles('make/VERSIONS.make') }}
-
-      # - name: Cache compilations (build)
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: build-ecmwf
-      #     key: ${{ runner.os }}-build-ecmwf-${{ hashFiles('make/VERSIONS.make') }}
-
-      # - name: Cache compilations (install)
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: install
-      #     key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
-
-      - name: make pango/cairo
-        run: |
-          make pango
-
-      - name: make proj
-        run: |
-          make proj
-
-      - name: make libraries
-        # if: false
-        run: |
-          make libraries
-
-      - name: make wheel
-        # if: false
-        run: |
-          make wheel
+      - run: make
 
       - uses: actions/upload-artifact@v2
         with:
-          name: wheel-manylinux2014
+          name: wheel-manylinux2014-${{ matrix.python-version }}
           path: wheelhouse/*
