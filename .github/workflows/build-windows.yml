@@ -114,12 +114,10 @@ jobs:
 
       - run: pip install --user -r tests/requirements.txt
 
-      - run: pytest tests
-
-
-
+      - run: pytest
+        working-directory: tests
 
       - uses: actions/upload-artifact@v2
         with:
           name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
-          path: *.png
+          path: tests/*.png
