@@ -24,18 +24,19 @@ jobs:
     if: false
 
     runs-on: ubuntu-latest
+    container:  dockcross/manylinux2014-x64:latest
     # if: false
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create docker image
-        run: |
-          make dockcross-build-ecmwflibs
+      # - name: Create docker image
+      #   run: |
+      #     make dockcross-build-ecmwflibs
 
       - name: Install tools dependencies
         run: |
-          ./dockcross-build-ecmwflibs make tools
+          make tools
 
       # - name: Cache compilations (src)
       #   uses: actions/cache@v2
@@ -55,18 +56,18 @@ jobs:
       #     path: install
       #     key: ${{ runner.os }}-install-${{ hashFiles('make/VERSIONS.make') }}
 
-      - name: make pango/cairo
-        run: |
-          ./dockcross-build-ecmwflibs make pango
+      # - name: make pango/cairo
+      #   run: |
+      #     ./dockcross-build-ecmwflibs make pango
 
-      - name: make proj
-        run: |
-          ./dockcross-build-ecmwflibs make proj
+      # - name: make proj
+      #   run: |
+      #     ./dockcross-build-ecmwflibs make proj
 
-      - name: make libraries
-        # if: false
-        run: |
-          ./dockcross-build-ecmwflibs make libraries
+      # - name: make libraries
+      #   # if: false
+      #   run: |
+      #     ./dockcross-build-ecmwflibs make libraries
 
       # - name: make wheel
       #   # if: false
