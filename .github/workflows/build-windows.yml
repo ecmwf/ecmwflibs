@@ -91,7 +91,7 @@ jobs:
         python-version: ["3.6", "3.7", "3.8"]
         architecture: ["x86", "x64"]
 
-    name: Test with Python ${{ matrix.python-version }}
+    name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     steps:
 
