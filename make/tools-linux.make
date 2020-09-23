@@ -1,8 +1,9 @@
 tools.linux:
-	sudo yum update -y
-	sudo yum install -y netcdf-devel netcdf-cxx-devel
-	sudo yum install -y libpng-devel
-	sudo yum install -y libtiff-devel
-	sudo yum install -y fontconfig-devel
-	sudo yum install -y flex bison
-	sudo yum install -y gobject-introspection-devel
+	ldconfig -v | grep libcurl
+	cat /etc/ld.so.conf
+	yum install -y netcdf-devel netcdf-cxx-devel
+	yum install -y libpng-devel
+	yum install -y libtiff-devel
+	yum install -y fontconfig-devel
+	yum install -y flex bison
+	yum install -y gobject-introspection-devel
