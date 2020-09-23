@@ -15,7 +15,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build-manylinux2014:
+  build:
 
     # if: false
 
@@ -54,3 +54,43 @@ jobs:
         with:
           name: wheel-manylinux2014-${{ matrix.python-version }}
           path: wheelhouse/*
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.6"] # ["3.6", "3.7", "3.8"]
+
+    name: Test with Python ${{ matrix.python-version }}
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: wheel-manylinux2014-${{ matrix.python-version }}
+
+      - run: pip install *.whl
+
+      - run: pip install -r tests/requirements.txt
+
+      - run: pip freeze
+
+      - name: Get data.grib
+        run: curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
+
+      - run: pytest -v -s
+        working-directory: tests
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tests-manylinux2014-${{ matrix.python-version }}
+          path: tests/*.png
