@@ -15,7 +15,7 @@ tools.linux:
 	# For proj70 on centos7
 	yum-config-manager --add-repo 'https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-$$releasever-$$basearch'
 
-	yum install -y proj70-devel
+	yum install --nogpgcheck -y proj70-devel
 
 	ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
 	ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
