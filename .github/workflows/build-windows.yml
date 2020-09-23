@@ -108,7 +108,6 @@ jobs:
         id: download
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
-          # path: ecmwflibs.whl
 
       - name: 'Echo download path'
         run: echo ${{steps.download.outputs.download-path}}
@@ -121,10 +120,8 @@ jobs:
 
       - run: pip install -r tests/requirements.txt
 
-      - name: wget data.grib
-        uses: wei/wget@v1
-        with:
-          args: -O tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
+      - name: Get data.grib
+        run: wget -O tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
 
       - run: pytest
         working-directory: tests

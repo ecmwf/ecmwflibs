@@ -81,10 +81,8 @@ jobs:
 
       - run: pip install -r tests/requirements.txt
 
-      - name: wget data.grib
-        uses: wei/wget@v1
-        with:
-          args: -O tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
+      - name: Get data.grib
+        run: wget -O tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
 
       - run: pytest
         working-directory: tests
