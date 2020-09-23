@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
+        python-version: ["3.6"] #, "3.7", "3.8"]
 
     name: Build with Python ${{ matrix.python-version }}
 
@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
+        python-version: ["3.6"] #, "3.7", "3.8"]
 
     name: Test with Python ${{ matrix.python-version }}
 
@@ -81,3 +81,8 @@ jobs:
       - run: pip install -r tests/requirements.txt
 
       - run: pytest tests
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tests-macos-${{ matrix.python-version }}
+          path: tests/*.png

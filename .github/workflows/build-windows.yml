@@ -22,8 +22,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
-        architecture: ["x86", "x64"]
+        python-version: ["3.6"] #, "3.7", "3.8"]
+        architecture: ["x86"] #, "x64"]
 
     name: Build with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
     env:
@@ -83,14 +83,14 @@ jobs:
           path: dist/*
 
   test:
-    if: false
+    # if: false
     needs: build
     runs-on: windows-latest
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
-        architecture: ["x86", "x64"]
+        python-version: ["3.6"] #, "3.7", "3.8"]
+        architecture: ["x86"] #, "x64"]
 
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
@@ -115,3 +115,8 @@ jobs:
       - run: pip install --user -r tests/requirements.txt
 
       - run: pytest tests
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+          path: tests/*.png
