@@ -107,10 +107,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+          path: ecmwflibs.whl
 
       - run: dir
 
-      - run: pip install *.whl
+      - run: pip install ecmwflibs.whl
 
       - run: pip install -r tests/requirements.txt
 
