@@ -13,7 +13,19 @@ import os
 import tempfile
 
 from ._ecmwflibs import versions as _versions
-from ._ecmwflibs import magics_install_path
+import ctypes
+import ctypes.utils
+
+
+def putenv(name, value):
+    os.environ[name] = value
+    os.putenv(name, value)
+    try:
+        # For windows
+        ctypes.cdll[ctypes.util.find_msvcrt()]._putenv("%s=%s" % (name, value))
+    except Exception:
+        pass
+
 
 __version__ = "0.0.20"
 
@@ -33,13 +45,9 @@ _fontcfg = tempfile.mktemp("ecmwflibs")
 with open(_fontcfg, "w") as _f:
     print(_fonts, file=_f)
 
-os.environ["FONTCONFIG_FILE"] = _fontcfg
-os.environ["PROJ_LIB"] = os.path.join(_here, "share", "proj")
-os.environ["MAGPLUS_HOME"] = _here
-
-# This is needed on windows, it seems, as the
-# environments vars are not exported/shared (?)
-magics_install_path(_here)
+putenv("FONTCONFIG_FILE", _fontcfg)
+putenv("PROJ_LIB", os.path.join(_here, "share", "proj"))
+putenv("MAGPLUS_HOME", _here)
 
 
 for env in (
