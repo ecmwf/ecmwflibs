@@ -20,8 +20,8 @@ jobs:
     # if: false
 
     runs-on: ubuntu-latest
-    # container:  dockcross/manylinux2014-x64:latest
-    container:  quay.io/pypa/manylinux2014_x86_64:latest
+    container:  dockcross/manylinux2014-x64:latest
+    # container:  quay.io/pypa/manylinux2014_x86_64:latest
     strategy:
       fail-fast: true
       matrix:
