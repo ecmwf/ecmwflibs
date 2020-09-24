@@ -26,10 +26,10 @@ def putenv(name, value):
     except Exception as e:
         print(e)
 
-    try:
-        os.system("SETX {0} {1}".format(name, value))
-    except Exception as e:
-        print(e)
+    # try:
+    #     os.system("SETX {0} {1}".format(name, value))
+    # except Exception as e:
+    #     print(e)
 
 __version__ = "0.0.20"
 
