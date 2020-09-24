@@ -313,7 +313,7 @@ wheel.linux: .inited eccodes magics
 	strip --strip-debug install/lib/*.so # install/lib64/*.so
 	$(PYTHON3) setup.py bdist_wheel
 	auditwheel repair dist/*.whl
-	unzip -l wheelhouse/*.whl | grep /lib
+	unzip -l wheelhouse/*.whl | grep dll
 
 wheels.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
@@ -348,7 +348,7 @@ wheel.darwin: .inited eccodes magics
 	strip -S install/lib/*.dylib
 	$(PYTHON3) setup.py bdist_wheel
 	delocate-wheel -w wheelhouse dist/*.whl
-	unzip -l wheelhouse/*.whl | grep /lib
+	unzip -l wheelhouse/*.whl | grep dylib
 
 
 wheels.darwin: .inited pyenv-versions eccodes magics
