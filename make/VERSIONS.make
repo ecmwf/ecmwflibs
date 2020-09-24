@@ -6,6 +6,9 @@ ECBUILD_VERSION=master
 GIT_ECCODES=https://github.com/b8raoult/eccodes.git
 ECCODES_VERSION=develop
 
+GIT_ECCODES=https://github.com/ecmwf/eccodes.git
+ECCODES_VERSION=master
+
 GIT_MAGICS=https://github.com/b8raoult/magics.git
 MAGICS_VERSION=noboost
 
