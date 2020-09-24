@@ -40,6 +40,7 @@ jobs:
 
       - name: sha1
         run: tools/sha1.sh
+        id: sha1
 
       - name: echo
         run: |
