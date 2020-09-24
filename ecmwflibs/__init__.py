@@ -18,7 +18,7 @@ from ._ecmwflibs import versions as _versions
 def putenv(name, value):
     print("putenv", name, value)
     os.environ[name] = value
-    os.putenv(name, value)
+    # os.putenv(name, value)
     # try:
     #     # For windows, see https://bugs.python.org/issue16633
     #     import ctypes
