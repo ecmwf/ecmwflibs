@@ -61,6 +61,7 @@ jobs:
             install
           key: ${{ runner.os }}${{ matrix.architecture }}-cache-${{ hashFiles('make/VERSIONS.make') }}
 
+      - run: make pull
       - run: make wheel
 
       - uses: actions/upload-artifact@v2

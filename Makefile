@@ -79,6 +79,12 @@ all.darwin: image
 
 
 #################################################################
+
+pull:
+	- (cd src/eccodes; git pull)
+	- (cd src/magics; git pull)
+
+#################################################################
 ecbuild: src/ecbuild
 
 src/ecbuild:
@@ -92,9 +98,7 @@ eccodes: ecbuild install/lib/pkgconfig/eccodes.pc
 
 src/eccodes:
 	git clone --branch $(ECCODES_VERSION) --depth 1 $(GIT_ECCODES) src/eccodes
-	(cd src/eccodes && git pull)
 
-#
 
 build-ecmwf/eccodes/build.ninja: src/eccodes
 	mkdir -p build-ecmwf/eccodes
@@ -125,7 +129,9 @@ magics:  magics-depend-$(ARCH) install/lib/pkgconfig/magics.pc
 
 src/magics:
 	git clone --branch $(MAGICS_VERSION) --depth 1 $(GIT_MAGICS) src/magics
-	(cd src/magics && git pull)
+
+pull-magics:
+	- (cd src/magics; git pull)
 
 build-ecmwf/magics/build.ninja: src/magics
 	mkdir -p build-ecmwf/magics
