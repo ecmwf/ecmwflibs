@@ -54,7 +54,8 @@ with open(_fontcfg, "w") as _f:
 putenv("FONTCONFIG_FILE", _fontcfg)
 putenv("PROJ_LIB", os.path.join(_here, "share", "proj"))
 putenv("MAGPLUS_HOME", _here)
-
+putenv("ECCODES_DEBUG", "1")
+putenv("GRIB_API_DEBUG", "1")
 
 for env in (
     "ECCODES_DEFINITION_PATH",
