@@ -47,7 +47,7 @@ jobs:
             src
             build-ecmwf
             install
-          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}
+          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
 
       - run: make pull
       - run: make wheels

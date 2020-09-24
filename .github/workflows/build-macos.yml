@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"]  # ["3.6", "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8"]
 
     name: Build with Python ${{ matrix.python-version }}
 
@@ -55,7 +55,7 @@ jobs:
             src
             build-ecmwf
             install
-          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}
+          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
 
       - run: make pull
       - run: make wheel
@@ -71,7 +71,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"] # ["3.6", "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8"]
 
     name: Test with Python ${{ matrix.python-version }}
 
