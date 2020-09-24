@@ -30,14 +30,9 @@ jobs:
 
       - run: make tools
 
-      - name: sha1
+      - name: Get SHA1 from eccodes and magics
         run: tools/sha1.sh
         id: sha1
-
-      - name: echo
-        run: |
-          echo ${{ steps.sha1.outputs.eccodes }}
-          echo ${{ steps.sha1.outputs.magics }}
 
       - name: Cache compilations
         # if: false
