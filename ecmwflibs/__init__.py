@@ -13,15 +13,16 @@ import os
 import tempfile
 
 from ._ecmwflibs import versions as _versions
-import ctypes
-import ctypes.utils
+
 
 
 def putenv(name, value):
     os.environ[name] = value
     os.putenv(name, value)
     try:
-        # For windows
+        # For windows, see https://bugs.python.org/issue16633
+        import ctypes
+        import ctypes.utils
         ctypes.cdll[ctypes.util.find_msvcrt()]._putenv("%s=%s" % (name, value))
     except Exception:
         pass
