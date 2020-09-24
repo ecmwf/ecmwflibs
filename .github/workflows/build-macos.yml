@@ -45,7 +45,8 @@ jobs:
         run: |
           echo ${{ steps.sha1.outputs.eccodes }}
           echo ${{ steps.sha1.outputs.magics }}
-          
+          echo ${{ steps.sha1.outputs }}
+
       - name: Cache compilations
         # if: false
         uses: actions/cache@v2
