@@ -18,8 +18,6 @@ static PyObject* set_magics_install_path(PyObject *self, PyObject *args) {
 
 static PyObject* versions(PyObject *self, PyObject *args) {
     long s = grib_get_api_version(); // Force linking
-    auto p = knowndrivers_();
-
 
     return Py_BuildValue("{s:s,s:s}",
         "eccodes", ECCODES_VERSION_STR,
