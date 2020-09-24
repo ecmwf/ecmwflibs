@@ -13,6 +13,7 @@ import os
 import tempfile
 
 from ._ecmwflibs import versions as _versions
+from ._ecmwflibs import magics_install_path
 
 __version__ = "0.0.20"
 
@@ -35,6 +36,10 @@ with open(_fontcfg, "w") as _f:
 os.environ["FONTCONFIG_FILE"] = _fontcfg
 os.environ["PROJ_LIB"] = os.path.join(_here, "share", "proj")
 os.environ["MAGPLUS_HOME"] = _here
+
+# This is needed on windows, it seems, as the
+# environments vars are not exported/shared (?)
+magics_install_path(_here)
 
 for env in (
     "ECCODES_DEFINITION_PATH",
