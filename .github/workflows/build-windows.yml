@@ -97,12 +97,6 @@ jobs:
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
 
-      - name: 'Echo download path'
-        run: echo ${{steps.download.outputs.download-path}}
-
-
-      - run: dir
-
       - run: pip install *.whl
         shell: bash
 
