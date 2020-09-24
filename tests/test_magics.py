@@ -19,8 +19,8 @@ def test_magics_plot():
         grib_input_file_name="data.grib",
     )
 
-    proj = magics.mmap(subpage_map_projection="mollweide")
-    # proj = magics.mmap(subpage_map_projection="cylindrical")
+    # proj = magics.mmap(subpage_map_projection="mollweide")
+    proj = magics.mmap(subpage_map_projection="cylindrical")
 
     # Apply an automatic styling
     contour = magics.mcont(
