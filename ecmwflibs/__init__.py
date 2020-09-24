@@ -109,4 +109,4 @@ def files():
     here = os.path.dirname(__file__)
     for root, dirs, files in os.walk(here):
         for file in files:
-            print(os.path.join(root, file).replace(here, ''))
+            yield os.path.join(root, file).replace(here, "")
