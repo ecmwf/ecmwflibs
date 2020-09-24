@@ -12,7 +12,6 @@ import atexit
 import os
 import tempfile
 
-from ._ecmwflibs import versions as _versions
 
 
 def putenv(name, value):
@@ -54,6 +53,10 @@ putenv("PROJ_LIB", os.path.join(_here, "share", "proj"))
 putenv("MAGPLUS_HOME", _here)
 putenv("ECCODES_DEBUG", "1")
 putenv("GRIB_API_DEBUG", "1")
+
+
+from ._ecmwflibs import versions as _versions
+
 
 for env in (
     "ECCODES_DEFINITION_PATH",
