@@ -9,9 +9,8 @@ extern "C" const char* magics_install_path(const char* path);
 static PyObject* set_magics_install_path(PyObject *self, PyObject *args) {
     char *path;
     if (!PyArg_ParseTuple(args, "s", &path)) {
-        return NULL:
+        return NULL;
     }
-
 
     return Py_BuildValue("s", magics_install_path(path));
 }
