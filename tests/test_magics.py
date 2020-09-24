@@ -15,9 +15,9 @@ def test_magics_plot():
     )
 
     # Import the  data
-    # data = magics.mgrib(
-    #     grib_input_file_name="data.grib",
-    # )
+    data = magics.mgrib(
+        grib_input_file_name="data.grib",
+    )
 
     # proj = magics.mmap(subpage_map_projection="mollweide")
     proj = magics.mmap(subpage_map_projection="cylindrical")
@@ -27,8 +27,7 @@ def test_magics_plot():
         contour_automatic_setting="ecmwf",
     )
     coast = magics.mcoast()
-    # magics.plot(output, proj, data, contour, coast)
-    magics.plot(output, proj, coast)
+    magics.plot(output, proj, data, contour, coast)
 
 
 def test_magics_exception():

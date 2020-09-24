@@ -13,23 +13,6 @@ import os
 import tempfile
 
 
-
-def putenv(name, value):
-    print("putenv", name, value)
-    os.environ[name] = value
-    # os.putenv(name, value)
-    # try:
-    #     # For windows, see https://bugs.python.org/issue16633
-    #     import ctypes
-    #     ctypes.cdll.msvcrt._putenv("%s=%s" % (name, value))
-    # except Exception as e:
-    #     print(e)
-
-    # try:
-    #     os.system("SETX {0} {1}".format(name, value))
-    # except Exception as e:
-    #     print(e)
-
 __version__ = "0.0.20"
 
 
@@ -48,26 +31,25 @@ _fontcfg = tempfile.mktemp("ecmwflibs")
 with open(_fontcfg, "w") as _f:
     print(_fonts, file=_f)
 
-putenv("FONTCONFIG_FILE", _fontcfg)
-putenv("PROJ_LIB", os.path.join(_here, "share", "proj"))
-putenv("MAGPLUS_HOME", _here)
-putenv("ECCODES_DEBUG", "1")
-putenv("GRIB_API_DEBUG", "1")
+# Environment must be set *BEFORE* the libraries are loaded.
+# on Metview
 
-
-from ._ecmwflibs import versions as _versions
+os.environ["FONTCONFIG_FILE"] = _fontcfg
+os.environ["PROJ_LIB"] = os.path.join(_here, "share", "proj")
+os.environ["MAGPLUS_HOME"] = _here
 
 
 for env in (
     "ECCODES_DEFINITION_PATH",
-    # "ECCODES_EXTRA_DEFINITION_PATH",
-    # "ECCODES_EXTRA_SAMPLES_PATH"
-    # "ECCODES_SAMPLES_PATH",
+    "ECCODES_EXTRA_DEFINITION_PATH",
+    "ECCODES_EXTRA_SAMPLES_PATH" "ECCODES_SAMPLES_PATH",
     "GRIB_DEFINITION_PATH",
-    # "GRIB_SAMPLES_PATH",
+    "GRIB_SAMPLES_PATH",
 ):
     if env in os.environ:
         del os.environ[env]
+
+from ._ecmwflibs import versions as _versions  # noqa: N402
 
 
 def _cleanup():
