@@ -22,7 +22,7 @@ def putenv(name, value):
     try:
         # For windows, see https://bugs.python.org/issue16633
         import ctypes
-        import ctypes.utils
+        import ctypes.util
 
         ctypes.cdll[ctypes.util.find_msvcrt()]._putenv("%s=%s" % (name, value))
     except Exception as e:
