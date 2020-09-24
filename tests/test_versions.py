@@ -16,3 +16,7 @@ def test_versions():
         print(lib, ecmwflibs.find(lib))
 
         assert ecmwflibs.find(lib) is not None
+
+def test_files():
+    for f in ecmwflibs.files():
+        print(f)
