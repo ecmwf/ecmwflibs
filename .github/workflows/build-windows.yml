@@ -25,6 +25,10 @@ jobs:
         python-version: ["3.6"] #, "3.7", "3.8"]
         architecture: ["x64"] # ["x86", "x64"]
 
+    defaults:
+      run:
+        shell: bash
+
     name: Build with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
     env:
       WINARCH: ${{ matrix.architecture }}
@@ -80,6 +84,10 @@ jobs:
         python-version: ["3.6"] #, "3.7", "3.8"]
         architecture: ["x64"] # ["x86", "x64"]
 
+    defaults:
+      run:
+        shell: bash
+
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     steps:
@@ -98,7 +106,6 @@ jobs:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
 
       - run: pip install *.whl
-        shell: bash
 
       - run: pip install -r tests/requirements.txt
 
