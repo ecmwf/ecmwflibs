@@ -10,7 +10,7 @@ tools.linux:
 	# yum install -y gobject-introspection-devel
 	yum install -y pango-devel cairo-devel
 	yum install -y libpng-devel libjasper-devel
-
+	yum install -y python-devel
 
 	# For proj70 on centos7
 	yum-config-manager --add-repo 'https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-$$releasever-$$basearch'
