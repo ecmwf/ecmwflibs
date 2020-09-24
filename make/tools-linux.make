@@ -17,10 +17,11 @@ tools.linux:
 
 	yum install --nogpgcheck -y proj71-devel
 
-	# ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
-	# ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
-	# ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+
 	pip3 install ninja auditwheel
 	# ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 	# ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 	ln -sf /usr/bin/cmake3 /usr/bin/cmake
+	ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
+	ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
+	ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
