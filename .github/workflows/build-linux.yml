@@ -23,12 +23,12 @@ jobs:
     container:  dockcross/manylinux2014-x64:latest
 
 
+    name: Build manylinux2014-x64
+
     steps:
       - uses: actions/checkout@v2
 
-
       - run: make tools
-
 
       - name: Cache compilations
         # if: false
@@ -45,8 +45,23 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: wheel-manylinux2014
-          path: wheelhouse/*
+          name: wheel-manylinux2014-3.6
+          path: wheelhouse/*cp36*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheel-manylinux2014-3.7
+          path: wheelhouse/*cp37*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheel-manylinux2014-3.8
+          path: wheelhouse/*cp38*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheel-manylinux2014-3.9
+          path: wheelhouse/*cp39*
 
   test:
     needs: build
@@ -54,7 +69,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.8"] # ["3.6", "3.7", "3.8"]
+        python-version: ["3.7", "3.7", "3.8", "3.9"]
 
     name: Test with Python ${{ matrix.python-version }}
 

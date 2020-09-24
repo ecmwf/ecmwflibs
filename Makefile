@@ -334,6 +334,10 @@ wheels.linux: .inited eccodes magics
 	auditwheel repair dist/*.whl
 	rm -fr dist
 
+	/opt/python/cp39-cp39/bin/python3 setup.py bdist_wheel
+	auditwheel repair dist/*.whl
+	rm -fr dist
+
 wheel.darwin: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	mkdir -p install/share/magics

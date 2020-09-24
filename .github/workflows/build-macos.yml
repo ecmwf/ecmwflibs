@@ -16,9 +16,10 @@ on:
 
 jobs:
 
-  if: false
-
   build:
+
+    if: false
+
     runs-on: macos-latest
     strategy:
       fail-fast: true
