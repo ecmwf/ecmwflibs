@@ -81,8 +81,8 @@ all.darwin: image
 #################################################################
 
 pull:
-	- (cd src/eccodes; git pull)
-	- (cd src/magics; git pull)
+	- (cd src/eccodes && git pull)
+	- (cd src/magics && git pull)
 
 #################################################################
 ecbuild: src/ecbuild
