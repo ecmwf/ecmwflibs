@@ -56,6 +56,14 @@ jobs:
 
       - run: make tools
 
+      - name: sha1
+        run: tools/sha1.sh
+
+      - name: echo
+        run: |
+          echo ${{ steps.sha1.outputs.eccodes }}
+          echo ${{ steps.sha1.outputs.magics }}
+
       - name: Cache compilations
         # if: false
         uses: actions/cache@v2
