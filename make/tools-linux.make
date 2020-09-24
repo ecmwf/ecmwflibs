@@ -14,6 +14,8 @@ tools.linux:
 	ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
 	ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
 	pip3 install ninja auditwheel meson
+	ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
+	ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
 tools.linux-no:
 	# There are two copies of libcurl, this confuses yum
