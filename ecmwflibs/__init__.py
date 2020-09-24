@@ -41,6 +41,7 @@ os.environ["MAGPLUS_HOME"] = _here
 # environments vars are not exported/shared (?)
 magics_install_path(_here)
 
+
 for env in (
     "ECCODES_DEFINITION_PATH",
     # "ECCODES_EXTRA_DEFINITION_PATH",
