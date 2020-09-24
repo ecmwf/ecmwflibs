@@ -139,6 +139,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		--cmakebin=$(CMAKEBIN) \
 		../../src/magics -G$(MAKEFILES) \
 		-DENABLE_BUILD_TOOLS=0 \
+		-DCMAKE_BUILD_TYPE=Release \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
