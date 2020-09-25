@@ -3,9 +3,6 @@
 GIT_ECBUILD=https://github.com/b8raoult/ecbuild.git
 ECBUILD_VERSION=master
 
-GIT_ECCODES=https://github.com/b8raoult/eccodes.git
-ECCODES_VERSION=develop
-
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=master
 
