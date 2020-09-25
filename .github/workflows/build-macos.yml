@@ -22,7 +22,7 @@ jobs:
 
   build:
 
-    if: false
+    # if: false
 
     runs-on: macos-latest
     strategy:

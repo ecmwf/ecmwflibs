@@ -31,10 +31,8 @@ def test_magics_plot():
 
 
 def test_magics_exception():
-    return
 
-    # with pytest.raises(MagicsError):
-    try:
+    with pytest.raises(MagicsError):
 
         # Setting of the output file name
         output = magics.output(
@@ -63,6 +61,3 @@ def test_magics_exception():
         coast = magics.mcoast()
 
         magics.plot(output, proj, data, contour, coast)
-
-    except Exception as e:
-        print(e)
