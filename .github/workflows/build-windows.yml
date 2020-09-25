@@ -128,7 +128,9 @@ jobs:
           name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
           path: tests/*.png
 
-   deploy:
+  deploy:
+
+    needs: test
 
     runs-on: ubuntu-latest
 
