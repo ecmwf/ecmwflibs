@@ -131,6 +131,8 @@ jobs:
 
   deploy:
 
+    needs: test
+
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
