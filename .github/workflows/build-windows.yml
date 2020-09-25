@@ -131,7 +131,9 @@ jobs:
 
   deploy:
 
-    needs: test
+    needs: [test, build]
+
+    name: Deploy wheel ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     runs-on: ubuntu-latest
     strategy:
