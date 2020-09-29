@@ -1,5 +1,5 @@
 
-GIT_ECBUILD=https://github.com/b8raoult/ecbuild.git
+GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
