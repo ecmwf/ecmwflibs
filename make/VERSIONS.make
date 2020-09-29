@@ -5,7 +5,7 @@ ECBUILD_VERSION=develop
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=master
 
-GIT_MAGICS=https://github.com/b8raoult/magics.git
+GIT_MAGICS=https://github.com/ecmwf/magics.git
 MAGICS_VERSION=master
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
@@ -15,6 +15,7 @@ GIT_PROJ=https://github.com/OSGeo/PROJ.git
 PROJ_VERSION=master
 
 GIT_PIXMAN=https://github.com/freedesktop/pixman.git
+
 PIXMAN_VERSION=master
 
 GIT_CAIRO=https://github.com/freedesktop/cairo.git

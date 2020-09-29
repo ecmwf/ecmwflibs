@@ -88,7 +88,8 @@ pull:
 ecbuild: src/ecbuild
 
 src/ecbuild:
-	git clone --depth 1 $(GIT_ECBUILD) src/ecbuild
+	git clone $(GIT_ECBUILD) src/ecbuild
+	(cd src/ecbuild; git checkout $(ECBUILD_VERSION))
 	# We don't want that
 	echo true > src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
 	chmod +x src/ecbuild/cmake/ecbuild_windows_replace_symlinks.sh
