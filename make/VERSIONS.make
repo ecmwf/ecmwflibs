@@ -1,6 +1,6 @@
 
 GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
-ECBUILD_VERSION=master
+ECBUILD_VERSION=develop
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=master
