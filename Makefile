@@ -53,6 +53,7 @@ CMAKE_EXTRA3="-DCMAKE_C_COMPILER=cl.exe"
 MAKEFILES="NMake Makefiles"
 export PKG_CONFIG_PATH=/c/vcpkg/installed/x86-windows/lib/pkgconfig
 export CMAKE_PREFIX_PATH=/c/vcpkg/installed/x86-windows
+
 endif
 
 
