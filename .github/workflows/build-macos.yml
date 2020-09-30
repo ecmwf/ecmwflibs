@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"] #, "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8"]
 
     name: Build with Python ${{ matrix.python-version }}
 
@@ -70,7 +70,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6"] #, "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8"]
 
     name: Test with Python ${{ matrix.python-version }}
 
