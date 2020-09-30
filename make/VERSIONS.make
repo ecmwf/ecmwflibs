@@ -5,7 +5,7 @@ ECBUILD_VERSION=develop
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=develop
 
-GIT_MAGICS=https://github.com/ecmwf/magics.git
+GIT_MAGICS=https://github.com/b8raoult/magics.git
 MAGICS_VERSION=develop
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
