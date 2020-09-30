@@ -311,14 +311,16 @@ wheel.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
 	# cp /usr/proj71/share/proj/* ecmwflibs/share/
-	strip --strip-debug install/lib/*.so # install/lib64/*.so
+	- cp install/lib64/*.so install/lib/
+	strip --strip-debug install/lib/*.so
 	$(PYTHON3) setup.py bdist_wheel
 	auditwheel repair dist/*.whl
 
 wheels.linux: .inited eccodes magics
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
-	strip --strip-debug install/lib/*.so install/lib64/*.so
+	- cp install/lib64/*.so install/lib/
+	strip --strip-debug install/lib/*.so
 
 	/opt/python/cp35-cp35m/bin/python3 setup.py bdist_wheel
 	auditwheel repair dist/*.whl
