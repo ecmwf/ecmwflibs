@@ -41,9 +41,9 @@ ext_modules = [
         sources=["ecmwflibs/_ecmwflibs.cc"],
         language="c++",
         libraries=libs,
-        library_dirs=[libdir],
+        library_dirs=[libdir, libdir + "64"],
         include_dirs=[incdir, os.path.join(incdir, "magics")],
-        extra_link_args=["-Wl,-rpath," + libdir],
+        extra_link_args=["-Wl,-rpath," + libdir, "-Wl,-rpath," + libdir + "64"],
     )
 ]
 
