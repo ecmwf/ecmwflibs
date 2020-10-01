@@ -105,7 +105,7 @@ build-ecmwf/eccodes/build.ninja: src/eccodes
 	(cd build-ecmwf/eccodes; ../../src/ecbuild/bin/ecbuild  \
 		../../src/eccodes \
 		-G$(MAKEFILES) \
-		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-DENABLE_BUILD_TOOLS=0 \
@@ -139,7 +139,7 @@ build-ecmwf/magics/build.ninja: src/magics
 		--cmakebin=$(CMAKEBIN) \
 		../../src/magics -G$(MAKEFILES) \
 		-DENABLE_BUILD_TOOLS=0 \
-		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DENABLE_PYTHON=0 \
 		-DENABLE_FORTRAN=0 \
 		-Deccodes_DIR=$(CURDIR)/install/lib/cmake/eccodes \
