@@ -95,8 +95,11 @@ jobs:
 
       - run: pip freeze
 
-      - name: Get data.grib
-        run: curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
+      - name: Get some data
+        run: |
+          curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
+          curl -o tests/climetlab.grib https://github.com/ecmwf/climetlab/raw/master/docs/examples/test.grib
+          curl -o tests/climetlab.nc https://github.com/ecmwf/climetlab/raw/master/docs/examples/test.nc
 
       - run: pytest -v -s
         working-directory: tests
