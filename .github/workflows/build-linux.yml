@@ -107,9 +107,11 @@ jobs:
 
       - name: Get some data
         run: |
-          curl -o tests/data.grib http://download.ecmwf.int/test-data/magics/2m_temperature.grib
-          curl -o tests/climetlab.grib https://github.com/ecmwf/climetlab/raw/master/docs/examples/test.grib
-          curl -o tests/climetlab.nc https://github.com/ecmwf/climetlab/raw/master/docs/examples/test.nc
+          curl http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
+          curl https://github.com/ecmwf/climetlab/raw/master/docs/examples/test.grib -o climetlab.grib
+          curl https://github.com/ecmwf/climetlab/raw/master/docs/examples/test.nc -o climetlab.nc
+          ls -l
+        working-directory: tests
 
       - run: pytest -v -s
         working-directory: tests
