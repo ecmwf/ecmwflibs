@@ -148,3 +148,6 @@ junk/
 ?
 ?.*
 *.save
+*.grib
+*.png
+*.nc
