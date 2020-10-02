@@ -111,3 +111,7 @@ def test_climetlab_grib():
     ]
 
     macro.plot(*actions)
+
+
+if __name__ == "__main__":
+    test_climetlab_grib()
