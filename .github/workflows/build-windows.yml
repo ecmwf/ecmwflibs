@@ -41,7 +41,7 @@ jobs:
 
     steps:
 
-      - run: find /c -name pacman.d
+      # - run: find /c -name pacman.d
 
       - uses: actions/checkout@v2
 
