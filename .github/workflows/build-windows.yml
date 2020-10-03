@@ -41,7 +41,7 @@ jobs:
 
     steps:
 
-      - run: ls -l C:\tools\msys64\etc\pacman.d
+      - run: find /c -name pacman.d
 
       - uses: actions/checkout@v2
 
