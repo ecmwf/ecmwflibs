@@ -9,8 +9,8 @@
 name: Build Windows
 
 on:
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -40,6 +40,8 @@ jobs:
       WINARCH: ${{ matrix.architecture }}
 
     steps:
+
+      - run: ls -l C:\tools\msys64\etc\pacman.d
 
       - uses: actions/checkout@v2
 
