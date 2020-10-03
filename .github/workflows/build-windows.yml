@@ -60,14 +60,15 @@ jobs:
           b = "mirror.yandex.ru/mirrors/msys2"
           for root, _, files in os.walk("c:/vcpkg"):
               for f in files:
-                path = os.path.join(root, f)
-                with open(path) as f:
-                   text = f.read()
-                   changed = text.replace(a, b)
-                if text != changed:
-                  print("CHANGED", path)
-                  with open(path, "w") as f:
-                    f.write(changed)
+                if f.endswith(".cmake"):
+                  path = os.path.join(root, f)
+                  with open(path) as f:
+                    text = f.read()
+                    changed = text.replace(a, b)
+                  if text != changed:
+                    print("CHANGED", path)
+                    with open(path, "w") as f:
+                      f.write(changed)
         shell: python
 
       - name: Cache install tools
