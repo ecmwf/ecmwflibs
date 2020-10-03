@@ -13,7 +13,7 @@ on:
     branches: [ master ]
 
   # pull_request:
-  #   branches: [ master ]
+  #  branches: [ master ]
 
   release:
     types: [created]
