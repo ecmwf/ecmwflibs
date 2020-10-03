@@ -31,9 +31,9 @@ jobs:
         python-version: ["3.8"]
         architecture: ["x64"]
 
-    defaults:
-      run:
-        shell: bash
+    # defaults:
+    #   run:
+    #     shell: bash
 
     name: Build with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
     env:
@@ -41,7 +41,7 @@ jobs:
 
     steps:
 
-      - run: find /c/tools -name pacman.d
+      - run: Get-ChildItem -Path C:\ -Include mirrorlist -File -Recurse -ErrorAction SilentlyContinue
 
       - uses: actions/checkout@v2
 
