@@ -157,7 +157,7 @@ src/proj7:
 build-other/proj7/build.ninja: src/proj7
 	mkdir -p build-other/proj7
 	(cd build-other/proj7; cmake  \
-		../../src/magics -G$(MAKEFILES) \
+		../../src/proj7 -G$(MAKEFILES) \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
