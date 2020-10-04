@@ -80,6 +80,8 @@ jobs:
 
       - run: make tools
 
+      - run: find /c/vcpkg -name sqlite3.exe
+
       - run: make proj7
 
       - name: Get SHA1 from eccodes and magics
