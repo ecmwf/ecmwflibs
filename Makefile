@@ -164,7 +164,7 @@ build-other/proj7/build.ninja: src/proj7
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
 proj7: build-other/proj7/build.ninja
-	cmake --build bbuild-other/proj7 --target install
+	cmake --build build-other/proj7 --target install
 	# touch install/lib/pkgconfig/magics.pc
 
 ##############################################################
