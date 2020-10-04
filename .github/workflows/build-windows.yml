@@ -81,15 +81,13 @@ jobs:
       - run: make tools
 
       - run: make proj7
-        if: false
 
       - name: Get SHA1 from eccodes and magics
         run: tools/sha1.sh
         id: sha1
-        if: false
 
       - name: Cache compilations
-        if: false
+        # if: false
         uses: actions/cache@v2
         with:
           path: |
@@ -99,19 +97,15 @@ jobs:
           key: ${{ runner.os }}${{ matrix.architecture }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
 
       - run: make pull
-        if: false
-
       - run: make wheel
-        if: false
 
       - uses: actions/upload-artifact@v2
-        if: false
         with:
           name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
           path: dist/*
 
   test:
-    if: false
+    # if: false
     needs: build
     runs-on: windows-latest
     strategy:

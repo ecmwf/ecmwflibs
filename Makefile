@@ -162,6 +162,7 @@ build-other/proj7/build.ninja: src/proj7
 		-DENABLE_TIFF=0 \
 		-DENABLE_CURL=1 \
 		-DBUILD_TESTING=0 \
+		-DSQLITE3_BIN_PATH=C:/vcpkg/packages/sqlite3_$(WINARCH)-windows/tools/sqlite3.exe \
 		-DBUILD_LIBPROJ_SHARED=1 \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
