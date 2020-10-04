@@ -159,6 +159,8 @@ build-other/proj7/build.ninja: src/proj7
 	(cd build-other/proj7; cmake  \
 		../../src/proj7 -G$(MAKEFILES) \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DENABLE_TIFF=0 \
+		-DENABLE_CURL=0 \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
 proj7: build-other/proj7/build.ninja
