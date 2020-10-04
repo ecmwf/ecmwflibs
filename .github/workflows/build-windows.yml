@@ -80,7 +80,7 @@ jobs:
 
       - run: make tools
 
-      - run: make install/lib/pkgconfig/proj.pc
+      - run: make proj7
 
       - name: Get SHA1 from eccodes and magics
         run: tools/sha1.sh

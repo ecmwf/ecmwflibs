@@ -151,6 +151,23 @@ install/lib/pkgconfig/magics.pc: build-ecmwf/magics/build.ninja
 
 #################################################################
 
+src/proj7:
+	git clone --depth 1 $(GIT_PROJ) src/proj7
+
+build-other/proj7/build.ninja: src/proj7
+	mkdir -p build-other/proj7
+	(cd build-other/proj7; ../../src/ecbuild/bin/ecbuild  \
+		--cmakebin=$(CMAKEBIN) \
+		../../src/magics -G$(MAKEFILES) \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
+
+proj7: build-other/proj7/build.ninja
+	cmake --build bbuild-other/proj7 --target install
+	# touch install/lib/pkgconfig/magics.pc
+
+##############################################################
+
 sqlite: install/lib/pkgconfig/sqlite3.pc
 
 src/sqlite/configure:
