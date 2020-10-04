@@ -80,7 +80,7 @@ jobs:
 
       - run: make tools
 
-      - run: find /c/vcpkg -name sqlite3.exe
+      - run: find /c/vcpkg -name "*.exe"
 
       - run: make proj7
 
