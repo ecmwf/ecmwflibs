@@ -6,5 +6,11 @@
 		{
 			"path": "../magics-b8raoult"
 		}
-	]
+	],
+	"settings": {
+		"files.associations": {
+			"*.make": "makefile",
+			"vector": "cpp"
+		}
+	}
 }
