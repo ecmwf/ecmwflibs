@@ -39,7 +39,7 @@ jobs:
         id: sha1
 
       - name: Cache compilations
-        # if: false
+        if: false
         uses: actions/cache@v2
         with:
           path: |
