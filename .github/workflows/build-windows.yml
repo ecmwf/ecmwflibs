@@ -54,6 +54,7 @@ jobs:
           architecture: ${{ matrix.architecture }}
 
       - name: Apply mirror
+        if: false
         run: |
           import os
           a = "repo.msys2.org"
