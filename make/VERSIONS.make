@@ -29,3 +29,6 @@ FRIBIDI_VERSION=master
 
 GIT_PANGO=https://gitlab.gnome.org/GNOME/pango.git
 PANGO_VERSION=master
+
+GIT_UDUNITS=git@github.com:b8raoult/UDUNITS-2.git
+UDUNITS_VERSION=master

@@ -73,7 +73,7 @@ jobs:
         shell: python
 
       - name: Cache install tools
-        if: false
+        # if: false
         uses: actions/cache@v2
         with:
           path: c:\vcpkg
@@ -81,11 +81,9 @@ jobs:
 
       - run: make tools
 
-      # - run: find /c/vcpkg -name "*.exe"
+      - run: make udunits
 
       - run: make proj7
-
-      # - run: make udunits
 
       - name: Get SHA1 from eccodes and magics
         run: tools/sha1.sh

@@ -166,9 +166,32 @@ build-other/proj7/build.ninja: src/proj7
 		-DBUILD_SHARED_LIBS=1 \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
-proj7: build-other/proj7/build.ninja
-	cmake --build build-other/proj7 --target install
+##############################################################
+
+ununits: build-other/ununits/build.ninja
+	cmake --build build-other/ununits --target install
 	# touch install/lib/pkgconfig/magics.pc
+
+src/ununits:
+	git clone --depth 1 $(GIT_UDUNITS) src/ununits
+
+		# -DENABLE_TIFF=0 \
+		# -DENABLE_CURL=1 \
+		# -DBUILD_TESTING=0 \
+		# -DSQLITE3_BIN_PATH=C:/vcpkg/packages/sqlite3_$(WINARCH)-windows/tools/sqlite3.exe \
+		# -DBUILD_SHARED_LIBS=1 \
+
+build-other/ununits/build.ninja: src/ununits
+	mkdir -p build-other/ununits
+	(cd build-other/ununits; cmake  \
+		../../src/ununits -G$(MAKEFILES) \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
+
+ununits: build-other/ununits/build.ninja
+	cmake --build build-other/ununits --target install
+	# touch install/lib/pkgconfig/magics.pc
+
 
 ##############################################################
 
