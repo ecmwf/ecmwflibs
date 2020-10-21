@@ -85,6 +85,8 @@ jobs:
 
       - run: make proj7
 
+      # - run: make udunits
+
       - name: Get SHA1 from eccodes and magics
         run: tools/sha1.sh
         id: sha1
