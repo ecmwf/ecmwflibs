@@ -166,11 +166,13 @@ build-other/proj7/build.ninja: src/proj7
 		-DBUILD_SHARED_LIBS=1 \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
+proj7: build-other/proj7/build.ninja
+	cmake --build build-other/proj7 --target install
+	# touch install/lib/pkgconfig/magics.pc
+
 ##############################################################
 
-ununits: build-other/ununits/build.ninja
-	cmake --build build-other/ununits --target install
-	# touch install/lib/pkgconfig/magics.pc
+
 
 src/ununits:
 	git clone --depth 1 $(GIT_UDUNITS) src/ununits
