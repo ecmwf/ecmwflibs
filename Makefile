@@ -182,11 +182,11 @@ src/udunits:
 		# -DBUILD_TESTING=0 \
 		# -DSQLITE3_BIN_PATH=C:/vcpkg/packages/sqlite3_$(WINARCH)-windows/tools/sqlite3.exe \
 		# -DBUILD_SHARED_LIBS=1 \
-
+# -G$(MAKEFILES) \
 build-other/udunits/build.ninja: src/udunits
 	mkdir -p build-other/udunits
 	(cd build-other/udunits; cmake  \
-		../../src/udunits -G$(MAKEFILES) \
+		../../src/udunits \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
