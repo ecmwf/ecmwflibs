@@ -185,7 +185,7 @@ src/ununits:
 
 build-other/ununits/build.ninja: src/ununits
 	mkdir -p build-other/ununits
-	(cd build-other/ununits; cmake  \
+	(cd build-other/ununits; cmake  -G Ninja \
 		../../src/ununits -G$(MAKEFILES) \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
