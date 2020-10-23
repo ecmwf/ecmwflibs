@@ -45,7 +45,7 @@ def test_climetlab_grib():
             grib_input_file_name="climetlab.grib",
         ),
         macro.mcont(
-            contour_automatic_setting="ecmwf",
+            contour_automatic_setting="climetlab",
             legend=False,
         ),
         macro.mcoast(
@@ -101,7 +101,7 @@ def test_climetlab_grib():
             grib_input_file_name="climetlab.grib",
         ),
         macro.mcont(
-            contour_automatic_setting="ecmwf",
+            contour_automatic_setting="climetlab",
             legend=False,
         ),
         macro.mcoast(
