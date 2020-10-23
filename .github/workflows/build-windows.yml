@@ -153,9 +153,9 @@ jobs:
           ls -l
         working-directory: tests
 
-      - run: pytest -v -s
+      - run: pytest --verbose -s
         working-directory: tests
-        timeout-minutes: 20
+        timeout-minutes: 2
 
       - uses: actions/upload-artifact@v2
         with:
