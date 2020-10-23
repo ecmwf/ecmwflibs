@@ -155,7 +155,7 @@ jobs:
 
       - run: pytest -v -s
         working-directory: tests
-        timeout-minutes: 2
+        timeout-minutes: 20
 
       - uses: actions/upload-artifact@v2
         with:
