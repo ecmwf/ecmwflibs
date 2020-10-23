@@ -4,9 +4,6 @@ from Magics import macro
 
 def test_climetlab_grib():
 
-    macro.info()
-    macro.debug()
-
     actions = [
         macro.output(
             output_formats=["png"],
