@@ -153,6 +153,18 @@ jobs:
           ls -l
         working-directory: tests
 
+      - run: python --trace test_climetlab.py
+        working-directory: tests
+        timeout-minutes: 2
+        env:
+          MAGPLUS_DEBUG: "true"
+          MAGPLUS_DEV: "true"
+          MAGPLUS_INFO: "true"
+          ECCODES_DEBUG: "1"
+          GRIB_API_DEBUG: "1"
+
+
+
       - run: pytest --verbose -s
         working-directory: tests
         timeout-minutes: 2

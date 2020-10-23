@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 from Magics import macro
-import os
-
-os.environ["MAGPLUS_DEBUG"] = "true"
-os.environ["MAGPLUS_DEV"] = "true"
-os.environ["MAGPLUS_INFO"] = "true"
 
 
 def test_climetlab_grib():
