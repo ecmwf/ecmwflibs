@@ -153,7 +153,7 @@ jobs:
           ls -l
         working-directory: tests
 
-      - run: python --trace test_climetlab.py
+      - run: python -m trace --trace -C .test_climetlab.py
         working-directory: tests
         timeout-minutes: 2
         env:
