@@ -229,6 +229,19 @@ install/lib/pkgconfig/proj.pc: src/proj/config.status
 	make -C src/proj install
 
 #################################################################
+
+netcdf:  install/lib/pkgconfig/netcdf.pc
+
+src/netcdf/autogen.sh:
+	git clone --depth 1 $(GIT_NETCDF) src/netcdf
+
+src/netcdf/config.status: src/netcdf/autogen.sh
+	(cd src/netcdf; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install --disable-dap
+
+
+install/lib/pkgconfig/netcdf.pc: src/netcdf/config.status
+	make -C src/netcdf install
+#################################################################
 # Pixman is needed by cairo
 
 pixman: install/lib/pkgconfig/pixman-1.pc

@@ -48,6 +48,7 @@ jobs:
             install
           key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
 
+      - run: make netcdf
       - run: make proj
       - run: make pull
       - run: make wheels

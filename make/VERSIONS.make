@@ -32,3 +32,6 @@ PANGO_VERSION=master
 
 GIT_UDUNITS=https://github.com/b8raoult/UDUNITS-2.git
 UDUNITS_VERSION=master
+
+GIT_NETCDF=https://github.com/Unidata/netcdf-c.git
+NETCDF_VERSION=master
