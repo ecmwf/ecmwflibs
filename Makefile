@@ -160,7 +160,7 @@ build-other/proj7/build.ninja: src/proj7
 		../../src/proj7 -G$(MAKEFILES) \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DENABLE_TIFF=0 \
-		-DENABLE_CURL=1 \
+		-DENABLE_CURL=0 \
 		-DBUILD_TESTING=0 \
 		-DSQLITE3_BIN_PATH=C:/vcpkg/packages/sqlite3_$(WINARCH)-windows/tools/sqlite3.exe \
 		-DBUILD_SHARED_LIBS=1 \

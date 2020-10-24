@@ -32,9 +32,8 @@ tools.linux-no:
 	yum install -y python-devel
 
 	# For proj70 on centos7
-	yum-config-manager --add-repo 'https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-$$releasever-$$basearch'
-
-	yum install --nogpgcheck -y proj71-devel
+	# yum-config-manager --add-repo 'https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-$$releasever-$$basearch'
+	# yum install --nogpgcheck -y proj71-devel
 
 	pip3 install ninja auditwheel
 
