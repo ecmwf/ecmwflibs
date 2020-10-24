@@ -208,8 +208,6 @@ src/sqlite/config.status: src/sqlite/configure
 	(cd src/sqlite; \
 		./configure \
 		--disable-tcl \
-		--disable-tiff \
-		--with-curl=no \
 		--prefix=$(CURDIR)/install )
 
 
@@ -224,7 +222,7 @@ src/proj/autogen.sh:
 	git clone --depth 1 $(GIT_PROJ) src/proj
 
 src/proj/config.status: src/proj/autogen.sh
-	(cd src/proj; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install )
+	(cd src/proj; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install --disable-tiff --with-curl=no)
 
 
 install/lib/pkgconfig/proj.pc: src/proj/config.status
