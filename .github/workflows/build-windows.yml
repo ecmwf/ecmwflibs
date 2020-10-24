@@ -9,8 +9,8 @@
 name: Build Windows
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
 
   # pull_request:
   #  branches: [ master ]
@@ -26,10 +26,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # python-version: ["3.6", "3.7", "3.8"]
-        # architecture: ["x86", "x64"]
-        python-version: ["3.8"]
-        architecture: ["x64"]
+        python-version: ["3.6", "3.7", "3.8"]
+        architecture: ["x86", "x64"]
+        # python-version: ["3.8"]
+        # architecture: ["x64"]
 
     defaults:
       run:
@@ -81,7 +81,7 @@ jobs:
 
       - run: make tools
 
-      - run: make udunits
+      # - run: make udunits
 
       - run: make proj7
 
@@ -114,10 +114,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # python-version: ["3.6", "3.7", "3.8"]
-        # architecture: ["x86", "x64"]
-        python-version: ["3.8"]
-        architecture: ["x64"]
+        python-version: ["3.6", "3.7", "3.8"]
+        architecture: ["x86", "x64"]
+        # python-version: ["3.8"]
+        # architecture: ["x64"]
 
     defaults:
       run:
@@ -187,10 +187,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # python-version: ["3.6", "3.7", "3.8"]
-        # architecture: ["x86", "x64"]
-        python-version: ["3.8"]
-        architecture: ["x64"]
+        python-version: ["3.6", "3.7", "3.8"]
+        architecture: ["x86", "x64"]
+        # python-version: ["3.8"]
+        # architecture: ["x64"]
 
     steps:
 
