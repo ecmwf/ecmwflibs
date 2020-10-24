@@ -363,6 +363,7 @@ wheel.linux: .inited eccodes magics
 	auditwheel repair dist/*.whl
 
 wheels.linux: .inited eccodes magics
+	ldd -v install/lib*/libMagPlus.so
 	rm -fr dist wheelhouse ecmwflibs/share
 	cp -r install/share ecmwflibs/
 	- cp install/lib64/*.so install/lib/
