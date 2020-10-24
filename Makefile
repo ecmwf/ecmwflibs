@@ -230,17 +230,24 @@ install/lib/pkgconfig/proj.pc: src/proj/config.status
 
 #################################################################
 
-netcdf:  install/lib/pkgconfig/netcdf.pc
 
-src/netcdf/autogen.sh:
+
+src/netcdf:
 	git clone --depth 1 $(GIT_NETCDF) src/netcdf
 
-src/netcdf/config.status: src/netcdf/autogen.sh
-	(cd src/netcdf; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install --disable-dap)
 
+build-other/netcdf/build.ninja: src/netcdf
+	mkdir -p build-other/netcdf
+	cd build-other/netcdf; cmake -GNinja \
+		../../src/netcdf \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DENABLE_DAP=0 \
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install $(CMAKE_EXTRA1) $(CMAKE_EXTRA2) $(CMAKE_EXTRA3))
 
-install/lib/pkgconfig/netcdf.pc: src/netcdf/config.status
-	make -C src/netcdf install
+netcdf: build-other/netcdf/build.ninja
+	cmake --build build-other/netcdf --target install
+	# touch install/lib/pkgconfig/magics.pc
+
 #################################################################
 # Pixman is needed by cairo
 
