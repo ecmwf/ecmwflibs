@@ -208,6 +208,8 @@ src/sqlite/config.status: src/sqlite/configure
 	(cd src/sqlite; \
 		./configure \
 		--disable-tcl \
+		--disable-tiff \
+		--disable-curl \
 		--prefix=$(CURDIR)/install )
 
 
