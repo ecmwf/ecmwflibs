@@ -236,7 +236,7 @@ src/netcdf/autogen.sh:
 	git clone --depth 1 $(GIT_NETCDF) src/netcdf
 
 src/netcdf/config.status: src/netcdf/autogen.sh
-	(cd src/netcdf; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install --disable-dap
+	(cd src/netcdf; ./autogen.sh ; ./configure --prefix=$(CURDIR)/install --disable-dap)
 
 
 install/lib/pkgconfig/netcdf.pc: src/netcdf/config.status
