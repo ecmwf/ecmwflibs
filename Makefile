@@ -242,7 +242,7 @@ build-other/netcdf/build.ninja: src/netcdf
 		../../src/netcdf \
 		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 		-DENABLE_DAP=0 \
-		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install )
+		-DCMAKE_INSTALL_PREFIX=$(CURDIR)/install
 
 netcdf: build-other/netcdf/build.ninja
 	cmake --build build-other/netcdf --target install
