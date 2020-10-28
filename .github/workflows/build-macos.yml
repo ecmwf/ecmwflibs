@@ -90,7 +90,7 @@ jobs:
           name: wheel-macos-${{ matrix.python-version }}
 
       # This is needed by mumpy and python 3.9
-      - run: brew install openblas
+      - run: pip install numpy==1.18.0
 
       - run: pip install *.whl
 
