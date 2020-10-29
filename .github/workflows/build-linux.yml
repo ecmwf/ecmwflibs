@@ -93,8 +93,20 @@ jobs:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
         dockcross: ["manylinux2014-x64"] #, "manylinux2010-x64"]
+        container:
+        - 'debian:7'
+        - 'debian:testing'
+        - 'ubuntu:14.04'
+        - 'ubuntu:devel'
+        - 'centos:6'
+        - 'centos:7'
+        - 'centos:8'
+        - 'centos:latest'
 
-    name: Test with ${{ matrix.dockcross }} ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+
+    name: Test with ${{ matrix.dockcross }} ${{ matrix.python-version }} ${{ matrix.container }}
 
     steps:
 
@@ -128,7 +140,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: tests-${{ matrix.dockcross }}-${{ matrix.python-version }}
+          name: tests-${{ matrix.dockcross }}-${{ matrix.python-version }}-${{ matrix.container }}
           path: tests/*.png
 
   deploy:
