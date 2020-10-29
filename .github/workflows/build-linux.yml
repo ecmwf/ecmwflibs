@@ -9,8 +9,8 @@
 name: Build Linux
 
 on:
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -86,7 +86,6 @@ jobs:
   test:
 
     needs: build
-    runs-on: ubuntu-latest
 
     strategy:
       # fail-fast: true
