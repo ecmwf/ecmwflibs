@@ -71,7 +71,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
         # python-version: ["3.8"]
 
     name: Test with Python ${{ matrix.python-version }}
@@ -88,6 +88,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: wheel-macos-${{ matrix.python-version }}
+
+      # This is needed by mumpy and python 3.9
+      - run: pip install numpy==1.18.0
 
       - run: pip install *.whl
 
@@ -123,7 +126,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8"]
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
         # python-version: ["3.8"]
 
     steps:
