@@ -11,7 +11,7 @@
 import atexit
 import os
 import tempfile
-
+import sys
 
 __version__ = "0.0.65"
 
@@ -77,6 +77,15 @@ def _lookup(name):
 def find(name):
     """Returns the path to the selected library, or None if not found."""
     name = _lookup(name)
+
+    env = "ECMWFLIBS_" + name.upper()
+    if env in os.environ:
+        print(
+            "ecmwflibs: using provided '{}' set to '{}".format(env, os.environ[env]),
+            file=sys.stderr,
+        )
+        return os.environ[env]
+
     here = os.path.dirname(__file__)
 
     for libdir in [here + ".libs", os.path.join(here, ".dylibs"), here]:
