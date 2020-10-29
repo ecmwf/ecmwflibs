@@ -32,7 +32,7 @@ jobs:
     container:  dockcross/${{ matrix.dockcross }}:latest
 
 
-    name: Build ${{ matrix.dockcross }}
+    name: Build using ${{ matrix.dockcross }}
 
     steps:
       - uses: actions/checkout@v2
@@ -87,13 +87,14 @@ jobs:
 
     needs: build
     runs-on: ubuntu-latest
+
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
         dockcross: ["manylinux2014-x64", "manylinux2010_x86_64"]
 
-    name: Test with Python ${{ matrix.python-version }}
+    name: Test with ${{ matrix.dockcross }} ${{ matrix.python-version }}
 
     steps:
 
@@ -134,17 +135,18 @@ jobs:
 
     if: ${{ github.event_name == 'release' }}
 
-    needs: [test, build]
-
-    name: Deploy wheel ${{ matrix.python-version }} ${{ matrix.manylinux2010_x86_64 }}
-
-    runs-on: ubuntu-latest
-
     strategy:
       fail-fast: true
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
         dockcross: ["manylinux2014-x64", "manylinux2010_x86_64"]
+
+    needs: [test, build]
+
+    name: Deploy wheel ${{ matrix.python-version }} ${{ matrix.dockcross }}
+
+    runs-on: ubuntu-latest
+
 
     steps:
 
