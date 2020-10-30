@@ -87,18 +87,17 @@ ninja -C build-other/pixman install
 
 git clone --depth 1 $GIT_CAIRO src/cairo
 cd src/cairo
-./autogen.sh
-./configure \
-    --disable-xlib \
-    --disable-xcb \
-    --disable-qt \
-    --disable-quartz \
-    --disable-gl \
-    --disable-gobject \
-    --prefix=$TOPDIR/install
+meson setup --prefix=$TOPDIR/install \
+    -Dintrospection=disabled \
+    -Dwrap_mode=nofallback \
+    -Dxlib=disabled \
+    -Dxcb=disabled \
+    -Dqt=disabled \
+    -Dgl-backend=disabled \
+    $TOPDIR/build-other/cairo
 
 cd $TOPDIR
-make -C src/cairo install
+ninja -C build-other/cairo install
 
 # Build harfbuzz needed by pango
 
