@@ -9,14 +9,14 @@
 name: Build Linux
 
 on:
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
 
-  release:
-    types: [created]
+  # release:
+  #   types: [created]
 
 # python3.8 -c "import pip._internal; [print(n) for n in pip._internal.pep425tags.get_supported()]"
 # See https://github.com/peter-evans/repository-dispatch
@@ -31,9 +31,9 @@ jobs:
       fail-fast: false
       matrix:
         dockcross:
-        - manylinux1-x64
-        - manylinux2010-x64
-        # - manylinux2014-x64
+        # - manylinux1-x64
+        # - manylinux2010-x64
+        - manylinux2014-x64
 
     runs-on: ubuntu-latest
     container:  dockcross/${{ matrix.dockcross }}:latest
@@ -44,29 +44,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - run: make tools-${{ matrix.dockcross }}
-        env:
-          LD_LIBRARY_PATH: /usr/lib64:/lib64:/usr/local/lib:/usr/lib:/lib
-
-      - name: Get SHA1 from eccodes and magics
-        run: tools/sha1.sh
-        id: sha1
-
-      - name: Cache compilations
-        if: false
-        uses: actions/cache@v2
-        with:
-          path: |
-            src
-            build-ecmwf
-            install
-          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
+      - run: ./scripts-${{ matrix.dockcross }}
 
       # - run: make netcdf
-        # if: ${{ matrix.dockcross }} == manylinux2014-x64
-      - run: make proj
-      - run: make pull
-      - run: make wheels
+      # - run: make proj
+      # - run: make pull
+      # - run: make wheels
 
       - uses: actions/upload-artifact@v1
         name: Upload wheel 3.6
@@ -74,24 +57,23 @@ jobs:
           name: wheel-${{ matrix.dockcross }}-3.6
           path: wheelhouse/*cp36*
 
-      - uses: actions/upload-artifact@v1
-        name: Upload wheel 3.7
-        with:
-          name: wheel-${{ matrix.dockcross }}-3.7
-          path: wheelhouse/*cp37*
+      # - uses: actions/upload-artifact@v1
+      #   name: Upload wheel 3.7
+      #   with:
+      #     name: wheel-${{ matrix.dockcross }}-3.7
+      #     path: wheelhouse/*cp37*
 
-      - uses: actions/upload-artifact@v1
-        name: Upload wheel 3.8
-        with:
-          name: wheel-${{ matrix.dockcross }}-3.8
-          path: wheelhouse/*cp38*
+      # - uses: actions/upload-artifact@v1
+      #   name: Upload wheel 3.8
+      #   with:
+      #     name: wheel-${{ matrix.dockcross }}-3.8
+      #     path: wheelhouse/*cp38*
 
-      - uses: actions/upload-artifact@v1
-        # if: false
-        name: Upload wheel 3.9
-        with:
-          name: wheel-${{ matrix.dockcross }}-3.9
-          path: wheelhouse/*cp39*
+      # - uses: actions/upload-artifact@v1
+      #   name: Upload wheel 3.9
+      #   with:
+      #     name: wheel-${{ matrix.dockcross }}-3.9
+      #     path: wheelhouse/*cp39*
 
   test:
 
