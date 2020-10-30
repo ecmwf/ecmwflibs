@@ -9,8 +9,8 @@
 name: Build Linux
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -18,7 +18,8 @@ on:
   release:
     types: [created]
 
-#  python3.8 -c "import pip._internal; [print(n) for n in pip._internal.pep425tags.get_supported()]"
+# python3.8 -c "import pip._internal; [print(n) for n in pip._internal.pep425tags.get_supported()]"
+# See https://github.com/peter-evans/repository-dispatch
 
 jobs:
   build:
