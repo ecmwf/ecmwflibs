@@ -62,7 +62,7 @@ jobs:
             install
           key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
 
-      - run: make netcdf
+      # - run: make netcdf
         # if: ${{ matrix.dockcross }} == manylinux2014-x64
       - run: make proj
       - run: make pull
