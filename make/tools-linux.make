@@ -4,6 +4,7 @@ tools.linux:
 	# rm /usr/local/lib/libcurl.*
 	# ldconfig
 	# yum install -y netcdf-devel netcdf-cxx-devel
+	ldconfig -v | grep libcurl
 	- find / -name "libcurl.*" -print
 	yum install -y hdf5-devel
 	yum install -y libpng-devel
