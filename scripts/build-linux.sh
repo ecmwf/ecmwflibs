@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -eaux
 
-INSTALL_NETCDF=${INSTALL_CAIRO:=1}
+INSTALL_CAIRO=${INSTALL_CAIRO:=1}
 INSTALL_NETCDF=${INSTALL_NETCDF:=1}
-INSTALL_NETCDF=${INSTALL_PANGO:=1}
-INSTALL_NETCDF=${INSTALL_SQLITE:=0}
+INSTALL_PANGO=${INSTALL_PANGO:=1}
+INSTALL_SQLITE=${INSTALL_SQLITE:=0}
 
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
 
@@ -274,3 +274,4 @@ cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
 python3 setup.py bdist_wheel
 auditwheel repair dist/*.whl
+unzip -l wheelhouse/*.whl | grep lib
