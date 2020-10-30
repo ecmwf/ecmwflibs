@@ -1,11 +1,10 @@
 
-tools.linux:
+tools.linux: tools-manylinux2014-x64
+
+tools-manylinux2014-x64:
 	# There are two copies of libcurl, this confuses yum
-	# rm /usr/local/lib/libcurl.*
-	# ldconfig
-	# # yum install -y netcdf-devel netcdf-cxx-devel
-	# ldconfig -v | grep libcurl
-	# - find / -name "libcurl.*" -print
+	rm /usr/local/lib/libcurl.*
+	ldconfig
 	yum install -y hdf5-devel
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
@@ -21,17 +20,43 @@ tools.linux:
 	ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 	ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
-fix-curl:
-	# There are two copies of libcurl, this confuses yum
+
+
+tools-manylinux1-x64:
+	yum install -y hdf5-devel
+	yum install -y libpng-devel
+	yum install -y libtiff-devel
+	yum install -y fontconfig-devel
+	yum install -y gobject-introspection-devel
+	yum install -y libjasper-devel
+	yum install -y flex bison
+	yum install -y pax-utils # For lddtree
+	ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
+	ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
+	ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+	pip3 install ninja auditwheel meson
+	ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
+	ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
+
+tools-manylinux2010-x64:
 	rm /usr/local/lib/libcurl.*
 	ldconfig
+	yum install -y hdf5-devel
+	yum install -y libpng-devel
+	yum install -y libtiff-devel
+	yum install -y fontconfig-devel
+	yum install -y gobject-introspection-devel
+	yum install -y libjasper-devel
+	yum install -y flex bison
+	yum install -y pax-utils # For lddtree
+	ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
+	ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
+	ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+	pip3 install ninja auditwheel meson
+	ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
+	ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
-tools-manylinux1-x64: tools.linux
-
-tools-manylinux2010-x64: fix-curl tools.linux
-
-tools-manylinux2014-x64: fix-curl tools.linux
-
+tools-manylinux2014-x64: tools.linux
 
 tools.linux-no:
 	# There are two copies of libcurl, this confuses yum
