@@ -41,24 +41,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: make tools
-
-      - name: Get SHA1 from eccodes and magics
-        run: tools/sha1.sh
-        id: sha1
-
-      - name: Cache compilations
-        if: false
-        uses: actions/cache@v2
-        with:
-          path: |
-            src
-            build-ecmwf
-            install
-          key: ${{ runner.os }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
-
-      - run: make pull
-      - run: make wheel
+      - run: ./scripts/macos.sh
+        shell: bash
 
       - uses: actions/upload-artifact@v2
         with:
