@@ -8,15 +8,15 @@ jobs:
       fail-fast: false
       matrix:
         container:
-        - 'debian:7'
         - 'debian:testing'
         - 'ubuntu:14.04'
         - 'ubuntu:devel'
-        - 'centos:6'
+        - 'centos:7'
+        - 'centos:8'
         - 'centos:latest'
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     steps:
       - run: cat /etc/*release
-      - run: yum install -y node
+      # - run: yum install -y node
       - uses: actions/checkout@v2
