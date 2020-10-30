@@ -17,4 +17,5 @@ jobs:
       - run: cat /etc/*release
       # - run: yum update -y
       # - run: yum install -y nodejs
-      - uses: actions/checkout@v1 # v2 does not work on all platforms
+      # see https://github.com/actions/runner/issues/337
+      - uses: actions/checkout@v1

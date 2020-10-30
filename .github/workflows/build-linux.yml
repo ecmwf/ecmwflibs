@@ -9,8 +9,8 @@
 name: Build Linux
 
 on:
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -21,13 +21,19 @@ on:
 # python3.8 -c "import pip._internal; [print(n) for n in pip._internal.pep425tags.get_supported()]"
 # See https://github.com/peter-evans/repository-dispatch
 
+# We use checkout@v1:
+# see https://github.com/actions/runner/issues/337
+
 jobs:
   build:
 
     strategy:
+      fail-fast: false
       matrix:
-        dockcross: ["manylinux2014-x64"] #, "manylinux2010-x64"]
-    # if: false
+        dockcross:
+        - manylinux1-x64
+        - manylinux2010-x64
+        - manylinux2014-x64
 
     runs-on: ubuntu-latest
     container:  dockcross/${{ matrix.dockcross }}:latest
