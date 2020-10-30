@@ -24,7 +24,7 @@ then
 fi
 
 yum install -y expat-devel
-find / -name 'libexpat*'
+yum install -y cairo-devel
 
 # For some reason, this is not installed
 
