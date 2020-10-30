@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - run: make tools
+      - run: make tools-${{ matrix.dockcross }}
         env:
           LD_LIBRARY_PATH: /usr/lib64:/lib64:/usr/local/lib:/usr/lib:/lib
 

@@ -1,11 +1,11 @@
 
 tools.linux:
 	# There are two copies of libcurl, this confuses yum
-	rm /usr/local/lib/libcurl.*
-	ldconfig
-	# yum install -y netcdf-devel netcdf-cxx-devel
-	ldconfig -v | grep libcurl
-	- find / -name "libcurl.*" -print
+	# rm /usr/local/lib/libcurl.*
+	# ldconfig
+	# # yum install -y netcdf-devel netcdf-cxx-devel
+	# ldconfig -v | grep libcurl
+	# - find / -name "libcurl.*" -print
 	yum install -y hdf5-devel
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
@@ -20,6 +20,18 @@ tools.linux:
 	pip3 install ninja auditwheel meson
 	ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 	ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
+
+fix-curl:
+	# There are two copies of libcurl, this confuses yum
+	rm /usr/local/lib/libcurl.*
+	ldconfig
+
+tools-manylinux1-x64: tools.linux
+
+tools-manylinux2010-x64: fix-curl tools.linux
+
+tools-manylinux2014-x64: fix-curl tools.linux
+
 
 tools.linux-no:
 	# There are two copies of libcurl, this confuses yum
