@@ -3,10 +3,10 @@ set -eaux
 
 source scripts/common.sh
 
-vcpkg install expat:WINARCH-windows
-vcpkg install netcdf-c:WINARCH-windows
-vcpkg install pango:WINARCH-windows
-vcpkg install sqlite3[core,tool]:WINARCH-windows
+vcpkg install expat:$WINARCH-windows
+vcpkg install netcdf-c:$WINARCH-windows
+vcpkg install pango:$WINARCH-windows
+vcpkg install sqlite3[core,tool]:$WINARCH-windows
 pip install ninja wheel dll-diagnostics
 
 # Build proj7
@@ -71,6 +71,7 @@ cd $TOPDIR
 cmake --build build-ecmwf/magics --target install
 
 # Create wheel
+
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 mkdir -p ecmwflibs/share/proj
