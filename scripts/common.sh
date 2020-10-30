@@ -36,7 +36,7 @@ GIT_UDUNITS=https://github.com/b8raoult/UDUNITS-2.git
 UDUNITS_VERSION=master
 
 GIT_NETCDF=https://github.com/Unidata/netcdf-c.git
-NETCDF_VERSION=master
+NETCDF_VERSION=${NETCDF_VERSION:=master}
 
 git clone --branch $ECBUILD_VERSION --depth 1 $GIT_ECBUILD src/ecbuild
 git clone --branch $ECCODES_VERSION --depth 1 $GIT_ECCODES src/eccodes

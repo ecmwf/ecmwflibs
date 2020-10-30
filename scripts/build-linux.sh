@@ -41,7 +41,7 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 # Build netcdf without curl
 
-git clone --depth 1 $GIT_NETCDF src/netcdf
+git clone --branch=$NETCDF_VERSION --depth 1 $GIT_NETCDF src/netcdf
 mkdir -p build-other/netcdf
 cd $TOPDIR/build-other/netcdf
 
