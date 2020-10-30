@@ -41,3 +41,8 @@ NETCDF_VERSION=master
 git clone --branch $ECBUILD_VERSION --depth 1 $GIT_ECBUILD src/ecbuild
 git clone --branch $ECCODES_VERSION --depth 1 $GIT_ECCODES src/eccodes
 git clone --branch $MAGICS_VERSION --depth 1 $GIT_MAGICS src/magics
+
+mkdir -p build-ecmwf/eccodes
+mkdir -p build-ecmwf/magics
+
+TOPDIR=$(/bin/pwd)
