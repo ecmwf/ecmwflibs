@@ -4,11 +4,12 @@ set -eaux
 INSTALL_NETCDF=${INSTALL_CAIRO:=1}
 INSTALL_NETCDF=${INSTALL_NETCDF:=1}
 INSTALL_NETCDF=${INSTALL_PANGO:=1}
-INSTALL_NETCDF=${INSTALL_SQLITE:=1}
+INSTALL_NETCDF=${INSTALL_SQLITE:=0}
 
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
 
 FIX_LIBCURL=${FIX_LIBCURL:=1}
+FIX_SHELL_TCL=${FIX_SHELL_TCL:=0}
 
 source scripts/common.sh
 
@@ -205,6 +206,11 @@ cd src/sqlite
 ./configure \
 	--disable-tcl \
 	--prefix=$TOPDIR/install
+
+if [[ $FIX_SHELL_TCL -eq 1 ]]
+then
+    sed -i 's/[open $topdir/src/shell.c.in rb]/[open $topdir/src/shell.c.in r]/' tool/mkshellc.tcl
+fi
 
 cd $TOPDIR
 make -C src/sqlite install
