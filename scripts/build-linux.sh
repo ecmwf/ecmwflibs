@@ -42,8 +42,8 @@ ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
 # PATH=$TOPDIR/install/bin:/usr/bin:$PATH
 # NOCONFIGURE=1
-# PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
-# LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
+PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
+LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 # Build netcdf without curl
 
