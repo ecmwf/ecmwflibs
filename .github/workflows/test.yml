@@ -17,3 +17,4 @@ jobs:
     container: ${{ matrix.container }}
     steps:
       - run: cat /etc/*release
+      - uses: actions/checkout@v2
