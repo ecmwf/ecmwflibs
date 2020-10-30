@@ -41,7 +41,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: ./scripts/macos.sh
+      - run: ./scripts/build-macos.sh
         shell: bash
 
       - uses: actions/upload-artifact@v2
@@ -55,8 +55,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        # python-version: ["3.8"]
+        # python-version: ["3.6", "3.7", "3.8", "3.9"]
+        python-version: ["3.8"]
 
     name: Test with Python ${{ matrix.python-version }}
 
@@ -110,8 +110,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        # python-version: ["3.8"]
+        # python-version: ["3.6", "3.7", "3.8", "3.9"]
+        python-version: ["3.8"]
 
     steps:
 
