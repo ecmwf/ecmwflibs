@@ -3,10 +3,33 @@ set -eaux
 
 source scripts/common.sh
 
-brew install cmake ninja
-brew install pango cairo proj pkg-config
-brew install netcdf
-pip3 install wheel delocate
+vcpkg install expat:WINARCH-windows
+vcpkg install netcdf-c:WINARCH-windows
+vcpkg install pango:WINARCH-windows
+vcpkg install sqlite3[core,tool]:WINARCH-windows
+pip install ninja wheel dll-diagnostics
+
+# Build proj7
+
+git clone --depth 1 $GIT_PROJ src/proj7
+mkdir -p build-other/proj7
+cd build-other/proj7
+
+cmake  \
+    ../../src/proj7 -G"NMake Makefiles" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_TIFF=0 \
+    -DENABLE_CURL=0 \
+    -DBUILD_TESTING=0 \
+    -DBUILD_PROJSYNC=0 \
+    -DSQLITE3_BIN_PATH=C:/vcpkg/packages/sqlite3_${WINARCH}-windows/tools/sqlite3.exe \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
+    -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    -DCMAKE_C_COMPILER=cl.exe
+
+cd $TOPDIR
+cmake --build build-other/proj7 --target install
 
 # Build eccodes
 
@@ -14,7 +37,7 @@ cd $TOPDIR/build-ecmwf/eccodes
 
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/eccodes \
-    -GNinja \
+    -G"NMake Makefiles" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
@@ -23,7 +46,8 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib
+    -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    -DCMAKE_C_COMPILER=cl.exe
 
 cd $TOPDIR
 cmake --build build-ecmwf/eccodes --target install
@@ -33,23 +57,23 @@ cmake --build build-ecmwf/eccodes --target install
 cd $TOPDIR/build-ecmwf/magics
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
-    -GNinja \
+    -G"NMake Makefiles" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib
+    -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    -DCMAKE_C_COMPILER=cl.exe
 
 cd $TOPDIR
 cmake --build build-ecmwf/magics --target install
 
 # Create wheel
 rm -fr dist wheelhouse ecmwflibs/share
-mkdir -p install/share/magics
 cp -r install/share ecmwflibs/
-cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
-strip -S install/lib/*.dylib
-python3 setup.py bdist_wheel
-delocate-wheel -w wheelhouse dist/*.whl
+mkdir -p ecmwflibs/share/proj
+python tools/copy-dlls.py install/bin/MagPlus.dll ecmwflibs/
+mkdir -p install/include
+python setup.py bdist_wheel

@@ -9,14 +9,14 @@
 name: Build Windows
 
 on:
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
 
   # pull_request:
   #  branches: [ master ]
 
-  release:
-    types: [created]
+  # release:
+  #   types: [created]
 
 jobs:
 
@@ -26,10 +26,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        architecture: ["x86", "x64"]
-        # python-version: ["3.8"]
-        # architecture: ["x64"]
+        # python-version: ["3.6", "3.7", "3.8", "3.9"]
+        # architecture: ["x86", "x64"]
+        python-version: ["3.8"]
+        architecture: ["x64"]
 
     defaults:
       run:
@@ -54,7 +54,7 @@ jobs:
           architecture: ${{ matrix.architecture }}
 
       - name: Apply mirror
-        if: false
+        if: "false"
         run: |
           import os
           a = "repo.msys2.org"
@@ -72,35 +72,10 @@ jobs:
                       f.write(changed)
         shell: python
 
-      - name: Cache install tools
-        # if: false
-        uses: actions/cache@v2
-        with:
-          path: c:\vcpkg
-          key: ${{ runner.os }}${{ matrix.architecture }}-tools-${{ hashFiles('make/tools-windows.make') }}
 
-      - run: make tools
-
-      # - run: make udunits
-
-      - run: make proj7
-
-      - name: Get SHA1 from eccodes and magics
-        run: tools/sha1.sh
-        id: sha1
-
-      - name: Cache compilations
-        if: false
-        uses: actions/cache@v2
-        with:
-          path: |
-            src
-            build-ecmwf
-            install
-          key: ${{ runner.os }}${{ matrix.architecture }}-cache-${{ hashFiles('make/VERSIONS.make') }}-${{ steps.sha1.outputs.eccodes }}-${{ steps.sha1.outputs.magics }}
-
-      - run: make pull
-      - run: make wheel
+      - run: ./scripts/build-windows.sh
+        env:
+          WINARCH: ${{ matrix.architecture }}
 
       - uses: actions/upload-artifact@v2
         with:
@@ -114,10 +89,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        architecture: ["x86", "x64"]
-        # python-version: ["3.8"]
-        # architecture: ["x64"]
+        # python-version: ["3.6", "3.7", "3.8", "3.9"]
+        # architecture: ["x86", "x64"]
+        python-version: ["3.8"]
+        architecture: ["x64"]
 
     defaults:
       run:
@@ -185,10 +160,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        architecture: ["x86", "x64"]
-        # python-version: ["3.8"]
-        # architecture: ["x64"]
+        # python-version: ["3.6", "3.7", "3.8", "3.9"]
+        # architecture: ["x86", "x64"]
+        python-version: ["3.8"]
+        architecture: ["x64"]
 
     steps:
 
