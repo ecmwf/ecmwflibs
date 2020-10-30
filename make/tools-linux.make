@@ -23,7 +23,7 @@ tools-manylinux2014-x64:
 
 
 tools-manylinux1-x64:
-	yum install -y hdf5-devel
+	yum install -y netcdf-devel
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
 	yum install -y fontconfig-devel
@@ -41,7 +41,7 @@ tools-manylinux1-x64:
 tools-manylinux2010-x64:
 	rm /usr/local/lib/libcurl.*
 	ldconfig
-	yum install -y hdf5-devel
+	yum install -y netcdf-devel
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
 	yum install -y fontconfig-devel
