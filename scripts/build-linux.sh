@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 set -eaux
 
+INSTALL_NETCDF=${INSTALL_NETCDF:=1}
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
+FIX_LIBCURL=${FIX_LIBCURL:=1}
 
 source scripts/common.sh
 
-# There are two copies of libcurl, this confuses yum
-rm /usr/local/lib/libcurl.*
-ldconfig
+if [[ $FIX_LIBCURL -eq 1 ]]
+then
+    # There are two copies of libcurl, this confuses yum
+    rm /usr/local/lib/libcurl.*
+    ldconfig
+fi
 
-yum install -y hdf5-devel
 yum install -y libpng-devel
 yum install -y libtiff-devel
 yum install -y fontconfig-devel
@@ -41,21 +45,30 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 # Build netcdf without curl
 
-git clone  $GIT_NETCDF src/netcdf
-cd src/netcdf
-git checkout $NETCDF_VERSION
+if [[ $INSTALL_NETCDF -eq 1 ]]
+then
+    yum install -y netcdf-devel
+else
 
-mkdir -p $TOPDIR/build-other/netcdf
-cd $TOPDIR/build-other/netcdf
+    yum install -y hdf5-devel
 
-cmake -GNinja \
-    $TOPDIR/src/netcdf \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DENABLE_DAP=0 \
-    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+    git clone  $GIT_NETCDF src/netcdf
+    cd src/netcdf
+    git checkout $NETCDF_VERSION
 
-cd $TOPDIR
-cmake --build build-other/netcdf --target install
+    mkdir -p $TOPDIR/build-other/netcdf
+    cd $TOPDIR/build-other/netcdf
+
+    cmake -GNinja \
+        $TOPDIR/src/netcdf \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        -DENABLE_DAP=0 \
+        -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+    cd $TOPDIR
+    cmake --build build-other/netcdf --target install
+
+fi
 
 # Pixman is needed by cairo
 
