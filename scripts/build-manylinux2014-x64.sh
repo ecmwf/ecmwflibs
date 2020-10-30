@@ -123,7 +123,7 @@ cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
 mkdir -p build-other/pango
 cd src/pango
 meson setup --prefix=$TOPDIR/install \
-    -Dwrap_mode=nofallback
+    -Dwrap_mode=nofallback \
     $TOPDIR/build-other/pango
 
 cd $TOPDIR
