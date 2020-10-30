@@ -137,7 +137,7 @@ git clone --depth 1 $GIT_SQLITE src/sqlite
 cd src/sqlite
 ./configure \
 	--disable-tcl \
-	--prefix=$TOP/install
+	--prefix=$TOPDIR/install
 
 cd $TOPDIR
 make -C src/sqlite install
