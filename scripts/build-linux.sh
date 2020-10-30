@@ -209,9 +209,9 @@ cd src/sqlite
 
 if [[ $FIX_SHELL_TCL -eq 1 ]]
 then
-    sed -i 's,[open $topdir/src/shell.c.in rb],[open $topdir/src/shell.c.in r],' tool/mkshellc.tcl
+    sed -i 's/ rb/ r/' tool/mkshellc.tcl
 fi
-
+   
 cd $TOPDIR
 make -C src/sqlite install
 
