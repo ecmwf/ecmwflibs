@@ -3,7 +3,10 @@ set -eaux
 
 INSTALL_NETCDF=${INSTALL_CAIRO:=1}
 INSTALL_NETCDF=${INSTALL_NETCDF:=1}
+INSTALL_NETCDF=${INSTALL_PANGO:=1}
+
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
+
 FIX_LIBCURL=${FIX_LIBCURL:=1}
 
 source scripts/common.sh
@@ -126,6 +129,11 @@ ninja -C build-other/cairo install
 
 fi
 
+if [[ $INSTALL_PANGO -eq 1 ]]
+then
+    yum install -y pango-devel
+else
+
 # Build harfbuzz needed by pango
 
 git clone --depth 1 $GIT_HARFBUZZ src/harfbuzz
@@ -181,6 +189,7 @@ meson setup --prefix=$TOPDIR/install \
 cd $TOPDIR
 ninja -C build-other/pango install
 
+fi
 
 # Build sqlite
 
