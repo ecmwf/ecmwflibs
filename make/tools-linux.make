@@ -1,8 +1,8 @@
 
 tools.linux:
 	# There are two copies of libcurl, this confuses yum
-	# rm /usr/local/lib/libcurl.*
-	# ldconfig
+	rm /usr/local/lib/libcurl.*
+	ldconfig
 	# yum install -y netcdf-devel netcdf-cxx-devel
 	ldconfig -v | grep libcurl
 	- find / -name "libcurl.*" -print
