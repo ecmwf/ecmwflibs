@@ -27,7 +27,7 @@ tools-manylinux1-x64:
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
 	yum install -y fontconfig-devel
-	yum install -y gobject-introspection-devel
+	# yum install -y gobject-introspection-devel
 	yum install -y libjasper-devel
 	yum install -y flex bison
 	yum install -y pax-utils # For lddtree
@@ -45,7 +45,7 @@ tools-manylinux2010-x64:
 	yum install -y libpng-devel
 	yum install -y libtiff-devel
 	yum install -y fontconfig-devel
-	yum install -y gobject-introspection-devel
+	# yum install -y gobject-introspection-devel
 	yum install -y libjasper-devel
 	yum install -y flex bison
 	yum install -y pax-utils # For lddtree
