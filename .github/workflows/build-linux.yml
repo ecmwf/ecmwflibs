@@ -46,7 +46,7 @@ jobs:
 
       - run: make tools
         env:
-          LD_LIBRARY_PATH: /usr/local/lib:/usr/lib64:/lib64:/usr/lib:/lib
+          LD_LIBRARY_PATH: /usr/lib64:/lib64:/usr/local/lib:/usr/lib:/lib
 
       - name: Get SHA1 from eccodes and magics
         run: tools/sha1.sh
