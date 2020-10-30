@@ -74,11 +74,14 @@ fi
 
 git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
-./autogen.sh
-./configure --prefix=$TOPDIR/install
+meson setup --prefix=$TOPDIR/install \
+    -Dintrospection=disabled \
+    -Dwrap_mode=nofallback \
+    $TOPDIR/build-other/pixman
 
 cd $TOPDIR
-make -C src/pixman install
+ninja -C build-other/pixman install
+
 
 # Build cairo
 
