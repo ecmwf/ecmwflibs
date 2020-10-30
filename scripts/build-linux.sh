@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -eaux
 
+INSTALL_NETCDF=${INSTALL_CAIRO:=1}
 INSTALL_NETCDF=${INSTALL_NETCDF:=1}
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
 FIX_LIBCURL=${FIX_LIBCURL:=1}
@@ -89,6 +90,11 @@ else
 
 fi
 
+if [[ $$INSTALL_CAIRO -eq 1 ]]
+then
+    yum install -y cairo-devel
+else
+
 # Pixman is needed by cairo
 
 git clone --depth 1 $GIT_PIXMAN src/pixman
@@ -117,6 +123,8 @@ meson setup --prefix=$TOPDIR/install \
 
 cd $TOPDIR
 ninja -C build-other/cairo install
+
+fi
 
 # Build harfbuzz needed by pango
 
