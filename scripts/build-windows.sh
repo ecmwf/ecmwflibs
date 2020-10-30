@@ -16,7 +16,7 @@ mkdir -p build-other/proj7
 cd build-other/proj7
 
 cmake  \
-    ../../src/proj7 -G"NMake Makefiles" \
+    $TOPDIR/src/proj7 -G"NMake Makefiles" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_TIFF=0 \
     -DENABLE_CURL=0 \

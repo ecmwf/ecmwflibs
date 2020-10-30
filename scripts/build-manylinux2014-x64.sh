@@ -25,8 +25,8 @@ pip3 install ninja auditwheel meson
 ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
-
 # Make sure the right libtool is used (installing gobject-... changes libtool)
+
 PATH=$TOPDIR/install/bin:/usr/bin:$PATH
 NOCONFIGURE=1
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
@@ -128,6 +128,26 @@ meson setup --prefix=$TOPDIR/install \
 
 cd $TOPDIR
 ninja -C build-other/pango install
+
+
+# Build proj7
+
+git clone --depth 1 $GIT_PROJ src/proj7
+mkdir -p build-other/proj7
+cd build-other/proj7
+
+cmake  \
+    $TOPDIR/src/proj7 -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_TIFF=0 \
+    -DENABLE_CURL=0 \
+    -DBUILD_TESTING=0 \
+    -DBUILD_PROJSYNC=0 \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
+
+cd $TOPDIR
+cmake --build build-other/proj7 --target install
 
 # Build eccodes
 
