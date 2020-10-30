@@ -25,6 +25,13 @@ pip3 install ninja auditwheel meson
 ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
+
+# Make sure the right libtool is used (installing gobject-... changes libtool)
+PATH=$TOPDIR/install/bin:/usr/bin:$PATH
+NOCONFIGURE=1
+PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
+LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
+
 # Build netcdf without curl
 
 git clone --depth 1 $GIT_NETCDF src/netcdf
