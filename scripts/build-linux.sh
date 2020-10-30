@@ -24,6 +24,7 @@ then
 fi
 
 yum install -y expat-devel
+yum install -y expat
 
 yum install -y libjasper-devel
 yum install -y flex bison
@@ -45,7 +46,6 @@ ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
-find / -name '*expat*' -print || true
 # Build netcdf without curl
 
 if [[ $INSTALL_NETCDF -eq 1 ]]
