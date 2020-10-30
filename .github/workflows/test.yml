@@ -5,6 +5,7 @@ on: push
 jobs:
   linux:
     strategy:
+      fail-fast: false
       matrix:
         container:
         - 'debian:7'
@@ -17,4 +18,5 @@ jobs:
     container: ${{ matrix.container }}
     steps:
       - run: cat /etc/*release
+      - run: yum install -y node
       - uses: actions/checkout@v2
