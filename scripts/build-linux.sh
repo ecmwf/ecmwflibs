@@ -4,6 +4,7 @@ set -eaux
 INSTALL_NETCDF=${INSTALL_CAIRO:=1}
 INSTALL_NETCDF=${INSTALL_NETCDF:=1}
 INSTALL_NETCDF=${INSTALL_PANGO:=1}
+INSTALL_NETCDF=${INSTALL_SQLITE:=1}
 
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
 
@@ -191,6 +192,11 @@ ninja -C build-other/pango install
 
 fi
 
+if [[ $INSTALL_SQLITE -eq 1 ]]
+then
+    yum install -y sqlite-devel
+else
+
 # Build sqlite
 
 git clone --depth 1 $GIT_SQLITE src/sqlite
@@ -202,6 +208,8 @@ cd src/sqlite
 
 cd $TOPDIR
 make -C src/sqlite install
+
+fi
 
 # Build proj
 
