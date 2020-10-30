@@ -9,8 +9,8 @@
 name: Build Linux
 
 on:
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -93,11 +93,9 @@ jobs:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
         dockcross: ["manylinux2014-x64"] #, "manylinux2010-x64"]
         container:
-        - 'debian:7'
         - 'debian:testing'
         - 'ubuntu:14.04'
         - 'ubuntu:devel'
-        - 'centos:6'
         - 'centos:7'
         - 'centos:8'
         - 'centos:latest'
