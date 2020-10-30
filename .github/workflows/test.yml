@@ -1,0 +1,19 @@
+name: test
+
+on: push
+
+jobs:
+  linux:
+    strategy:
+      matrix:
+        container:
+        - 'debian:7'
+        - 'debian:testing'
+        - 'ubuntu:14.04'
+        - 'ubuntu:devel'
+        - 'centos:6'
+        - 'centos:latest'
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    steps:
+      - run: cat /etc/*release
