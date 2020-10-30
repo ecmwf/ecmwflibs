@@ -23,6 +23,8 @@ then
     yum install -y gobject-introspection-devel
 fi
 
+yum install -y expat-devel
+
 yum install -y libjasper-devel
 yum install -y flex bison
 yum install -y pax-utils # For lddtree
