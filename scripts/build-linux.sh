@@ -90,7 +90,7 @@ else
 
 fi
 
-if [[ $$INSTALL_CAIRO -eq 1 ]]
+if [[ $INSTALL_CAIRO -eq 1 ]]
 then
     yum install -y cairo-devel
 else
