@@ -16,5 +16,5 @@ jobs:
     steps:
       - run: cat /etc/*release
       - run: yum update -y
-      - run: yum install -y node
+      - run: yum install -y nodejs
       - uses: actions/checkout@v2
