@@ -130,24 +130,31 @@ cd $TOPDIR
 ninja -C build-other/pango install
 
 
-# Build proj7
+# Build sqlite
 
-git clone --depth 1 $GIT_PROJ src/proj7
-mkdir -p build-other/proj7
-cd build-other/proj7
+git clone --depth 1 $GIT_SQLITE src/sqlite
 
-cmake  \
-    $TOPDIR/src/proj7 -GNinja \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DENABLE_TIFF=0 \
-    -DENABLE_CURL=0 \
-    -DBUILD_TESTING=0 \
-    -DBUILD_PROJSYNC=0 \
-    -DBUILD_SHARED_LIBS=1 \
-    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
+cd src/sqlite
+./configure \
+	--disable-tcl \
+	--prefix=$TOP/install
 
 cd $TOPDIR
-cmake --build build-other/proj7 --target install
+make -C src/sqlite install
+
+# Build proj
+
+git clone --depth 1 $GIT_PROJ src/proj
+
+cd src/proj
+./autogen.sh
+./configure \
+    --prefix=$TOPDIR/install \
+    --disable-tiff \
+    --with-curl=no
+
+cd $TOPDIR
+make -C src/proj install
 
 # Build eccodes
 
