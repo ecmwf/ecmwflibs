@@ -15,5 +15,6 @@ jobs:
     container: ${{ matrix.container }}
     steps:
       - run: cat /etc/*release
+      - run: yum update -y
       - run: yum install -y node
       - uses: actions/checkout@v2
