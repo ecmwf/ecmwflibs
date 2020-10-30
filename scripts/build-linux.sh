@@ -28,7 +28,7 @@ find / -name 'libexpat*'
 
 # For some reason, this is not installed
 
-cat<<EOF > /usr/lib64/pkgconfig/expat.pc
+cat<<\EOF > /usr/lib64/pkgconfig/expat.pc
 prefix=/usr
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib64
