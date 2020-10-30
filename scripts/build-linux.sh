@@ -24,7 +24,7 @@ then
 fi
 
 yum install -y expat-devel
-yum install -y expat
+find / -name '*.pc'
 
 yum install -y libjasper-devel
 yum install -y flex bison
