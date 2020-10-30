@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eaux
 
+INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
+
 source scripts/common.sh
 
 # There are two copies of libcurl, this confuses yum
@@ -11,7 +13,12 @@ yum install -y hdf5-devel
 yum install -y libpng-devel
 yum install -y libtiff-devel
 yum install -y fontconfig-devel
-yum install -y gobject-introspection-devel
+
+if [[ $INSTALL_GOBJECTS -eq 1 ]]
+then
+    yum install -y gobject-introspection-devel
+fi
+
 yum install -y libjasper-devel
 yum install -y flex bison
 yum install -y pax-utils # For lddtree
