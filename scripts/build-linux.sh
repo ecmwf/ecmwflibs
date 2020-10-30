@@ -24,7 +24,22 @@ then
 fi
 
 yum install -y expat-devel
-find / -name '*.pc'
+find / -name 'libexpat*'
+
+# For some reason, this is not installed
+
+cat<<EOF > /usr/lib64/pkgconfig/expat.pc
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib64
+includedir=${prefix}/include
+Name: expat
+Version: 1.5.0
+Description: expat XML parser
+URL: http://www.libexpat.org
+Libs: -L${libdir} -lexpat
+Cflags: -I${includedir}
+EOF
 
 yum install -y libjasper-devel
 yum install -y flex bison
@@ -43,6 +58,7 @@ ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
 # PATH=$TOPDIR/install/bin:/usr/bin:$PATH
 # NOCONFIGURE=1
+PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
