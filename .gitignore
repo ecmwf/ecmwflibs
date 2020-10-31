@@ -151,3 +151,5 @@ junk/
 *.grib
 *.png
 *.nc
+ninja/
+vcpkg/
