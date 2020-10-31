@@ -98,6 +98,8 @@ else
             $TOPDIR/src/hdf5 \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo \
             -DBUILD_TESTING=0 \
+            -DHDF5_ALLOW_EXTERNAL_SUPPORT=GIT \
+            -DBUILD_STATIC_LIBS=0 \
             -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
         cd $TOPDIR
