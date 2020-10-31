@@ -21,8 +21,8 @@ then
     sudo ldconfig
 fi
 
-curl -O cmake.tgz https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
-tar zxf cmake.tgz
+wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
+tar zxf cmake-3.18.4.tar.gz
 cd cmake-3.18.4
 ./bootstrap
 make
