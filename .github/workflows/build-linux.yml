@@ -33,7 +33,7 @@ jobs:
         dockcross:
         # - manylinux1-x64
         - manylinux2010-x64
-        - manylinux2014-x64
+        # - manylinux2014-x64
 
     runs-on: ubuntu-latest
     container: dockcross/${{ matrix.dockcross }}:latest

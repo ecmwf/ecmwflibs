@@ -100,6 +100,7 @@ else
         sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
 
         vcpkg install hdf5
+        vcpkg install cairo
         # PKG_CONFIG_PATH=$TOPDIR/vcpkg/installed/x64-linux/lib/pkgconfig:$PKG_CONFIG_PATH
         CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
     fi
