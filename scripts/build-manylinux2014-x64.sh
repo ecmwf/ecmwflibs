@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -eaux
 
-INSTALL_NETCDF=0
-INSTALL_CAIRO=0
-INSTALL_PANGO=0
+FIX_LIBCURL=1
+INSTALL_GOBJECTS=1
 
 ./scripts/build-linux.sh

@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 set -eaux
 
-INSTALL_CAIRO=${INSTALL_CAIRO:=1}
-INSTALL_NETCDF=${INSTALL_NETCDF:=1}
-INSTALL_PANGO=${INSTALL_PANGO:=1}
+INSTALL_CAIRO=${INSTALL_CAIRO:=0}
+INSTALL_NETCDF=${INSTALL_NETCDF:=0}
+INSTALL_PANGO=${INSTALL_PANGO:=0}
 INSTALL_SQLITE=${INSTALL_SQLITE:=0}
+INSTALL_HDF5=${INSTALL_HDF5:=0}
 
-INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=1}
+INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=0}
 
-FIX_LIBCURL=${FIX_LIBCURL:=1}
+FIX_LIBCURL=${FIX_LIBCURL:=0}
 FIX_SHELL_TCL=${FIX_SHELL_TCL:=0}
 
 source scripts/common.sh
@@ -16,24 +17,27 @@ source scripts/common.sh
 if [[ $FIX_LIBCURL -eq 1 ]]
 then
     # There are two copies of libcurl, this confuses yum
-    rm /usr/local/lib/libcurl.*
-    ldconfig
+    sudo rm /usr/local/lib/libcurl.*
+    sudo ldconfig
 fi
 
-yum install -y libpng-devel
-yum install -y libtiff-devel
-yum install -y fontconfig-devel
+sudo yum install -y libpng-devel
+sudo yum install -y libtiff-devel
+sudo yum install -y fontconfig-devel
 
 if [[ $INSTALL_GOBJECTS -eq 1 ]]
 then
-    yum install -y gobject-introspection-devel
+    sudo yum install -y gobject-introspection-devel
 fi
 
-yum install -y expat-devel
-yum install -y cairo-devel
+sudo yum install -y expat-devel
+sudo yum install -y cairo-devel
 
 # For some reason, this is not installed
 
+if [[ ! -f /usr/lib64/pkgconfig/expat.pc ]]
+then
+sudo chmod 777 /usr/lib64/pkgconfig
 cat<<\EOF > /usr/lib64/pkgconfig/expat.pc
 prefix=/usr
 exec_prefix=${prefix}
@@ -46,19 +50,20 @@ URL: http://www.libexpat.org
 Libs: -L${libdir} -lexpat
 Cflags: -I${includedir}
 EOF
+fi
 
-yum install -y libjasper-devel
-yum install -y flex bison
-yum install -y pax-utils # For lddtree
+sudo yum install -y libjasper-devel
+sudo yum install -y flex bison
+sudo yum install -y pax-utils # For lddtree
 
-ln -s /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
-ln -s /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
-ln -s /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
+sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
+sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
 
-pip3 install ninja auditwheel meson
+sudo pip3 install ninja auditwheel meson
 
-ln -s /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
-ln -s /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
+sudo ln -sf /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
+sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
 # Make sure the right libtool is used (installing gobject-... changes libtool)
 
@@ -72,12 +77,36 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 if [[ $INSTALL_NETCDF -eq 1 ]]
 then
-    yum install -y netcdf-devel
+    sudo yum install -y netcdf-devel
 else
 
-    yum install -y hdf5-devel
+    if [[ $INSTALL_HDF5 -eq 1 ]]
+    then
+        sudo yum install -y hdf5-devel
+    else
+        [[ -d src/hdf5 ]] || git clone  $GIT_HDF5 src/hdf5
+        cd src/hdf5
+        git checkout $HDF5_VERSION
 
-    git clone  $GIT_NETCDF src/netcdf
+        mkdir -p $TOPDIR/build-other/hdf5
+        cd $TOPDIR/build-other/hdf5
+
+            # -DBUILD_STATIC_LIBS=0 \
+            # -DHDF5_ENABLE_THREADSAFE=1 \
+
+        cmake -GNinja \
+            $TOPDIR/src/hdf5 \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DBUILD_TESTING=0 \
+            -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+        cd $TOPDIR
+        cmake --build build-other/hdf5 --target install
+    fi
+
+    sudo yum install -y hdf5-devel
+
+    [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
     cd src/netcdf
     git checkout $NETCDF_VERSION
 
@@ -97,7 +126,7 @@ fi
 
 if [[ $INSTALL_CAIRO -eq 1 ]]
 then
-    yum install -y cairo-devel
+    sudo yum install -y cairo-devel
 else
 
 # Pixman is needed by cairo
@@ -133,7 +162,7 @@ fi
 
 if [[ $INSTALL_PANGO -eq 1 ]]
 then
-    yum install -y pango-devel
+    sudo yum install -y pango-devel
 else
 
 # Build harfbuzz needed by pango
@@ -195,7 +224,7 @@ fi
 
 if [[ $INSTALL_SQLITE -eq 1 ]]
 then
-    yum install -y sqlite-devel
+    sudo yum install -y sqlite-devel
 else
 
 # Build sqlite

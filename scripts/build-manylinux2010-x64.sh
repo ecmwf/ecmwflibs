@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -eaux
 
-INSTALL_GOBJECTS=0
+FIX_LIBCURL=1
 
 ./scripts/build-linux.sh
