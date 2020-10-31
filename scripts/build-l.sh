@@ -10,6 +10,7 @@ git checkout release
 PATH=$TOPDIR/ninja:$PATH
 ./configure.py --bootstrap
 
+cd $TOPDIR
 [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
 
 [[ -f vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
