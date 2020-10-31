@@ -5,7 +5,7 @@ INSTALL_CAIRO=${INSTALL_CAIRO:=0}
 INSTALL_NETCDF=${INSTALL_NETCDF:=0}
 INSTALL_PANGO=${INSTALL_PANGO:=0}
 INSTALL_SQLITE=${INSTALL_SQLITE:=0}
-INSTALL_HDF5=${INSTALL_HDF5:=0}
+INSTALL_HDF5=${INSTALL_HDF5:=1}
 
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=0}
 
@@ -106,11 +106,12 @@ else
         cmake --build build-other/hdf5 --target install
     fi
 
-    sudo yum install -y hdf5-devel
-
     [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
     cd src/netcdf
     git checkout $NETCDF_VERSION
+    # sed -i 's/1.8.10/1.8.5/' CMakeLists.txt
+    # sed -i 's/H5_VERSION_GE(1,12,0)/0/' include/*.h
+    # sed -i 's/H5_VERSION_GE(1,12,0)/0/' libhdf5/*.c
 
     mkdir -p $TOPDIR/build-other/netcdf
     cd $TOPDIR/build-other/netcdf
@@ -119,6 +120,7 @@ else
         $TOPDIR/src/netcdf \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         -DENABLE_DAP=0 \
+        -DENABLE_DISKLESS=0 \
         -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
     cd $TOPDIR

@@ -3,4 +3,4 @@ set -eaux
 
 FIX_LIBCURL=1
 
-./scripts/build-linux.sh
+./scripts/build-l.sh
