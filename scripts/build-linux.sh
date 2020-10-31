@@ -5,7 +5,7 @@ INSTALL_CAIRO=${INSTALL_CAIRO:=0}
 INSTALL_NETCDF=${INSTALL_NETCDF:=0}
 INSTALL_PANGO=${INSTALL_PANGO:=0}
 INSTALL_SQLITE=${INSTALL_SQLITE:=0}
-INSTALL_HDF5=${INSTALL_HDF5:=1}
+INSTALL_HDF5=${INSTALL_HDF5:=0}
 
 INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=0}
 
@@ -84,34 +84,30 @@ else
     then
         sudo yum install -y hdf5-devel
     else
-        [[ -d src/hdf5 ]] || git clone  $GIT_HDF5 src/hdf5
-        cd src/hdf5
-        git checkout $HDF5_VERSION
+        [[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
+        cd ninja
+        git checkout release
 
-        mkdir -p $TOPDIR/build-other/hdf5
-        cd $TOPDIR/build-other/hdf5
-
-            # -DBUILD_STATIC_LIBS=0 \
-            # -DHDF5_ENABLE_THREADSAFE=1 \
-
-        cmake -GNinja \
-            $TOPDIR/src/hdf5 \
-            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-            -DBUILD_TESTING=0 \
-            -DHDF5_ALLOW_EXTERNAL_SUPPORT=GIT \
-            -DBUILD_STATIC_LIBS=0 \
-            -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+        PATH=$TOPDIR/ninja:$PATH
+        [[ -f ninja  ]] || ./configure.py --bootstrap
 
         cd $TOPDIR
-        cmake --build build-other/hdf5 --target install
+        [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
+
+        [[ -f vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
+        PATH=$TOPDIR/vcpkg:$PATH
+
+        sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
+
+        vcpkg install hdf5
+        # PKG_CONFIG_PATH=$TOPDIR/vcpkg/installed/x64-linux/lib/pkgconfig:$PKG_CONFIG_PATH
+        CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
     fi
 
     [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
     cd src/netcdf
     git checkout $NETCDF_VERSION
-    # sed -i 's/1.8.10/1.8.5/' CMakeLists.txt
-    # sed -i 's/H5_VERSION_GE(1,12,0)/0/' include/*.h
-    # sed -i 's/H5_VERSION_GE(1,12,0)/0/' libhdf5/*.c
+
 
     mkdir -p $TOPDIR/build-other/netcdf
     cd $TOPDIR/build-other/netcdf
