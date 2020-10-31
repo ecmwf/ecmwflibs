@@ -274,4 +274,4 @@ cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
 python3 setup.py bdist_wheel
 auditwheel repair dist/*.whl
-unzip -l wheelhouse/*.whl | grep lib
+unzip -l wheelhouse/*.whl | grep ecmwflibs.libs/

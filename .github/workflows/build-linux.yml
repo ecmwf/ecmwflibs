@@ -51,7 +51,7 @@ jobs:
       # - run: make pull
       # - run: make wheels
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         name: Upload wheel 3.6
         with:
           name: wheel-${{ matrix.dockcross }}-3.6
