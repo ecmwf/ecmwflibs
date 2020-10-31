@@ -21,6 +21,9 @@ then
     sudo ldconfig
 fi
 
+sudo yum install -y cmake
+
+
 sudo yum install -y libpng-devel
 sudo yum install -y libtiff-devel
 sudo yum install -y fontconfig-devel
