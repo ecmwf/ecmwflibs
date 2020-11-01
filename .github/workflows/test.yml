@@ -7,7 +7,7 @@ on: push
 jobs:
   linux:
     strategy:
-      fail-fast: false
+      # fail-fast: false
       matrix:
         container:
         - 'manylinux1-x64'

@@ -4,43 +4,12 @@ set -eaux
 source scripts/common.sh
 
 
-
-sudo yum install -y openssl-devel
-
-
-# wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
-# tar zxf cmake-3.18.4.tar.gz
-# cd cmake-3.18.4
-# ./bootstrap
-# make
-# make install
-# cd $TOPDIR
-
 sudo yum install -y libpng-devel
 sudo yum install -y libtiff-devel
 sudo yum install -y fontconfig-devel
 
 sudo yum install -y expat-devel
 sudo yum install -y cairo-devel
-
-# For some reason, this is not installed
-
-# if [[ ! -f /usr/lib64/pkgconfig/expat.pc ]]
-# then
-# sudo chmod 777 /usr/lib64/pkgconfig
-# cat<<\EOF > /usr/lib64/pkgconfig/expat.pc
-# prefix=/usr
-# exec_prefix=${prefix}
-# libdir=${exec_prefix}/lib64
-# includedir=${prefix}/include
-# Name: expat
-# Version: 1.5.0
-# Description: expat XML parser
-# URL: http://www.libexpat.org
-# Libs: -L${libdir} -lexpat
-# Cflags: -I${includedir}
-# EOF
-# fi
 
 sudo yum install -y libjasper-devel
 sudo yum install -y flex bison
@@ -76,12 +45,14 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 #     then
 #         sudo yum install -y hdf5-devel
 #     else
-#         [[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
-#         cd ninja
-#         git checkout release
 
-#         PATH=$TOPDIR/ninja:$PATH
-#         [[ -f ninja  ]] || ./configure.py --bootstrap
+# vcpkg needs a up-to-date version of ninja
+[[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
+cd ninja
+git checkout release
+
+PATH=$TOPDIR/ninja:$PATH
+[[ -f ninja  ]] || ./configure.py --bootstrap
 
 cd $TOPDIR
 [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
@@ -97,9 +68,9 @@ vcpkg install hdf5
 CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
 #     fi
 
-#     [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
-#     cd src/netcdf
-#     git checkout $NETCDF_VERSION
+[[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
+cd src/netcdf
+git checkout $NETCDF_VERSION
 
 
 mkdir -p $TOPDIR/build-other/netcdf
@@ -226,8 +197,10 @@ cd src/sqlite
 	--disable-tcl \
 	--prefix=$TOPDIR/install
 
-# TCL shell is too old
-sed -i 's/ rb/ r/' tool/*.tcl
+# if [[ $FIX_SHELL_TCL -eq 1 ]]
+# then
+#     sed -i 's/ rb/ r/' tool/*.tcl
+# fi
 
 cd $TOPDIR
 make -C src/sqlite install
