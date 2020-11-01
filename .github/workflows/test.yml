@@ -19,12 +19,13 @@ jobs:
       - uses: actions/checkout@v1
 
       - run: |
+          mkdir -p dockcross
           echo ${{ matrix.container }} > ${{ matrix.container }}.txt
 
       # actions/upload-artifact@v1 does not support wildcards
       - name: Get wheel path
         run: |
-          echo ::set-env name=WHEEL_36::$(ls ${{ matrix.container }}.txt)
+          echo ::set-env name=WHEEL_36::$(ls dockcross/*)
 
       - uses: actions/upload-artifact@v1
         name: Upload wheel 3.6
