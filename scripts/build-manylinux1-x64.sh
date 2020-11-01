@@ -4,11 +4,6 @@ set -eaux
 source scripts/common.sh
 
 
-# There are two copies of libcurl, this confuses yum
-sudo rm /usr/local/lib/libcurl.*
-sudo ldconfig
-
-
 sudo yum install -y openssl-devel
 
 
