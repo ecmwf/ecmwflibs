@@ -28,7 +28,7 @@ jobs:
   build:
 
     strategy:
-      # fail-fast: false
+      fail-fast: false
       matrix:
         dockcross:
         # - manylinux1-x64
@@ -51,14 +51,14 @@ jobs:
       # - run: make pull
       # - run: make wheels
 
-      # - run: env|sort
+      - run: ls -l wheelhouse
 
-      - uses: actions/upload-artifact@v1
-        name: Upload wheel 3.6
-        with:
-          name: wheel-${{ matrix.dockcross }}-3.6
-          # v1 needs a full path
-          path: ${{ runner.workspace }}/ecmwflibs/wheelhouse/*cp36*
+      # - uses: actions/upload-artifact@v1
+      #   name: Upload wheel 3.6
+      #   with:
+      #     name: wheel-${{ matrix.dockcross }}-3.6
+      #     # v1 needs a full path
+      #     path: wheelhouse/*cp36*
 
       # - uses: actions/upload-artifact@v1
       #   name: Upload wheel 3.7
