@@ -21,6 +21,17 @@ then
     sudo ldconfig
 fi
 
+sudo yum install -y openssl-devel
+
+
+wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
+tar zxf cmake-3.18.4.tar.gz
+cd cmake-3.18.4
+./bootstrap
+make
+make install
+cd $TOPDIR
+
 sudo yum install -y libpng-devel
 sudo yum install -y libtiff-devel
 sudo yum install -y fontconfig-devel
