@@ -33,10 +33,10 @@ PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$P
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 
-[[ -d src/hdf5 ]] || git clone  $GIT_HDF5 src/hdf5
+################################################################
+git clone  $GIT_HDF5 src/hdf5
 cd src/hdf5
 git checkout $HDF5_VERSION
-
 
 mkdir -p $TOPDIR/build-other/hdf5
 cd $TOPDIR/build-other/hdf5
@@ -54,6 +54,11 @@ cmake -GNinja \
     -DHDF5_ENABLE_SZIP_SUPPORT=OFF \
     -DHDF5_ENABLE_SZIP_ENCODING=OFF \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/hdf5 --target install
+
+################################################################
 
 git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
