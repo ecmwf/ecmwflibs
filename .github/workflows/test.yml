@@ -10,11 +10,11 @@ jobs:
       fail-fast: false
       matrix:
         container:
-        - 'dockcross/manylinux1-x64'
-        - 'dockcross/manylinux2010-x64'
-        - 'dockcross/manylinux2014-x64'
+        - 'manylinux1-x64'
+        - 'manylinux2010-x64'
+        - 'manylinux2014-x64'
     runs-on: ubuntu-latest
-    container: ${{ matrix.container }}
+    container: dockcross/${{ matrix.container }}
     steps:
       - uses: actions/checkout@v1
 
@@ -26,7 +26,7 @@ jobs:
       - name: Get paths
         id: get-paths
         run: |
-          echo "::set-output name=WHEEL_36::$(ls dockcross/*)"
+          echo "::set-output name=WHEEL_36::$(ls many*txt)"
 
       - uses: actions/upload-artifact@v1
         name: Upload wheel 3.6
