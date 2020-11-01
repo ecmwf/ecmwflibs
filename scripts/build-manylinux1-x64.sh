@@ -187,6 +187,14 @@ sudo yum install -y sqlite-devel
 #     sudo yum install -y sqlite-devel
 # else
 
+git clone --depth 1 https://github.com/tcltk/tcl.git
+cd tcl/unix
+
+./configure
+make
+make install
+
+cd $TOPDIR
 # Build sqlite
 
 git clone --depth 1 $GIT_SQLITE src/sqlite
