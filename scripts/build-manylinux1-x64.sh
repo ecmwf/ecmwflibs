@@ -198,7 +198,7 @@ cd src/sqlite
 
 # if [[ $FIX_SHELL_TCL -eq 1 ]]
 # then
-#     sed -i 's/ rb/ r/' tool/*.tcl
+sed -i 's/ rb/ r/' tool/*.tcl
 # fi
 
 cd $TOPDIR
