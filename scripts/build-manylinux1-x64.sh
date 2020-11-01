@@ -225,10 +225,8 @@ cd src/sqlite
 	--disable-tcl \
 	--prefix=$TOPDIR/install
 
-# if [[ $FIX_SHELL_TCL -eq 1 ]]
-# then
-#     sed -i 's/ rb/ r/' tool/*.tcl
-# fi
+# TCL shell is too old
+sed -i 's/ rb/ r/' tool/*.tcl
 
 cd $TOPDIR
 make -C src/sqlite install
