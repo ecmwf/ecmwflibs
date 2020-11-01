@@ -69,7 +69,7 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 # Build netcdf without curl
 
-yum install -y netcdf-devel
+# yum install -y netcdf-devel
 
 # if [[ $INSTALL_NETCDF -eq 1 ]]
 # then
@@ -84,40 +84,40 @@ yum install -y netcdf-devel
 #         cd ninja
 #         git checkout release
 
-#         PATH=$TOPDIR/ninja:$PATH
-#         [[ -f ninja  ]] || ./configure.py --bootstrap
+PATH=$TOPDIR/ninja:$PATH
+[[ -f ninja  ]] || ./configure.py --bootstrap
 
-#         cd $TOPDIR
-#         [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
+cd $TOPDIR
+[[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
 
-#         [[ -f vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
-#         PATH=$TOPDIR/vcpkg:$PATH
+[[ -f vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
+PATH=$TOPDIR/vcpkg:$PATH
 
-#         sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
+sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
 
-#         vcpkg install hdf5
+vcpkg install hdf5
 #         vcpkg install expat
 #         # PKG_CONFIG_PATH=$TOPDIR/vcpkg/installed/x64-linux/lib/pkgconfig:$PKG_CONFIG_PATH
-#         CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
+CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
 #     fi
 
-#     [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
-#     cd src/netcdf
-#     git checkout $NETCDF_VERSION
+[[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
+cd src/netcdf
+git checkout $NETCDF_VERSION
 
 
-#     mkdir -p $TOPDIR/build-other/netcdf
-#     cd $TOPDIR/build-other/netcdf
+mkdir -p $TOPDIR/build-other/netcdf
+cd $TOPDIR/build-other/netcdf
 
-#     cmake -GNinja \
-#         $TOPDIR/src/netcdf \
-#         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-#         -DENABLE_DAP=0 \
-#         -DENABLE_DISKLESS=0 \
-#         -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+cmake -GNinja \
+    $TOPDIR/src/netcdf \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_DAP=0 \
+    -DENABLE_DISKLESS=0 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
-#     cd $TOPDIR
-#     cmake --build build-other/netcdf --target install
+cd $TOPDIR
+cmake --build build-other/netcdf --target install
 
 # fi
 yum install -y pango-devel
