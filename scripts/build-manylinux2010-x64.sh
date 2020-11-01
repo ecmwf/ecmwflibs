@@ -84,8 +84,8 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 #         cd ninja
 #         git checkout release
 
-PATH=$TOPDIR/ninja:$PATH
-[[ -f ninja  ]] || ./configure.py --bootstrap
+# PATH=$TOPDIR/ninja:$PATH
+# [[ -f ninja  ]] || ./configure.py --bootstrap
 
 cd $TOPDIR
 [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
