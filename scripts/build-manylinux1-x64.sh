@@ -33,7 +33,7 @@ PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$P
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 
-[[ -d src/hdf5 ]] || git clone  $GIT_hdf5 src/hdf5
+[[ -d src/hdf5 ]] || git clone  $GIT_HDF5 src/hdf5
 cd src/hdf5
 git checkout $HDF5_VERSION
 
@@ -51,8 +51,8 @@ cmake -GNinja \
     -DHDF5_BUILD_CPP_LIB=OFF \
     -DHDF5_ENABLE_PARALLEL=OFF \
     -DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
-    -DHDF5_ENABLE_SZIP_SUPPORT=ON \
-    -DHDF5_ENABLE_SZIP_ENCODING=ON \
+    -DHDF5_ENABLE_SZIP_SUPPORT=OFF \
+    -DHDF5_ENABLE_SZIP_ENCODING=OFF \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 git clone  $GIT_NETCDF src/netcdf
