@@ -28,12 +28,12 @@ jobs:
   build:
 
     strategy:
-      fail-fast: false
+      # fail-fast: false
       matrix:
         dockcross:
-        # - manylinux1-x64
+        - manylinux1-x64
         - manylinux2010-x64
-        # - manylinux2014-x64
+        - manylinux2014-x64
 
     runs-on: ubuntu-latest
     container: dockcross/${{ matrix.dockcross }}:latest
