@@ -46,54 +46,33 @@ jobs:
 
       - run: ./scripts/build-${{ matrix.dockcross }}.sh
 
-      # - run: make netcdf
-      # - run: make proj
-      # - run: make pull
-      # - run: make wheels
+      # actions/upload-artifact@v1 does not support wildcards
+      - name: Get wheel path
+        run: |
+          echo ::set-env name=WHEEL_36::$(ls wheelhouse/*cp36*)
 
-      - run: ls -l wheelhouse
-
-      # - uses: actions/upload-artifact@v1
-      #   name: Upload wheel 3.6
-      #   with:
-      #     name: wheel-${{ matrix.dockcross }}-3.6
-      #     # v1 needs a full path
-      #     path: wheelhouse/*cp36*
-
-      # - uses: actions/upload-artifact@v1
-      #   name: Upload wheel 3.7
-      #   with:
-      #     name: wheel-${{ matrix.dockcross }}-3.7
-      #     path: wheelhouse/*cp37*
-
-      # - uses: actions/upload-artifact@v1
-      #   name: Upload wheel 3.8
-      #   with:
-      #     name: wheel-${{ matrix.dockcross }}-3.8
-      #     path: wheelhouse/*cp38*
-
-      # - uses: actions/upload-artifact@v1
-      #   name: Upload wheel 3.9
-      #   with:
-      #     name: wheel-${{ matrix.dockcross }}-3.9
-      #     path: wheelhouse/*cp39*
+      - uses: actions/upload-artifact@v1
+        name: Upload wheel 3.6
+        with:
+          name: wheel-${{ matrix.dockcross }}-3.6
+          path: ${{ env.WHEEL_36 }}
 
   test:
 
     needs: build
 
     strategy:
-      # fail-fast: true
+      fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        dockcross: ["manylinux2014-x64"] #, "manylinux2010-x64"]
-        container:
-        - 'debian:testing'
-        - 'ubuntu:14.04'
-        - 'ubuntu:devel'
-        - 'centos:7'
-        - 'centos:8'
-        - 'centos:latest'
+        python-version:
+        - "3.6"
+        # - "3.7"
+        # - "3.8"
+        # - "3.9"
+        dockcross:
+        # - manylinux1-x64
+        - manylinux2010-x64
+        - manylinux2014-x64
 
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
@@ -140,10 +119,17 @@ jobs:
     if: ${{ github.event_name == 'release' }}
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        dockcross: ["manylinux2014-x64"] #, "manylinux2010-x64"]
+        python-version:
+        - "3.6"
+        # - "3.7"
+        # - "3.8"
+        # - "3.9"
+        dockcross:
+        # - manylinux1-x64
+        - manylinux2010-x64
+        - manylinux2014-x64
 
     needs: [test, build]
 
