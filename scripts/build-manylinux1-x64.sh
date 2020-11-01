@@ -32,49 +32,30 @@ PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
-# Build netcdf without curl
 
-# yum install -y netcdf-devel
-
-# if [[ $INSTALL_NETCDF -eq 1 ]]
-# then
-#     sudo yum install -y netcdf-devel
-# else
-
-#     if [[ $INSTALL_HDF5 -eq 1 ]]
-#     then
-#         sudo yum install -y hdf5-devel
-#     else
-
-# vcpkg needs a up-to-date version of ninja
-git clone git://github.com/ninja-build/ninja.git
-cd ninja
-git checkout release
-
-PATH=$TOPDIR/ninja:$PATH
-python3 configure.py --bootstrap
+[[ -d src/hdf5 ]] || git clone  $GIT_hdf5 src/hdf5
+cd src/hdf5
+git checkout $HDF5_VERSION
 
 
-sudo yum install centos-release-scl
-sudo yum install devtoolset-7
-scl enable devtoolset-7 bash
+mkdir -p $TOPDIR/build-other/hdf5
+cd $TOPDIR/build-other/hdf5
 
+cmake -GNinja \
+    $TOPDIR/src/hdf5 \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_TESTING=OFF \
+    -DDISABLE_STATIC_LIBS=ON \
+    -DHDF5_BUILD_EXAMPLES=OFF \
+    -DHDF5_BUILD_TOOLS=OFF \
+    -DHDF5_BUILD_CPP_LIB=OFF \
+    -DHDF5_ENABLE_PARALLEL=OFF \
+    -DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
+    -DHDF5_ENABLE_SZIP_SUPPORT=ON \
+    -DHDF5_ENABLE_SZIP_ENCODING=ON \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
-cd $TOPDIR
-git clone --depth 1 https://github.com/microsoft/vcpkg
-
-./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
-PATH=$TOPDIR/vcpkg:$PATH
-
-sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
-
-vcpkg install hdf5
-#         vcpkg install expat
-#         # PKG_CONFIG_PATH=$TOPDIR/vcpkg/installed/x64-linux/lib/pkgconfig:$PKG_CONFIG_PATH
-CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
-#     fi
-
-[[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
+git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
 
