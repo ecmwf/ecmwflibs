@@ -14,6 +14,8 @@ sudo yum install -y cairo-devel
 sudo yum install -y libjasper-devel
 sudo yum install -y flex bison
 sudo yum install -y pax-utils # For lddtree
+sudo yum install -y tcl
+sudo yum update -y tcl
 
 sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
 sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
