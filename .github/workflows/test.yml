@@ -1,8 +1,8 @@
 name: test
 
-on:
-  release:
-    types: [created]
+on: push
+  # release:
+  #   types: [created]
 
 jobs:
   linux:
@@ -16,8 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     steps:
-      - run: cat /etc/*release
-      # - run: yum update -y
-      # - run: yum install -y nodejs
-      # see https://github.com/actions/runner/issues/337
       - uses: actions/checkout@v1
+
+      - run: |
+          echo ${{ matrix.container }} > ${{ matrix.container }}.txt
+
+      # actions/upload-artifact@v1 does not support wildcards
+      - name: Get wheel path
+        run: |
+          echo ::set-env name=WHEEL_36::$(ls ${{ matrix.container }}.txt)
+
+      - uses: actions/upload-artifact@v1
+        name: Upload wheel 3.6
+        with:
+          name: art-${{ matrix.container }}
+          path: ${{ env.WHEEL_36 }}
