@@ -221,22 +221,22 @@ sudo yum install -y sqlite-devel
 #     sudo yum install -y sqlite-devel
 # else
 
-# # Build sqlite
+# Build sqlite
 
-# git clone --depth 1 $GIT_SQLITE src/sqlite
+git clone --depth 1 $GIT_SQLITE src/sqlite
 
-# cd src/sqlite
-# ./configure \
-# 	--disable-tcl \
-# 	--prefix=$TOPDIR/install
+cd src/sqlite
+./configure \
+	--disable-tcl \
+	--prefix=$TOPDIR/install
 
 # if [[ $FIX_SHELL_TCL -eq 1 ]]
 # then
 #     sed -i 's/ rb/ r/' tool/*.tcl
 # fi
 
-# cd $TOPDIR
-# make -C src/sqlite install
+cd $TOPDIR
+make -C src/sqlite install
 
 # fi
 
