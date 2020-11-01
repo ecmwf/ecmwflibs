@@ -71,8 +71,9 @@ cd $TOPDIR/build-other/netcdf
 cmake -GNinja \
     $TOPDIR/src/netcdf \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DENABLE_DAP=0 \
-    -DENABLE_DISKLESS=0 \
+    -DENABLE_DAP=OFF \
+    -DENABLE_NCZARR=OFF \
+    -DENABLE_DISKLESS=OFF \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
