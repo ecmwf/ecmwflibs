@@ -23,12 +23,13 @@ jobs:
           echo ${{ matrix.container }} > ${{ matrix.container }}.txt
 
       # actions/upload-artifact@v1 does not support wildcards
-      - name: get-path
+      - name: Get paths
+        id: get-paths
         run: |
-          echo ::set-output name=WHEEL_36::$(ls dockcross/*)
+          echo "::set-output name=WHEEL_36::$(ls dockcross/*)"
 
       - uses: actions/upload-artifact@v1
         name: Upload wheel 3.6
         with:
           name: art-${{ matrix.container }}
-          path: ${{ steps.get-path.outputs.WHEEL_36 }}
+          path: ${{ steps.get-paths.outputs.WHEEL_36 }}
