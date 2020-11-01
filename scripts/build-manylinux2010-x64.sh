@@ -80,12 +80,14 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 #     then
 #         sudo yum install -y hdf5-devel
 #     else
-#         [[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
-#         cd ninja
-#         git checkout release
 
-# PATH=$TOPDIR/ninja:$PATH
-# [[ -f ninja  ]] || ./configure.py --bootstrap
+# vcpkg needs a up-to-date version of ninja
+[[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
+cd ninja
+git checkout release
+
+PATH=$TOPDIR/ninja:$PATH
+[[ -f ninja  ]] || ./configure.py --bootstrap
 
 cd $TOPDIR
 [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
