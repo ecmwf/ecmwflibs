@@ -36,9 +36,9 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 ################################################################
 
-git clone --depth 1 https://github.com/tcltk/tcl.git
+git clone  https://github.com/tcltk/tcl.git
 cd tcl/unix
-git checkout 278e65611 # core-8-6-2
+git checkout core-8-6-2
 
 ./configure
 make
