@@ -14,8 +14,8 @@ sudo yum install -y cairo-devel
 sudo yum install -y libjasper-devel
 sudo yum install -y flex bison
 sudo yum install -y pax-utils # For lddtree
-sudo yum install -y tcl
-sudo yum update -y tcl
+# sudo yum install -y tcl
+# sudo yum update -y tcl
 
 sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
 sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
@@ -191,7 +191,6 @@ yum install -y pango-devel
 
 # fi
 
-sudo yum install -y sqlite-devel
 
 # if [[ $INSTALL_SQLITE -eq 1 ]]
 # then
@@ -210,7 +209,7 @@ cd src/sqlite
 
 # if [[ $FIX_SHELL_TCL -eq 1 ]]
 # then
-sed -i 's/ rb/ r/' tool/*.tcl
+# sed -i 's/ rb/ r/' tool/*.tcl
 # fi
 
 cd $TOPDIR
