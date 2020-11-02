@@ -21,6 +21,9 @@ sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
 sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
 sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
 
+sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/bin/python
+
+
 sudo pip3 install ninja auditwheel meson
 
 sudo ln -sf /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
