@@ -34,6 +34,17 @@ PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
+################################################################
+
+git clone --depth 1 https://github.com/tcltk/tcl.git
+cd tcl/unix
+git checkout core-8-6-2
+
+./configure
+make
+make install
+
+cd $TOPDIR
 
 ################################################################
 git clone  $GIT_HDF5 src/hdf5
@@ -187,15 +198,7 @@ sudo yum install -y sqlite-devel
 #     sudo yum install -y sqlite-devel
 # else
 
-git clone --depth 1 https://github.com/tcltk/tcl.git
-cd tcl/unix
-git checkout -b core-8-6-3
 
-./configure
-make
-make install
-
-cd $TOPDIR
 # Build sqlite
 
 git clone --depth 1 $GIT_SQLITE src/sqlite
