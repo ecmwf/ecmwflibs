@@ -9,8 +9,8 @@
 name: Build Linux
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -67,7 +67,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: wheel-manylinux2014-${{ matrix.python-version }}
+          name: wheel-manylinux2014-3.6 #${{ matrix.python-version }}
 
       - run: pip install *.whl
 
