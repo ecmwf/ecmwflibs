@@ -1,67 +1,24 @@
 #!/usr/bin/env bash
 set -eaux
 
-INSTALL_CAIRO=${INSTALL_CAIRO:=0}
-INSTALL_NETCDF=${INSTALL_NETCDF:=0}
-INSTALL_PANGO=${INSTALL_PANGO:=0}
-INSTALL_SQLITE=${INSTALL_SQLITE:=0}
-INSTALL_HDF5=${INSTALL_HDF5:=0}
-
-INSTALL_GOBJECTS=${INSTALL_GOBJECTS:=0}
-
-FIX_LIBCURL=${FIX_LIBCURL:=0}
-FIX_SHELL_TCL=${FIX_SHELL_TCL:=0}
 
 source scripts/common.sh
 
-if [[ $FIX_LIBCURL -eq 1 ]]
-then
-    # There are two copies of libcurl, this confuses yum
-    sudo rm /usr/local/lib/libcurl.*
-    sudo ldconfig
-fi
 
-sudo yum install -y openssl-devel
+# There are two copies of libcurl, this confuses yum
+# sudo rm /usr/local/lib/libcurl.*
+# sudo ldconfig
 
-
-wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
-tar zxf cmake-3.18.4.tar.gz
-cd cmake-3.18.4
-./bootstrap
-make
-make install
-cd $TOPDIR
 
 sudo yum install -y libpng-devel
 sudo yum install -y libtiff-devel
 sudo yum install -y fontconfig-devel
 
-if [[ $INSTALL_GOBJECTS -eq 1 ]]
-then
-    sudo yum install -y gobject-introspection-devel
-fi
 
+sudo yum install -y gobject-introspection-devel
 sudo yum install -y expat-devel
 sudo yum install -y cairo-devel
 
-# For some reason, this is not installed
-
-if [[ ! -f /usr/lib64/pkgconfig/expat.pc ]]
-then
-sudo chmod 777 /usr/lib64/pkgconfig
-cat<<\EOF > /usr/lib64/pkgconfig/expat.pc
-prefix=/usr
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib64
-includedir=${prefix}/include
-Name: expat
-Version: 1.5.0
-Description: expat XML parser
-URL: http://www.libexpat.org
-Libs: -L${libdir} -lexpat
-Cflags: -I${includedir}
-EOF
-fi
 
 sudo yum install -y libjasper-devel
 sudo yum install -y flex bison
@@ -84,62 +41,28 @@ PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
-# Build netcdf without curl
 
-if [[ $INSTALL_NETCDF -eq 1 ]]
-then
-    sudo yum install -y netcdf-devel
-else
-
-    if [[ $INSTALL_HDF5 -eq 1 ]]
-    then
-        sudo yum install -y hdf5-devel
-    else
-        [[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
-        cd ninja
-        git checkout release
-
-        PATH=$TOPDIR/ninja:$PATH
-        [[ -f ninja  ]] || ./configure.py --bootstrap
-
-        cd $TOPDIR
-        [[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
-
-        [[ -f vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
-        PATH=$TOPDIR/vcpkg:$PATH
-
-        sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
-
-        vcpkg install hdf5
-        vcpkg install expat
-        # PKG_CONFIG_PATH=$TOPDIR/vcpkg/installed/x64-linux/lib/pkgconfig:$PKG_CONFIG_PATH
-        CMAKE_PREFIX_PATH=$TOPDIR/vcpkg/installed/x64-linux
-    fi
-
-    [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
-    cd src/netcdf
-    git checkout $NETCDF_VERSION
+sudo yum install -y hdf5-devel
 
 
-    mkdir -p $TOPDIR/build-other/netcdf
-    cd $TOPDIR/build-other/netcdf
+[[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
+cd src/netcdf
+git checkout $NETCDF_VERSION
 
-    cmake -GNinja \
-        $TOPDIR/src/netcdf \
-        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-        -DENABLE_DAP=0 \
-        -DENABLE_DISKLESS=0 \
-        -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
-    cd $TOPDIR
-    cmake --build build-other/netcdf --target install
+mkdir -p $TOPDIR/build-other/netcdf
+cd $TOPDIR/build-other/netcdf
 
-fi
+cmake -GNinja \
+    $TOPDIR/src/netcdf \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_DAP=0 \
+    -DENABLE_DISKLESS=0 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
-if [[ $INSTALL_CAIRO -eq 1 ]]
-then
-    sudo yum install -y cairo-devel
-else
+cd $TOPDIR
+cmake --build build-other/netcdf --target install
+
 
 # Pixman is needed by cairo
 
@@ -170,12 +93,6 @@ meson setup --prefix=$TOPDIR/install \
 cd $TOPDIR
 ninja -C build-other/cairo install
 
-fi
-
-if [[ $INSTALL_PANGO -eq 1 ]]
-then
-    sudo yum install -y pango-devel
-else
 
 # Build harfbuzz needed by pango
 
@@ -232,12 +149,7 @@ meson setup --prefix=$TOPDIR/install \
 cd $TOPDIR
 ninja -C build-other/pango install
 
-fi
 
-if [[ $INSTALL_SQLITE -eq 1 ]]
-then
-    sudo yum install -y sqlite-devel
-else
 
 # Build sqlite
 
@@ -248,15 +160,9 @@ cd src/sqlite
 	--disable-tcl \
 	--prefix=$TOPDIR/install
 
-if [[ $FIX_SHELL_TCL -eq 1 ]]
-then
-    sed -i 's/ rb/ r/' tool/*.tcl
-fi
 
 cd $TOPDIR
 make -C src/sqlite install
-
-fi
 
 # Build proj
 
