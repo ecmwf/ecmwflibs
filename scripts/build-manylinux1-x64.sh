@@ -189,7 +189,7 @@ sudo yum install -y sqlite-devel
 
 git clone --depth 1 https://github.com/tcltk/tcl.git
 cd tcl/unix
-git checkout core-8-6-10
+git checkout -b core-8-6-10
 
 ./configure
 make
