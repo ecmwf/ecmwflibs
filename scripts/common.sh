@@ -42,9 +42,9 @@ GIT_HDF5=https://github.com/HDFGroup/hdf5.git
 HDF5_VERSION=${HDF5_VERSION:=hdf5-1_10_5}
 
 
-[[ -d src/ecbuild ]] || git clone --branch $ECBUILD_VERSION --depth 1 $GIT_ECBUILD src/ecbuild
-[[ -d src/eccodes ]] || git clone --branch $ECCODES_VERSION --depth 1 $GIT_ECCODES src/eccodes
-[[ -d src/magics ]] || git clone --branch $MAGICS_VERSION --depth 1 $GIT_MAGICS src/magics
+[[ -d src/ecbuild ]] || git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
+[[ -d src/eccodes ]] || git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes
+[[ -d src/magics ]] || git clone --branch $MAGICS_VERSION $GIT_MAGICS src/magics
 
 mkdir -p build-ecmwf/eccodes
 mkdir -p build-ecmwf/magics

@@ -47,18 +47,18 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 #     else
 
 # vcpkg needs a up-to-date version of ninja
-[[ -d ninja ]] || git clone git://github.com/ninja-build/ninja.git
-cd ninja
+[[ -d src/ninja ]] || git clone git://github.com/ninja-build/ninja.git src/ninja
+cd src/ninja
 git checkout release
 
-PATH=$TOPDIR/ninja:$PATH
+PATH=$TOPDIR/src/ninja:$PATH
 [[ -f ninja  ]] || ./configure.py --bootstrap
 
 cd $TOPDIR
-[[ -d vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg
+[[ -d src/vcpkg ]] || git clone --depth 1 https://github.com/microsoft/vcpkg src/vcpkg
 
-[[ -f vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
-PATH=$TOPDIR/vcpkg:$PATH
+[[ -f src/vcpkg/vcpkg  ]] || ./vcpkg/bootstrap-vcpkg.sh -useSystemBinaries
+PATH=$TOPDIR/src/vcpkg:$PATH
 
 sed -i 's/static/dynamic/' vcpkg/triplets/x64-linux.cmake
 

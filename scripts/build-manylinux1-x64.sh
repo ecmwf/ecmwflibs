@@ -38,18 +38,18 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 ################################################################
 
-git clone  https://github.com/tcltk/tcl.git
-cd tcl/unix
+[[ -d src/tcl ]] || git clone  https://github.com/tcltk/tcl.git src/tcl
+cd src/tcl/unix
 git checkout core-8-6-2
 
 ./configure
 make
-make install
+sudo make install
 
 cd $TOPDIR
 
 ################################################################
-git clone  $GIT_HDF5 src/hdf5
+[[ -d src/hdf5 ]] || git clone  $GIT_HDF5 src/hdf5
 cd src/hdf5
 git checkout $HDF5_VERSION
 
@@ -75,7 +75,7 @@ cmake --build build-other/hdf5 --target install
 
 ################################################################
 
-git clone  $GIT_NETCDF src/netcdf
+[[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
 
@@ -99,7 +99,7 @@ cd $TOPDIR
 cmake --build build-other/netcdf --target install
 
 # fi
-yum install -y pango-devel
+sudo yum install -y pango-devel
 # Pixman is needed by cairo
 
 # git clone --depth 1 $GIT_PIXMAN src/pixman
@@ -202,7 +202,7 @@ yum install -y pango-devel
 
 # Build sqlite
 
-git clone --depth 1 $GIT_SQLITE src/sqlite
+[[ -d src/sqlite ]] || git clone --depth 1 $GIT_SQLITE src/sqlite
 
 cd src/sqlite
 ./configure \
@@ -221,7 +221,7 @@ make -C src/sqlite install
 
 # Build proj
 
-git clone --depth 1 $GIT_PROJ src/proj
+[[ -d src/proj ]] || git clone --depth 1 $GIT_PROJ src/proj
 
 cd src/proj
 ./autogen.sh
@@ -263,7 +263,7 @@ cd $TOPDIR/build-ecmwf/magics
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
     -GNinja \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
