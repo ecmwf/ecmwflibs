@@ -235,8 +235,10 @@ make -C src/proj install
 
 # Build eccodes
 
-# Makesure eccodes uses python3 to create memfs
-sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/bin/python
+# Makesure eccodes uses a modern to create memfs
+sudo yum install -y python26
+sudo ln -sf /usr/bin/python26 /usr/bin/python
+sudo ln -sf /usr/bin/python26 /usr/bin/python2
 
 cd $TOPDIR/build-ecmwf/eccodes
 
