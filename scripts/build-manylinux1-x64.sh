@@ -21,7 +21,6 @@ sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
 sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
 sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/bin/python
 
 
 sudo pip3 install ninja auditwheel meson
@@ -235,6 +234,9 @@ cd $TOPDIR
 make -C src/proj install
 
 # Build eccodes
+
+# Makesure eccodes uses python3 to create memfs
+sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/bin/python
 
 cd $TOPDIR/build-ecmwf/eccodes
 
