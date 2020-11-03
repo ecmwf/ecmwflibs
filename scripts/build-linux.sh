@@ -221,18 +221,3 @@ cp -r install/share ecmwflibs/
 cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
 
-/opt/python/cp36-cp36m/bin/python3 setup.py bdist_wheel
-auditwheel repair dist/*.whl
-rm -fr dist
-
-/opt/python/cp37-cp37m/bin/python3 setup.py bdist_wheel
-auditwheel repair dist/*.whl
-rm -fr dist
-
-/opt/python/cp38-cp38/bin/python3 setup.py bdist_wheel
-auditwheel repair dist/*.whl
-rm -fr dist
-
-/opt/python/cp39-cp39/bin/python3 setup.py bdist_wheel
-auditwheel repair dist/*.whl
-rm -fr dist
