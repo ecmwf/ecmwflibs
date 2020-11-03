@@ -25,29 +25,62 @@ jobs:
     # if: false
 
     runs-on: macos-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        # python-version: ["3.6", "3.7", "3.8", "3.9"]
-        python-version: ["3.6"]
 
-    name: Build with Python ${{ matrix.python-version }}
+    name: Build
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python 3.6
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.6
 
       - run: ./scripts/build-macos.sh
-        shell: bash
 
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.6
       - uses: actions/upload-artifact@v2
+        name: Upload wheel 3.6
         with:
-          name: wheel-macos-${{ matrix.python-version }}
-          path: wheelhouse/*
+          name: wheel-manylinux2014-3.6
+          path: wheelhouse/*.whl
+
+      ################################################################
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - run: ./scripts/wheel-linux.sh 3.7
+      - uses: actions/upload-artifact@v2
+        name: Upload wheel 3.7
+        with:
+          name: wheel-manylinux2014-3.7
+          path: wheelhouse/*.whl
+
+      ################################################################
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - run: ./scripts/wheel-linux.sh 3.8
+      - uses: actions/upload-artifact@v2
+        name: Upload wheel 3.8
+        with:
+          name: wheel-manylinux2014-3.8
+          path: wheelhouse/*.whl
+
+      ################################################################
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: ./scripts/wheel-linux.sh 3.9
+      - uses: actions/upload-artifact@v2
+        name: Upload wheel 3.9
+        with:
+          name: wheel-manylinux2014-3.9
+          path: wheelhouse/*.whl
 
   test:
     needs: build

@@ -51,5 +51,4 @@ mkdir -p install/share/magics
 cp -r install/share ecmwflibs/
 cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
 strip -S install/lib/*.dylib
-python3 setup.py bdist_wheel
-delocate-wheel -w wheelhouse dist/*.whl
+
