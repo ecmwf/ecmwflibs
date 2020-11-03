@@ -9,14 +9,15 @@ vcpkg install pango:$WINARCH-windows
 vcpkg install sqlite3[core,tool]:$WINARCH-windows
 pip install ninja wheel dll-diagnostics
 
-# Build proj7
+pip freeze | grep dll-diagnostics | sed 's/==/ /' >> versions
+# Build proj
 
-git clone --depth 1 $GIT_PROJ src/proj7
-mkdir -p build-other/proj7
-cd build-other/proj7
+git clone --depth 1 $GIT_PROJ src/proj
+mkdir -p build-other/proj
+cd build-other/proj
 
 cmake  \
-    $TOPDIR/src/proj7 -G"NMake Makefiles" \
+    $TOPDIR/src/proj -G"NMake Makefiles" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_TIFF=0 \
     -DENABLE_CURL=0 \
@@ -29,7 +30,7 @@ cmake  \
     -DCMAKE_C_COMPILER=cl.exe
 
 cd $TOPDIR
-cmake --build build-other/proj7 --target install
+cmake --build build-other/proj --target install
 
 # Build eccodes
 
@@ -78,3 +79,4 @@ mkdir -p ecmwflibs/share/proj
 python tools/copy-dlls.py install/bin/MagPlus.dll ecmwflibs/
 mkdir -p install/include
 
+./scripts/versions.sh > ecmwflibs/share/versions.json

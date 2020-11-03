@@ -3,9 +3,14 @@ set -eaux
 
 source scripts/common.sh
 
-brew install cmake ninja
-brew install pango cairo proj pkg-config
-brew install netcdf
+brew install cmake ninja pkg-config
+
+for p in pango cairo proj netcdf
+do
+    brew install $p
+    v=$(brew info $p | grep Cellar | awk '{print $1;}' | awk -F/ '{print $NF;}')
+    echo "$p $v" >> versions
+done
 
 # Build eccodes
 
@@ -44,9 +49,13 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
 cd $TOPDIR
 cmake --build build-ecmwf/magics --target install
 
+
+
 # Create wheel
 rm -fr dist wheelhouse ecmwflibs/share
 mkdir -p install/share/magics
 cp -r install/share ecmwflibs/
 cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
 strip -S install/lib/*.dylib
+
+./scripts/versions.sh > ecmwflibs/share/versions.json

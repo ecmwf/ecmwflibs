@@ -221,3 +221,4 @@ cp -r install/share ecmwflibs/
 cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
 
+./scripts/versions.sh > ecmwflibs/share/versions.json
