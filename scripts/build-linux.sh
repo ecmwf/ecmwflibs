@@ -15,9 +15,9 @@ for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel
 do
     sudo yum install -y $p
     # There may be a better way
-    sudo yum install $p 2>&1 tmp
+    sudo yum install $p 2>&1 > tmp
     cat tmp
-    v=$(grep 'is already installed' < tmp | awk '{print $2;}')
+    v=$(grep 'already installed' < tmp | awk '{print $2;} | sed 's/\d://')
     echo "yum $p $v" >> versions
 done
 
