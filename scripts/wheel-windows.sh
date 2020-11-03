@@ -18,6 +18,4 @@ pip install wheel
 
 rm -fr dist wheelhouse ecmwflibs.egg-info build
 python setup.py bdist_wheel
-
-set +e
-ls -l build dist wheelhouse
+mv dist wheelhouse
