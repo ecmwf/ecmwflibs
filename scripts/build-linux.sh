@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
+# (C) Copyright 2020 ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
 set -eaux
 
 source scripts/common.sh
-
-# There are two copies of libcurl, this confuses yum
-# sudo rm /usr/local/lib/libcurl.*
-# sudo ldconfig
 
 for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
 do
     sudo yum install -y $p
     # There may be a better way
-    v=$(sudo yum install $p | grep 'is already installed' | awk '{print $2;}')
+    sudo yum install $p 2>&1 tmp
+    cat tmp
+    v=$(grep 'is already installed' < tmp | awk '{print $2;}')
     echo "yum $p $v" >> versions
 done
 
@@ -28,10 +34,6 @@ sudo pip3 install ninja auditwheel meson
 sudo ln -sf /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
 sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
-# Make sure the right libtool is used (installing gobject-... changes libtool)
-
-# PATH=$TOPDIR/install/bin:/usr/bin:$PATH
-# NOCONFIGURE=1
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
@@ -39,7 +41,6 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
-
 
 mkdir -p $TOPDIR/build-other/netcdf
 cd $TOPDIR/build-other/netcdf
@@ -67,7 +68,6 @@ meson setup --prefix=$TOPDIR/install \
 cd $TOPDIR
 ninja -C build-other/pixman install
 
-
 # Build cairo
 
 git clone --depth 1 $GIT_CAIRO src/cairo
@@ -83,7 +83,6 @@ meson setup --prefix=$TOPDIR/install \
 
 cd $TOPDIR
 ninja -C build-other/cairo install
-
 
 # Build harfbuzz needed by pango
 
@@ -139,8 +138,6 @@ meson setup --prefix=$TOPDIR/install \
 
 cd $TOPDIR
 ninja -C build-other/pango install
-
-
 
 # Build sqlite
 

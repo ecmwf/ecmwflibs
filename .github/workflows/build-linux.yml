@@ -9,8 +9,8 @@
 name: Build Linux
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
 
   # pull_request:
   #   branches: [ master ]
@@ -71,11 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-        - "3.6"
-        - "3.7"
-        - "3.8"
-        - "3.9"
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
 
     runs-on: ubuntu-latest
 
@@ -123,12 +119,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-        - "3.6"
-        # - "3.7"
-        # - "3.8"
-        # - "3.9"
-
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
 
     needs: [test, build]
 
