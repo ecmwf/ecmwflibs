@@ -9,7 +9,7 @@ vcpkg install pango:$WINARCH-windows
 vcpkg install sqlite3[core,tool]:$WINARCH-windows
 pip install ninja wheel dll-diagnostics
 
-pip freeze | grep dll-diagnostics | sed 's/==/ /' >> versions
+echo "pip $(pip freeze | grep dll-diagnostics | sed 's/==/ /')" >> versions
 # Build proj
 
 git clone --depth 1 $GIT_PROJ src/proj
@@ -79,4 +79,4 @@ mkdir -p ecmwflibs/share/proj
 python tools/copy-dlls.py install/bin/MagPlus.dll ecmwflibs/
 mkdir -p install/include
 
-./scripts/versions.sh > ecmwflibs/share/versions.json
+./scripts/versions.sh > ecmwflibs/share/versions

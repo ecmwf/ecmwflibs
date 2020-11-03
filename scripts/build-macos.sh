@@ -9,7 +9,7 @@ for p in pango cairo proj netcdf
 do
     brew install $p
     v=$(brew info $p | grep Cellar | awk '{print $1;}' | awk -F/ '{print $NF;}')
-    echo "$p $v" >> versions
+    echo "brew $p $v" >> versions
 done
 
 # Build eccodes
@@ -58,4 +58,4 @@ cp -r install/share ecmwflibs/
 cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
 strip -S install/lib/*.dylib
 
-./scripts/versions.sh > ecmwflibs/share/versions.json
+./scripts/versions.sh > ecmwflibs/share/versions
