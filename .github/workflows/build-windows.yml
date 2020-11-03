@@ -82,6 +82,8 @@ jobs:
           name: wheel-windows-3.6-${{ matrix.architecture }}
           path: wheelhouse/*.whl
 
+      - run: ls -lrt
+
       ################################################################
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
