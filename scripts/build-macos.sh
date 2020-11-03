@@ -6,7 +6,6 @@ source scripts/common.sh
 brew install cmake ninja
 brew install pango cairo proj pkg-config
 brew install netcdf
-pip3 install wheel delocate
 
 # Build eccodes
 
@@ -51,4 +50,3 @@ mkdir -p install/share/magics
 cp -r install/share ecmwflibs/
 cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
 strip -S install/lib/*.dylib
-
