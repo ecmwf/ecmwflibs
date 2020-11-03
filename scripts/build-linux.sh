@@ -1,26 +1,20 @@
 #!/usr/bin/env bash
 set -eaux
 
-
 source scripts/common.sh
-
 
 # There are two copies of libcurl, this confuses yum
 # sudo rm /usr/local/lib/libcurl.*
 # sudo ldconfig
 
-
-sudo yum install -y libpng-devel
-sudo yum install -y libtiff-devel
-sudo yum install -y fontconfig-devel
-
-
-sudo yum install -y gobject-introspection-devel
-sudo yum install -y expat-devel
-sudo yum install -y cairo-devel
+for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
+do
+    sudo yum install -y $p
+    v=$(rpm -q $p)
+    echo "yum $p $v" >> versions
+done
 
 
-sudo yum install -y libjasper-devel
 sudo yum install -y flex bison
 sudo yum install -y pax-utils # For lddtree
 
@@ -40,10 +34,6 @@ sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
-
-
-sudo yum install -y hdf5-devel
-
 
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
@@ -221,4 +211,4 @@ cp -r install/share ecmwflibs/
 cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
 
-./scripts/versions.sh > ecmwflibs/share/versions.json
+./scripts/versions.sh > ecmwflibs/versions.txt

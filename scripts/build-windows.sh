@@ -79,4 +79,4 @@ mkdir -p ecmwflibs/share/proj
 python tools/copy-dlls.py install/bin/MagPlus.dll ecmwflibs/
 mkdir -p install/include
 
-./scripts/versions.sh > ecmwflibs/share/versions
+./scripts/versions.sh > ecmwflibs/versions.txt

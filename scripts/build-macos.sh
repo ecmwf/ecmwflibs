@@ -58,4 +58,4 @@ cp -r install/share ecmwflibs/
 cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
 strip -S install/lib/*.dylib
 
-./scripts/versions.sh > ecmwflibs/share/versions
+./scripts/versions.sh > ecmwflibs/versions.txt
