@@ -215,10 +215,24 @@ cmake --build build-ecmwf/magics --target install
 
 # Create wheel
 
+lddtree install/lib*/libMagPlus.so
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
-python3 setup.py bdist_wheel
+
+/opt/python/cp36-cp36m/bin/python3 setup.py bdist_wheel
 auditwheel repair dist/*.whl
-unzip -l wheelhouse/*.whl | grep ecmwflibs.libs/
+rm -fr dist
+
+/opt/python/cp37-cp37m/bin/python3 setup.py bdist_wheel
+auditwheel repair dist/*.whl
+rm -fr dist
+
+/opt/python/cp38-cp38/bin/python3 setup.py bdist_wheel
+auditwheel repair dist/*.whl
+rm -fr dist
+
+/opt/python/cp39-cp39/bin/python3 setup.py bdist_wheel
+auditwheel repair dist/*.whl
+rm -fr dist
