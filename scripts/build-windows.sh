@@ -12,9 +12,13 @@ set -eaux
 source scripts/common.sh
 
 vcpkg install expat:$WINARCH-windows
+vcpkg list expat
+
 vcpkg install netcdf-c:$WINARCH-windows
 vcpkg install pango:$WINARCH-windows
 vcpkg install sqlite3[core,tool]:$WINARCH-windows
+vcpkg list sqlite3
+
 pip install ninja wheel dll-diagnostics
 
 echo "pip $(pip freeze | grep dll-diagnostics | sed 's/==/ /')" >> versions
