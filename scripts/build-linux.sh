@@ -10,7 +10,8 @@ source scripts/common.sh
 for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
 do
     sudo yum install -y $p
-    v=$(rpm -q $p)
+    # There may be a better way
+    v=$(sudo yum install $p | grep 'is already installed' | awk '{print $2;}')
     echo "yum $p $v" >> versions
 done
 
