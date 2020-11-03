@@ -9,12 +9,12 @@
 
 set -eaux
 
-python --version
-pip --version
+# python --version
+# pip --version
 
 # version=$(echo $1| sed 's/\.//')
 
 pip install wheel
 
-rm -fr dist wheelhouse
+rm -fr dist wheelhouse ecmwflibs.egg-info build
 python setup.py bdist_wheel
