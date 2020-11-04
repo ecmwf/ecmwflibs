@@ -15,7 +15,8 @@ for p in expat netcdf-c pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[//')
-    vcpkg list $n | awk '{print $2;}'
+    v=$(vcpkg list $n | awk '{print $2;}')
+    echo "vcpkg $n $v"
 done
 
 pip install ninja wheel dll-diagnostics

@@ -9,8 +9,8 @@
 name: Build Windows
 
 on:
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
 
   # pull_request:
   #  branches: [ master ]
@@ -32,7 +32,7 @@ jobs:
       run:
         shell: bash
 
-    name: Build with Python 3.6 ${{ matrix.architecture }}
+    name: Build on ${{ matrix.architecture }}
     env:
       WINARCH: ${{ matrix.architecture }}
 
