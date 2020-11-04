@@ -14,7 +14,7 @@ source scripts/common.sh
 for p in expat netcdf-c pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
-    n=$(echo $p | sed 's/\[//')
+    n=$(echo $p | sed 's/\[.*//')
     v=$(vcpkg list $n | awk '{print $2;}')
     echo "vcpkg $n $v" >> versions
 done
