@@ -89,6 +89,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.7
+          architecture: ${{ matrix.architecture }}
+
       - run: ./scripts/wheel-windows.sh 3.7
       - uses: actions/upload-artifact@v2
         name: Upload wheel 3.7
@@ -101,6 +103,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+          architecture: ${{ matrix.architecture }}
+
       - run: ./scripts/wheel-windows.sh 3.8
       - uses: actions/upload-artifact@v2
         name: Upload wheel 3.8
@@ -113,6 +117,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+          architecture: ${{ matrix.architecture }}
+
       - run: ./scripts/wheel-windows.sh 3.9
       - uses: actions/upload-artifact@v2
         name: Upload wheel 3.9
