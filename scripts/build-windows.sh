@@ -16,7 +16,7 @@ do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[//')
     v=$(vcpkg list $n | awk '{print $2;}')
-    echo "vcpkg $n $v"
+    echo "vcpkg $n $v" >> versions
 done
 
 pip install ninja wheel dll-diagnostics
