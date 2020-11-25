@@ -1,5 +1,5 @@
 {
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "autopep8",
     "python.pythonPath": "/usr/local/bin/python3",
     "cmake.configureOnOpen": false
 }

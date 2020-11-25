@@ -13,7 +13,7 @@ import os
 import tempfile
 import sys
 
-__version__ = "0.0.91"
+__version__ = "0.0.92"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -34,7 +34,8 @@ with open(_fontcfg, "w") as _f:
 # Environment must be set *BEFORE* the libraries are loaded.
 # on Metview
 
-os.environ["FONTCONFIG_FILE"] = os.environ.get("ECMWFLIBS_FONTCONFIG_FILE", _fontcfg)
+os.environ["FONTCONFIG_FILE"] = os.environ.get(
+    "ECMWFLIBS_FONTCONFIG_FILE", _fontcfg)
 os.environ["PROJ_LIB"] = os.environ.get(
     "ECMWFLIBS_PROJ_LIB", os.path.join(_here, "share", "proj")
 )
@@ -53,6 +54,11 @@ for env in (
         del os.environ[env]
         if "ECMWFLIBS_" + env in os.environ:
             os.environ[env] = os.environ["ECMWFLIBS_" + env]
+            print(
+                "ecmwflibs: using provided '{}' set to '{}".format(
+                    env, os.environ[env]),
+                file=sys.stderr,
+            )
 
 from ._ecmwflibs import versions as _versions  # noqa: N402
 
@@ -86,7 +92,8 @@ def find(name):
     env = "ECMWFLIBS_" + name.upper()
     if env in os.environ:
         print(
-            "ecmwflibs: using provided '{}' set to '{}".format(env, os.environ[env]),
+            "ecmwflibs: using provided '{}' set to '{}".format(
+                env, os.environ[env]),
             file=sys.stderr,
         )
         return os.environ[env]
