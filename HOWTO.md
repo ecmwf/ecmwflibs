@@ -90,3 +90,15 @@ https://snarky.ca/the-challenges-in-designing-a-library-for-pep-425/
 * https://python-packaging-tutorial.readthedocs.io/en/latest/binaries_dependencies.html
 * https://scikit-build.readthedocs.io/en/latest/
 * https://stackoverflow.com/questions/24347450/how-do-you-add-additional-files-to-a-wheel
+
+
+[vagrant@centos8 ~]$ pip3 install ecmwflibs
+Collecting ecmwflibs
+  Could not find a version that satisfies the requirement ecmwflibs (from versions: )
+No matching distribution found for ecmwflibs
+[vagrant@centos8 ~]$ pip3 install --upgrade pip3
+Collecting pip3
+  Could not find a version that satisfies the requirement pip3 (from versions: )
+No matching distribution found for pip3
+[vagrant@centos8 ~]$ pip3 install --upgrade pip
+Collecting pip

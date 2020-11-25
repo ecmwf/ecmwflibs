@@ -9,6 +9,9 @@
 
 set -eaux
 
+# The version in master does not compile with disabled curl support
+NETCDF_VERSION=8279a078b06ae35ebe3a18f50edc376e598c59d4
+
 source scripts/common.sh
 
 for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
