@@ -10,7 +10,7 @@
 set -eaux
 
 # We want the sqlite3 we just compiled
-PATH=/work/install/bin:$PATH
+PATH=$(pwd)/install/bin:$PATH
 
 # The version in master does not compile with disabled curl support
 NETCDF_VERSION=v4.6.0

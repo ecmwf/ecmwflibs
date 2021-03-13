@@ -151,3 +151,4 @@ junk/
 *.grib
 *.png
 *.nc
+ecmwflibs/versions.txt
