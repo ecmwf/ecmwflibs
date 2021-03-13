@@ -6,11 +6,14 @@
 # In applying this licence, ECMWF does not waive the privileges and immunities
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
-
+# (rm -fr build-other/netcdf/; cd src/netcdf/; git checkout -- .; git clean -f .)
 set -eaux
 
+# We want the sqlite3 we just compiled
+PATH=/work/install/bin:$PATH
+
 # The version in master does not compile with disabled curl support
-NETCDF_VERSION=8279a078b06ae35ebe3a18f50edc376e598c59d4
+NETCDF_VERSION=v4.6.0
 
 source scripts/common.sh
 
@@ -61,7 +64,7 @@ cmake --build build-other/netcdf --target install
 
 # Pixman is needed by cairo
 
-git clone --depth 1 $GIT_PIXMAN src/pixman
+[[ -d src/pixman ]] || git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
 meson setup --prefix=$TOPDIR/install \
     -Dintrospection=disabled \
@@ -73,7 +76,7 @@ ninja -C build-other/pixman install
 
 # Build cairo
 
-git clone --depth 1 $GIT_CAIRO src/cairo
+[[ -d src/cairo ]] || git clone --depth 1 $GIT_CAIRO src/cairo
 cd src/cairo
 meson setup --prefix=$TOPDIR/install \
     -Dintrospection=disabled \
@@ -89,7 +92,7 @@ ninja -C build-other/cairo install
 
 # Build harfbuzz needed by pango
 
-git clone --depth 1 $GIT_HARFBUZZ src/harfbuzz
+[[ -d src/harfbuzz ]] || git clone --depth 1 $GIT_HARFBUZZ src/harfbuzz
 
 mkdir -p build-other/harfbuzz
 cd src/harfbuzz
@@ -103,7 +106,7 @@ ninja -C build-other/harfbuzz install
 
 # Build fridibi needed by pango
 
-git clone --depth 1 $GIT_FRIBIDI src/fridibi
+[[ -d src/fridibi ]] || git clone --depth 1 $GIT_FRIBIDI src/fridibi
 
 mkdir -p build-other/fridibi
 cd src/fridibi
@@ -124,7 +127,7 @@ ninja -C build-other/fridibi install
 # We undefine G_LOG_USE_STRUCTURED because otherwise we will have a
 # undefined symbol g_log_structured_standard() when running on recent
 # docker images with recent versions of glib
-git clone --branch 1.43.0 $GIT_PANGO src/pango
+[[ -d src/pango ]] || git clone --branch 1.43.0 $GIT_PANGO src/pango
 # cd src/pango
 # git checkout 1.43.0
 
@@ -144,7 +147,7 @@ ninja -C build-other/pango install
 
 # Build sqlite
 
-git clone --depth 1 $GIT_SQLITE src/sqlite
+[[ -d src/sqlite ]] || git clone --depth 1 $GIT_SQLITE src/sqlite
 
 cd src/sqlite
 ./configure \
@@ -157,7 +160,7 @@ make -C src/sqlite install
 
 # Build proj
 
-git clone --depth 1 $GIT_PROJ src/proj
+[[ -d src/proj ]] || git clone --depth 1 $GIT_PROJ src/proj
 
 cd src/proj
 ./autogen.sh
