@@ -13,7 +13,7 @@ import os
 import tempfile
 import sys
 
-__version__ = "0.0.95"
+__version__ = "0.0.96"
 
 
 _here = os.path.join(os.path.dirname(__file__))
