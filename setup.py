@@ -57,7 +57,7 @@ def shared(directory):
 
 
 # Paths must be relative to package directory...
-shared_files = ['versions.txt']
+shared_files = ["versions.txt"]
 shared_files += [x[len("install/") :] for x in shared("install/share/magics")]
 shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/share/proj")]
 shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/etc")]
