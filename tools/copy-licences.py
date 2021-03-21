@@ -112,6 +112,9 @@ for line in open(sys.argv[1], "r"):
         missing.append((lib, line))
         continue
 
+    if 'dll' in line:
+        lib = f'lib{lib}'
+
     e = ENTRIES[lib]
     if e is None:
         continue
