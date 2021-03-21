@@ -14,20 +14,24 @@ source scripts/common.sh
 brew install cmake ninja pkg-config automake
 
 # We don't want a dependency on X11
-EDITOR=cat brew edit cairo | \
-grep -v '^Editing ' | \
-sed 's/enable-gobject/disable-gobject/' | \
-sed 's/enable-tee/disable-tee/' | \
-sed 's/enable-xcb/disable-xcb/' | \
-sed 's/enable-xlib/disable-xlib/' | \
-sed 's/enable-xlib-xrender/disable-xlib-xrender/' | \
-sed 's/enable-quartz-image/disable-quartz-image/' > cairo.rb
+EDITOR=cat brew edit cairo | sed '
+s/^Editing .*//
+s/enable-gobject/disable-gobject/
+s/enable-tee/disable-tee/
+s/enable-xcb/disable-xcb/
+s/enable-xlib/disable-xlib/
+s/enable-xlib-xrender/disable-xlib-xrender/
+s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
 brew install --build-from-source cairo.rb
 
+EDITOR=cat brew edit pango | sed '
+s/^Editing .*//
+s/introspection=enabled/introspection=disabled/' > pango.rb
 
+brew install --build-from-source pango.rb
 
-for p in pango netcdf proj
+for p in  netcdf proj
 do
     brew install $p
     v=$(brew info $p | grep Cellar | awk '{print $1;}' | awk -F/ '{print $NF;}')

@@ -8,6 +8,7 @@ from html2text import html2text
 def identity(x):
     return x
 
+
 ENTRIES = {
     "libMagPlus": None,
     "libeccodes_memfs": None,
@@ -58,8 +59,8 @@ ENTRIES = {
         "home": "https://github.com/HDFGroup/hdf5",
         "copying": "https://raw.githubusercontent.com/HDFGroup/hdf5/develop/COPYING",
     },
-    "libhdf5_hl": None,  # Assumed to be part of libhdf5
-    "libpng15": {
+    "libhdf5_hl": None,  # Assumed to be part of libhdf5 (hl = high level)
+    "libpng": {
         "home": "https://github.com/glennrp/libpng",
         "copying": "https://raw.githubusercontent.com/glennrp/libpng/libpng16/LICENSE",
     },
@@ -98,22 +99,55 @@ ENTRIES = {
         "home": "https://gitlab.freedesktop.org/freetype/freetype/",
         "copying": "https://gitlab.freedesktop.org/freetype/freetype/-/raw/master/docs/FTL.TXT",
     },
+    "libpcre": {
+        "home": "https://github.com/vmg/libpcre",
+        "copying": "https://raw.githubusercontent.com/vmg/libpcre/master/LICENCE",
+    },
+    "libgraphite2": {
+        "home": "https://github.com/silnrsi/graphite",
+        "copying": "https://raw.githubusercontent.com/silnrsi/graphite/master/COPYING",
+    },
+    "libffi": {
+        "home": "https://github.com/libffi/libffi",
+        "copying": "https://raw.githubusercontent.com/libffi/libffi/master/LICENSE",
+    },
+    "libtiff": {
+        "home": "https://gitlab.com/libtiff/libtiff",
+        "copying": "https://gitlab.com/libtiff/libtiff/-/raw/master/COPYRIGHT",
+    },
+    # See also https://www.gnu.org/software/gettext/manual/html_node/Discussions.html
+    "libintl": {
+        "home": "https://www.gnu.org/software/gettext/manual/html_node/Licenses.html",
+        "copying": "https://www.gnu.org/software/gettext/manual/html_node/Licenses.html",
+        "html": True,
+    },
+    "libglib": {
+        "home": "https://gitlab.gnome.org/GNOME/glib",
+        "copying": "https://gitlab.gnome.org/GNOME/glib/-/raw/master/COPYING",
+    },
+    "libgobject": None,  # Part of libglib
+    "libgmodule": None,  # Part of libglib
+    "libgio": None,  # Part of libglib
 }
+
+ALIASES = {"libpng15": "libpng", "libpng16": "libpng"}
 
 libs = {}
 missing = []
 
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
-    line = line.strip().split()[-1].split('/')[-1]
-    lib = line.split('-')[0].split('.')[0]
+    line = line.strip().split()[-1].split("/")[-1]
+    lib = line.split("-")[0].split(".")[0]
+
+    if not lib.startswith("lib"):
+        lib = f"lib{lib}"
+
+    lib = ALIASES.get(lib, lib)
 
     if lib not in ENTRIES:
         missing.append((lib, line))
         continue
-
-    if 'dll' in line:
-        lib = f'lib{lib}'
 
     e = ENTRIES[lib]
     if e is None:

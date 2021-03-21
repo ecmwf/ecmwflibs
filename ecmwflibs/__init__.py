@@ -14,7 +14,7 @@ import tempfile
 import sys
 import json
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 _here = os.path.join(os.path.dirname(__file__))
