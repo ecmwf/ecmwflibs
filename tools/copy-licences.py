@@ -138,4 +138,4 @@ for line in open(sys.argv[1], "r"):
         print(json.dumps(libs), file=f)
 
 
-assert len(missing) == 0, missing
+assert len(missing) == 0, json.dumps(missing, indent=4, sort_keys=True)
