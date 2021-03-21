@@ -10,7 +10,7 @@ def identity(x):
     return x
 
 
-LINUX = re.compile(r"([^-]*)-.*\.so")
+REGEX = re.compile(r"([^-]*)-.*\.\b(so|dll|dylib)\b")
 
 ENTRIES = {
     "libMagPlus": None,
@@ -110,7 +110,7 @@ missing = []
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
     line = line.strip().split()[-1].split('/')[-1]
-    m = LINUX.match(line)
+    m = REGEX.match(line)
     if m:
         lib = m.group(1)
 
