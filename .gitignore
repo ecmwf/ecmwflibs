@@ -152,3 +152,6 @@ junk/
 *.png
 *.nc
 ecmwflibs/versions.txt
+libs
+tmp
+.gitignore

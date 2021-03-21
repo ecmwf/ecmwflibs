@@ -61,6 +61,7 @@ shared_files = ["versions.txt"]
 shared_files += [x[len("install/") :] for x in shared("install/share/magics")]
 shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/share/proj")]
 shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/etc")]
+shared_files += [x[len("ecmwflibs/") :] for x in shared("ecmwflibs/copying")]
 
 if os.name == "nt":
     for n in os.listdir("ecmwflibs"):

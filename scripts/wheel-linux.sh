@@ -14,8 +14,21 @@ version=$(echo $1| sed 's/\.//')
 TOPDIR=$(/bin/pwd)
 
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
+if [[ -d /opt/python/cp${version}-cp${version}*/bin ]]
+then
+    PATH=/opt/python/cp${version}-cp${version}*/bin:$PATH
+fi
 
 rm -fr dist wheelhouse
-/opt/python/cp${version}-cp${version}*/bin/python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel
+
+# Do it twice to get the libraries
+auditwheel repair dist/*.whl
+unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' | sed 's,.*ecmwflibs.libs/,,' > libs
+pip3 install -r tools/requirements.txt
+python3 ./tools/copy-licences.py libs
+
+rm -fr dist wheelhouse
+python3 setup.py bdist_wheel
 auditwheel repair dist/*.whl
 rm -fr dist

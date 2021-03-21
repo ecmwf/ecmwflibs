@@ -9,10 +9,6 @@
 
 set -eaux
 
-# python --version
-# pip --version
-
-# version=$(echo $1| sed 's/\.//')
 
 pip install wheel
 

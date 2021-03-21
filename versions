@@ -1,0 +1,8 @@
+yum libpng-devel 2:libpng-devel-1.5.13-8.el7.x86_64
+yum libtiff-devel libtiff-devel-4.0.3-35.el7.x86_64
+yum fontconfig-devel fontconfig-devel-2.13.0-4.3.el7.x86_64
+yum gobject-introspection-devel gobject-introspection-devel-1.56.1-1.el7.x86_64
+yum expat-devel expat-devel-2.1.0-12.el7.x86_64
+yum cairo-devel cairo-devel-1.15.12-4.el7.x86_64
+yum libjasper-devel jasper-devel-1.900.1-33.el7.x86_64
+yum hdf5-devel hdf5-devel-1.8.12-12.el7.x86_64
