@@ -105,13 +105,18 @@ ENTRIES = {
 }
 
 libs = {}
+missing = []
 
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
-    line = line.strip()
+    line = line.strip().split()[-1].split('/')[-1]
     m = LINUX.match(line)
     if m:
         lib = m.group(1)
+
+    if lib not in ENTRIES:
+        missing.append((lib, line))
+        continue
 
     e = ENTRIES[lib]
     if e is None:
@@ -137,3 +142,6 @@ for line in open(sys.argv[1], "r"):
 
     with open("ecmwflibs/copying/list.json", "w") as f:
         print(json.dumps(libs), file=f)
+
+
+assert len(missing) == 0, missing

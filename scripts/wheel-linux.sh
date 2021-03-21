@@ -24,7 +24,7 @@ python3 setup.py bdist_wheel
 
 # Do it twice to get the libraries
 auditwheel repair dist/*.whl
-unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' | sed 's,.*ecmwflibs.libs/,,' > libs
+unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 

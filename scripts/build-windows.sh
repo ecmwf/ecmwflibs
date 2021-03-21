@@ -89,6 +89,10 @@ rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 mkdir -p ecmwflibs/share/proj
 python tools/copy-dlls.py install/bin/MagPlus.dll ecmwflibs/
+pip install -r tools/requirements.txt
+find ecmwflibs -name '*.dll' > libs
+python ./tools/copy-licences.py libs
+
 mkdir -p install/include
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
