@@ -36,7 +36,6 @@ brew install proj
 
 for p in  netcdf proj pango cairo
 do
-     $p
     v=$(brew info $p | grep Cellar | awk '{print $1;}' | awk -F/ '{print $NF;}')
     echo "brew $p $v" >> versions
 done
