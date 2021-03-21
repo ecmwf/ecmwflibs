@@ -14,7 +14,7 @@ import tempfile
 import sys
 import json
 
-__version__ = "0.1.4"
+__version__ = "0.1.6"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -136,14 +136,18 @@ def files():
 def licences():
     here = os.path.dirname(__file__)
     with open(os.path.join(here, "copying/list.json")) as f:
-        x = json.load(f.read())
+        x = json.loads(f.read())
 
     for k, v in sorted(x.items()):
-        print(k, " ", v["home"])
-        print("=" * (1 + len(k) + len(v["home"])))
+        print("*" * 80)
+        print("name", k)
+        print("home", v["home"])
+        print("*" * 80)
         print()
         with open(os.path.join(here, v["path"])) as f:
             print(f.read())
+
+    print("*" * 80)
 
 
 def licenses(*args, **kwargs):

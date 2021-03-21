@@ -121,6 +121,12 @@ ENTRIES = {
         "copying": "https://www.gnu.org/software/gettext/manual/html_node/Licenses.html",
         "html": True,
     },
+    # See also https://www.gnu.org/software/gettext/manual/html_node/Discussions.html
+    "libiconv": {
+        "home": "https://www.gnu.org/software/libiconv/",
+        "copying": "https://www.gnu.org/software/libiconv/",
+        "html": True,
+    },
     "libglib": {
         "home": "https://gitlab.gnome.org/GNOME/glib",
         "copying": "https://gitlab.gnome.org/GNOME/glib/-/raw/master/COPYING",
@@ -128,9 +134,21 @@ ENTRIES = {
     "libgobject": None,  # Part of libglib
     "libgmodule": None,  # Part of libglib
     "libgio": None,  # Part of libglib
+    "libbrotli": {
+        "home": "https://github.com/google/brotli",
+        "copying": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
+    },
+    "libbrotlidec": None,
 }
 
-ALIASES = {"libpng15": "libpng", "libpng16": "libpng"}
+ALIASES = {
+    "libpng15": "libpng",
+    "libpng16": "libpng",
+    "brotlicommon": "libbrotli",
+    "libproj_8_1": "libproj",
+    "libpangowin32": "libpango",
+    "libzlib1": "libzlib",
+}
 
 libs = {}
 missing = []
