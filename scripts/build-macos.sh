@@ -18,7 +18,7 @@ EDITOR=cat brew edit cairo | \
 grep -v '^Editing ' | \
 sed 's/enable-gobject/disable-gobject/' | \
 sed 's/enable-tee/disable-tee/' | \
-sed 's/enable-xcdb/disable-xcdb/' | \
+sed 's/enable-xcb/disable-xcb/' | \
 sed 's/enable-xlib/disable-xlib/' | \
 sed 's/enable-xlib-xrender/disable-xlib-xrender/' | \
 sed 's/enable-quartz-image/disable-quartz-image/' > cairo.rb
