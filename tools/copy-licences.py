@@ -116,16 +116,17 @@ ENTRIES = {
         "copying": "https://gitlab.com/libtiff/libtiff/-/raw/master/COPYRIGHT",
     },
     # See also https://www.gnu.org/software/gettext/manual/html_node/Discussions.html
+    # intl(gettext) is GPL while libintl is LGPL
     "libintl": {
         "home": "https://www.gnu.org/software/gettext/manual/html_node/Licenses.html",
-        "copying": "https://www.gnu.org/software/gettext/manual/html_node/Licenses.html",
+        "copying": "https://www.gnu.org/licenses/lgpl-3.0.txt",
         "html": True,
     },
-    # See also https://www.gnu.org/software/gettext/manual/html_node/Discussions.html
+    # See also https://www.gnu.org/software/libiconv/
+    # iconv is GPL while libiconv is LGPL
     "libiconv": {
         "home": "https://www.gnu.org/software/libiconv/",
-        "copying": "https://www.gnu.org/software/libiconv/",
-        "html": True,
+        "copying": "https://www.gnu.org/licenses/lgpl-3.0.txt",
     },
     "libglib": {
         "home": "https://gitlab.gnome.org/GNOME/glib",
