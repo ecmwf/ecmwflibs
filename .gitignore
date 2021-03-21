@@ -155,3 +155,4 @@ ecmwflibs/versions.txt
 libs
 tmp
 .gitignore
+*.rb

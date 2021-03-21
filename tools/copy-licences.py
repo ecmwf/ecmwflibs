@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 import requests
 import sys
-import re
 import json
 from html2text import html2text
 
 
 def identity(x):
     return x
-
-
-REGEX = re.compile(r"([^-]*)-.*\.\b(so|dll|dylib)\b")
 
 ENTRIES = {
     "libMagPlus": None,
@@ -110,9 +106,7 @@ missing = []
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
     line = line.strip().split()[-1].split('/')[-1]
-    m = REGEX.match(line)
-    if m:
-        lib = m.group(1)
+    lib = line.split('-')[0].split('.')[0]
 
     if lib not in ENTRIES:
         missing.append((lib, line))
