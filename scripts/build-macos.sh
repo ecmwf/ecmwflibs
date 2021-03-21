@@ -31,13 +31,15 @@ s/introspection=enabled/introspection=disabled/' > pango.rb
 
 brew install --build-from-source pango.rb
 
-for p in  netcdf proj
+brew install netcdf
+brew install proj
+
+for p in  netcdf proj pango cairo
 do
-    brew install $p
+     $p
     v=$(brew info $p | grep Cellar | awk '{print $1;}' | awk -F/ '{print $NF;}')
     echo "brew $p $v" >> versions
 done
-
 
 # Build eccodes
 
