@@ -156,3 +156,4 @@ libs
 tmp
 .gitignore
 *.rb
+versions
