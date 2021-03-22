@@ -10,9 +10,14 @@ def identity(x):
 
 
 ENTRIES = {
-    "libMagPlus": None,
-    "libeccodes_memfs": None,
-    "libeccodes": None,
+    "libMagPlus": {
+        "home": "https://github.com/ecmwf/magics",
+        "copying": "https://raw.githubusercontent.com/ecmwf/magics/develop/LICENSE",
+    },
+    "libeccodes": {
+        "home": "https://github.com/ecmwf/eccodes",
+        "copying": "https://raw.githubusercontent.com/ecmwf/eccodes/develop/LICENSE",
+    },
     "libnetcdf": {
         "home": "https://github.com/Unidata/netcdf-c",
         "copying": "https://raw.githubusercontent.com/Unidata/netcdf-c/master/COPYRIGHT",
@@ -41,8 +46,6 @@ ENTRIES = {
         "home": "https://github.com/GNOME/pango",
         "copying": "https://raw.githubusercontent.com/GNOME/pango/master/COPYING",
     },
-    "libpangoft2": None,  # Assumed to be part of libpango
-    "libpangocairo": None,  # Assumed to be part of libpango
     "libsqlite3": {
         "home": "https://sqlite.org/index.html",
         "copying": "Public Domain, see https://sqlite.org/copyright.html",
@@ -132,14 +135,10 @@ ENTRIES = {
         "home": "https://gitlab.gnome.org/GNOME/glib",
         "copying": "https://gitlab.gnome.org/GNOME/glib/-/raw/master/COPYING",
     },
-    "libgobject": None,  # Part of libglib
-    "libgmodule": None,  # Part of libglib
-    "libgio": None,  # Part of libglib
     "libbrotli": {
         "home": "https://github.com/google/brotli",
         "copying": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
     },
-    "libbrotlidec": None,
     "libcurl": {
         "home": "https://github.com/curl/curl",
         "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
@@ -150,13 +149,22 @@ ALIASES = {
     "libpng15": "libpng",
     "libpng16": "libpng",
     "libbrotlicommon": "libbrotli",
+    "libbrotlidec": "libbrotli",
     "libproj_8_1": "libproj",
     "libpangowin32": "libpango",
     "libzlib1": "libz",
+    "libeccodes_memfs": "libeccodes",
+    "libgobject": "libglib",  # Part of libglib
+    "libgmodule": "libglib",  # Part of libglib
+    "libgio": "libglib",  # Part of libglib
+    "libpangoft2": "libpango",  # Assumed to be part of libpango
+    "libpangocairo": "libpango",  # Assumed to be part of libpango
+    "libhdf5_hl": "libhdf5",
 }
 
 libs = {}
 missing = []
+seen = set()
 
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
@@ -171,6 +179,11 @@ for line in open(sys.argv[1], "r"):
     if lib not in ENTRIES:
         missing.append((lib, line))
         continue
+
+    if lib in seen:
+        continue
+
+    seen.add(lib)
 
     e = ENTRIES[lib]
     if e is None:
