@@ -140,15 +140,19 @@ ENTRIES = {
         "copying": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
     },
     "libbrotlidec": None,
+    "libcurl": {
+        "home": "https://github.com/curl/curl",
+        "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
+    },
 }
 
 ALIASES = {
     "libpng15": "libpng",
     "libpng16": "libpng",
-    "brotlicommon": "libbrotli",
+    "libbrotlicommon": "libbrotli",
     "libproj_8_1": "libproj",
     "libpangowin32": "libpango",
-    "libzlib1": "libzlib",
+    "libzlib1": "libz",
 }
 
 libs = {}
