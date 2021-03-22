@@ -134,6 +134,8 @@ def files():
 
 
 def credits():
+    """Displays the list of embedded libraries and their copyright
+    notices and/or licenses."""
     here = os.path.dirname(__file__)
     with open(os.path.join(here, "copying/list.json")) as f:
         x = json.loads(f.read())
