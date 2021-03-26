@@ -11,6 +11,7 @@
 import io
 import os
 import os.path
+import sys
 
 from setuptools import Extension, find_packages, setup
 
@@ -27,11 +28,7 @@ for line in read("ecmwflibs/__init__.py").split("\n"):
 
 libdir = os.path.realpath("install/lib")
 incdir = os.path.realpath("install/include")
-
-if os.name == "nt":
-    libs = ["eccodes", "MagPlus"]
-else:
-    libs = ["eccodes", "MagPlus"]
+libs = ["eccodes", "MagPlus"]
 
 
 # https://docs.python.org/3/distutils/apiref.html
@@ -70,6 +67,12 @@ if os.name == "nt":
 
 # print(shared_files)
 
+if "--universal" in sys.argv:
+    ext_modules = []
+    with open("ecmwflibs/_no_libs_", "w"):
+        pass
+    shared_files = ["_no_libs_"]
+
 setup(
     name="ecmwflibs",
     version=version,
@@ -98,6 +101,5 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Operating System :: OS Independent",
     ],
-    #    cmdclass={'build_ext': ecmwflibs_build_ext},
     ext_modules=ext_modules,
 )
