@@ -36,7 +36,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: checks
-    if: false
+    if: 'false'
 
     steps:
     - uses: actions/checkout@v2
