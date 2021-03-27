@@ -30,8 +30,10 @@ jobs:
           python setup.py bdist_wheel --universal
           pip install dist/ecmwflibs*none-any.whl
           mv ecmwflibs ecmwflibs.no
+          ls -l
 
       - shell: python
         run: |
           import ecmwflibs
+          print(ecmwflibs.__file__)
           assert ecmwflibs.universal()
