@@ -6,8 +6,10 @@ name: Test Universal
 on:
   workflow_dispatch: {}
 
-jobs:
+  push:
+    branches: [ master ]
 
+jobs:
 
   checks:
     runs-on: ubuntu-latest
@@ -30,6 +32,7 @@ jobs:
           python setup.py bdist_wheel --universal
           pip install dist/ecmwflibs*none-any.whl
           mv ecmwflibs ecmwflibs.no
+          rm -fr dist *.egg*
           ls -l
 
       - shell: python
