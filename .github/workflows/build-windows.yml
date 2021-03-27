@@ -17,8 +17,8 @@ on:
 
   workflow_dispatch: {}
 
-  release:
-    types: [created]
+  # release:
+  #   types: [created]
 
   repository_dispatch:
     types: [eccodes-updated, magics-updated]

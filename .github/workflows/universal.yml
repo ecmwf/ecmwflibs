@@ -6,26 +6,11 @@ name: Build Universal
 on:
   workflow_dispatch: {}
 
-  release:
-    types: [created]
-    
+
 jobs:
-
-  version:
-    runs-on: ubuntu-latest
-
-    name: Get release version
-
-    steps:
-
-      - uses: actions/checkout@v2
-
-      - run: |
-          env | grep GITHUB
 
   checks:
     runs-on: ${{ matrix.os }}
-    needs: version
 
     strategy:
       matrix:
@@ -35,12 +20,6 @@ jobs:
       run:
         shell: bash
 
-    steps:
-    - id: version
-      uses: pozetroninc/github-action-get-latest-release@master
-      with:
-          repository: ecmwf/ecmwflibs
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -49,8 +28,8 @@ jobs:
     - name: Install wheel for ${{ matrix.os }}
       run: |
         python -m pip install --upgrade pip
-        env | grep GITHUB
-        pip install ecmwflibs==${{ steps.version.outputs.release }}
+        release=$(echo $GITHUB_REF | sed 's,.*/,,')
+        pip install ecmwflibs==$release
 
 
   deploy:
