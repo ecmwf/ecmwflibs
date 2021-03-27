@@ -157,5 +157,5 @@ tmp
 .gitignore
 *.rb
 versions
-_no_libs_
 ecmwflibs/_ecmwflibs.py
+ecmwflibs/_universal
