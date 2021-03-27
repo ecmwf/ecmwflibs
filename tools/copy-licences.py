@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-import requests
-import sys
 import json
+import sys
+
+import requests
 from html2text import html2text
 
 

@@ -9,10 +9,13 @@
 #
 
 import atexit
-import os
-import tempfile
-import sys
+import ctypes
 import json
+import os
+import sys
+import tempfile
+
+from ._ecmwflibs import versions as _versions
 
 __version__ = "0.2.1"
 
@@ -61,7 +64,9 @@ for env in (
                 file=sys.stderr,
             )
 
-from ._ecmwflibs import versions as _versions  # noqa: N402
+
+def universal():
+    return len(_versions()) == 0
 
 
 def _cleanup():
@@ -81,17 +86,37 @@ _MAP = {
     "gribapi": "eccodes",
 }
 
+EXTENSIONS = {
+    "darwin": ".dylib",
+    "win32": ".dll",
+}
+
 
 def _lookup(name):
     return _MAP.get(name, name)
 
 
-FALLBACKS = {}
-
-
 def find(name):
     """Returns the path to the selected library, or None if not found."""
+
     name = _lookup(name)
+
+    if int(os.environ("ECMWFLIBS_DISABLED", "0")):
+        raise NotImplementedError(f"ECMWFLIBS_DISABLED is set looking for {name}")
+
+    if int(os.environ("ECMWFLIBS_USED_INSTALLED", "0")):
+        path = _find_library(name)
+        if path is None:
+            print(
+                f"WARNING: ECMWFLIBS_USED_INSTALLED did not find {name}",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"WARNING: ECMWFLIBS_USED_INSTALLED found {name} at {path}",
+                file=sys.stderr,
+            )
+        return path
 
     env = "ECMWFLIBS_" + name.upper()
     if env in os.environ:
@@ -102,6 +127,7 @@ def find(name):
         return os.environ[env]
 
     here = os.path.dirname(__file__)
+    extension = EXTENSIONS.get(sys.platform, ".so")
 
     for libdir in [here + ".libs", os.path.join(here, ".dylibs"), here]:
 
@@ -112,27 +138,26 @@ def find(name):
 
         if os.path.exists(libdir):
             for file in os.listdir(libdir):
-                if (
-                    file.endswith(".so")
-                    or file.endswith(".dylib")
-                    or file.endswith(".dll")
-                ):
+                if file.endswith(extension):
                     for name in names:
                         if name == file.split("-")[0].split(".")[0]:
                             return os.path.join(libdir, file)
 
-    if name in FALLBACKS:
-        lib = FALLBACKS[name]()
-        if lib:
-            return lib
+    if universal():  # Universal version
+        path = _find_library(name)
+        print(
+            f"WARNING: ecmwflibs does not contain any libraries. Found {name} at {path}",
+            file=sys.stderr,
+        )
+        return path
 
     raise NotImplementedError(f"This version of 'ecmwflibs' does not contain '{name}'")
 
 
 def versions():
     """Returns the list of libraries and their version."""
-    v = _versions()
-    v["ecmwflibs"] = __version__
+    v = {"ecmwflibs": __version__}
+    v.update(_versions())
     return v
 
 
@@ -162,9 +187,30 @@ def credits():
     print("*" * 80)
 
 
-def _find_magics():
-    pass
+def _find_library(name):
 
+    extension = EXTENSIONS.get(sys.platform, ".so")
 
-def _find_eccodes():
-    pass
+    LIB_HOME = "{}_HOME".format(name.upper())
+    if LIB_HOME in os.environ:
+        home = os.environ[LIB_HOME]
+        fullname = os.path.join(home, "lib", f"lib{name}{extension}")
+        if os.path.exists(fullname):
+            return fullname
+
+    for path in (
+        "LD_LIBRARY_PATH",
+        "DYLD_LIBRARY_PATH",
+    ):
+        for home in os.environ.get(path, "").split(":"):
+            fullname = os.path.join(home, f"lib{name}{extension}")
+            if os.path.exists(fullname):
+                return fullname
+
+    for root in ("/", "/usr/", "/usr/local/", "/opt/"):
+        for lib in ("lib", "lib64"):
+            fullname = os.path.join(home, f"{root}{lib}/lib{name}{extension}")
+            if os.path.exists(fullname):
+                return fullname
+
+    return ctypes.util.find_library(name)

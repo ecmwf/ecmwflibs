@@ -70,7 +70,7 @@ if os.name == "nt":
 if "--universal" in sys.argv:
     ext_modules = []
     with open("ecmwflibs/_ecmwflibs.py", "wt") as f:
-        print("_versions = {}", file=f)
+        print("def versions(): return {}", file=f)
 
 setup(
     name="ecmwflibs",

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import sys
 import json
+import os
 import shutil
+import sys
 
 from dlldiag.common import ModuleHeader, WindowsApi
 
