@@ -36,32 +36,36 @@ else:
     with open(_fontcfg, "w") as _f:
         print(_fonts, file=_f)
 
-    os.environ["FONTCONFIG_FILE"] = os.environ.get(
-        "ECMWFLIBS_FONTCONFIG_FILE", _fontcfg
-    )
-    os.environ["PROJ_LIB"] = os.environ.get(
-        "ECMWFLIBS_PROJ_LIB", os.path.join(_here, "share", "proj")
-    )
-    os.environ["MAGPLUS_HOME"] = os.environ.get("ECMWFLIBS_MAGPLUS_HOME", _here)
+    if "ECMWFLIBS_MAGPUS" not in os.environ:
 
-    for env in (
-        "ECCODES_DEFINITION_PATH",
-        "ECCODES_EXTRA_DEFINITION_PATH",
-        "ECCODES_EXTRA_SAMPLES_PATH",
-        "ECCODES_SAMPLES_PATH",
-        "GRIB_DEFINITION_PATH",
-        "GRIB_SAMPLES_PATH",
-    ):
-        if env in os.environ:
-            del os.environ[env]
-            if "ECMWFLIBS_" + env in os.environ:
-                os.environ[env] = os.environ["ECMWFLIBS_" + env]
-                print(
-                    "ecmwflibs: using provided '{}' set to '{}".format(
-                        env, os.environ[env]
-                    ),
-                    file=sys.stderr,
-                )
+        os.environ["FONTCONFIG_FILE"] = os.environ.get(
+            "ECMWFLIBS_FONTCONFIG_FILE", _fontcfg
+        )
+        os.environ["PROJ_LIB"] = os.environ.get(
+            "ECMWFLIBS_PROJ_LIB", os.path.join(_here, "share", "proj")
+        )
+        os.environ["MAGPLUS_HOME"] = os.environ.get("ECMWFLIBS_MAGPLUS_HOME", _here)
+
+    if "ECMWFLIBS_ECCODES" not in os.environ:
+
+        for env in (
+            "ECCODES_DEFINITION_PATH",
+            "ECCODES_EXTRA_DEFINITION_PATH",
+            "ECCODES_EXTRA_SAMPLES_PATH",
+            "ECCODES_SAMPLES_PATH",
+            "GRIB_DEFINITION_PATH",
+            "GRIB_SAMPLES_PATH",
+        ):
+            if env in os.environ:
+                del os.environ[env]
+                if "ECMWFLIBS_" + env in os.environ:
+                    os.environ[env] = os.environ["ECMWFLIBS_" + env]
+                    print(
+                        "ecmwflibs: using provided '{}' set to '{}".format(
+                            env, os.environ[env]
+                        ),
+                        file=sys.stderr,
+                    )
 
     # This comes *after* the variables are set, so c++ has access to them
     from ._ecmwflibs import versions as _versions
@@ -105,7 +109,8 @@ def find(name):
     name = _lookup(name)
 
     if int(os.environ("ECMWFLIBS_DISABLED", "0")):
-        raise NotImplementedError(f"ECMWFLIBS_DISABLED is set looking for {name}")
+        print(f"ECMWFLIBS_DISABLED is set looking for {name}", file=sys.stderr)
+        return None
 
     if int(os.environ("ECMWFLIBS_USED_INSTALLED", "0")):
         path = _find_library(name)
@@ -125,12 +130,15 @@ def find(name):
         path = _find_library(name)
         if path:
             print(
-                f"WARNING: ecmwflibs does not contain any libraries. Found {name} at {path}",
+                f"WARNING: ecmwflibs universal: found {name} at {path}",
                 file=sys.stderr,
             )
-        raise NotImplementedError(
-            f"ecmwflibs universal: cannot find a library called {name}"
-        )
+        else:
+            print(
+                f"WARNING: ecmwflibs universal: cannot find a library called {name}",
+                file=sys.stderr,
+            )
+        return path
 
     env = "ECMWFLIBS_" + name.upper()
     if env in os.environ:
@@ -157,7 +165,7 @@ def find(name):
                         if name == file.split("-")[0].split(".")[0]:
                             return os.path.join(libdir, file)
 
-    raise NotImplementedError(f"This version of 'ecmwflibs' does not contain '{name}'")
+    return None
 
 
 def versions():

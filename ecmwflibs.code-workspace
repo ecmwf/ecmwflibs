@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../magics-python"
+		},
+		{
+			"path": "../cfgrib"
 		}
 	],
 	"settings": {
