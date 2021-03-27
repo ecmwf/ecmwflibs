@@ -14,7 +14,7 @@ import tempfile
 import sys
 import json
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -86,6 +86,9 @@ def _lookup(name):
     return _MAP.get(name, name)
 
 
+FALLBACKS = {}
+
+
 def find(name):
     """Returns the path to the selected library, or None if not found."""
     name = _lookup(name)
@@ -117,6 +120,13 @@ def find(name):
                     for name in names:
                         if name == file.split("-")[0].split(".")[0]:
                             return os.path.join(libdir, file)
+
+    if name in FALLBACKS:
+        lib = FALLBACKS[name]()
+        if lib:
+            return lib
+
+    raise NotImplementedError(f"This version of 'ecmwflibs' does not contain '{name}'")
 
 
 def versions():
@@ -150,3 +160,11 @@ def credits():
             print(f.read())
 
     print("*" * 80)
+
+
+def _find_magics():
+    pass
+
+
+def _find_eccodes():
+    pass
