@@ -217,3 +217,10 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+
+      - uses: mvasigh/dispatch-action@main
+        with:
+            token: ${{ secrets.NOTIFY_ECMWFLIBS }}
+            repo: ecmwflibs
+            owner: ecmwf
+            event_type: ecmwflibs-windows-uploaded
