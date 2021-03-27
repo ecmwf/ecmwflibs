@@ -69,8 +69,9 @@ if os.name == "nt":
 
 if "--universal" in sys.argv:
     ext_modules = []
-    with open("ecmwflibs/_ecmwflibs.py", "wt") as f:
-        print("def versions(): return {}", file=f)
+    with open("ecmwflibs/_universal", "wt"):
+        pass
+    shared_files = ["_universal"]
 
 setup(
     name="ecmwflibs",

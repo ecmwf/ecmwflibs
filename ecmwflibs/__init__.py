@@ -15,58 +15,60 @@ import os
 import sys
 import tempfile
 
-from ._ecmwflibs import versions as _versions
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 
 _here = os.path.join(os.path.dirname(__file__))
+_universal = os.path.exists(os.path.join(_here, "_universal"))
 
 
-_fonts = """<?xml version="1.0"?>
+if _universal:
+    _versions = dict
+else:
+    _fonts = f"""<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
-<dir>{ecmwflibs}/share/magics/ttf</dir>
-</fontconfig>""".format(
-    ecmwflibs=_here
-)
+<dir>{_here}/share/magics/ttf</dir>
+</fontconfig>"""
 
-_fontcfg = tempfile.mktemp("ecmwflibs")
-with open(_fontcfg, "w") as _f:
-    print(_fonts, file=_f)
+    _fontcfg = tempfile.mktemp("ecmwflibs")
+    with open(_fontcfg, "w") as _f:
+        print(_fonts, file=_f)
 
-# Environment must be set *BEFORE* the libraries are loaded.
-# on Metview
+    os.environ["FONTCONFIG_FILE"] = os.environ.get(
+        "ECMWFLIBS_FONTCONFIG_FILE", _fontcfg
+    )
+    os.environ["PROJ_LIB"] = os.environ.get(
+        "ECMWFLIBS_PROJ_LIB", os.path.join(_here, "share", "proj")
+    )
+    os.environ["MAGPLUS_HOME"] = os.environ.get("ECMWFLIBS_MAGPLUS_HOME", _here)
 
-os.environ["FONTCONFIG_FILE"] = os.environ.get("ECMWFLIBS_FONTCONFIG_FILE", _fontcfg)
-os.environ["PROJ_LIB"] = os.environ.get(
-    "ECMWFLIBS_PROJ_LIB", os.path.join(_here, "share", "proj")
-)
-os.environ["MAGPLUS_HOME"] = os.environ.get("ECMWFLIBS_MAGPLUS_HOME", _here)
+    for env in (
+        "ECCODES_DEFINITION_PATH",
+        "ECCODES_EXTRA_DEFINITION_PATH",
+        "ECCODES_EXTRA_SAMPLES_PATH",
+        "ECCODES_SAMPLES_PATH",
+        "GRIB_DEFINITION_PATH",
+        "GRIB_SAMPLES_PATH",
+    ):
+        if env in os.environ:
+            del os.environ[env]
+            if "ECMWFLIBS_" + env in os.environ:
+                os.environ[env] = os.environ["ECMWFLIBS_" + env]
+                print(
+                    "ecmwflibs: using provided '{}' set to '{}".format(
+                        env, os.environ[env]
+                    ),
+                    file=sys.stderr,
+                )
 
-
-for env in (
-    "ECCODES_DEFINITION_PATH",
-    "ECCODES_EXTRA_DEFINITION_PATH",
-    "ECCODES_EXTRA_SAMPLES_PATH",
-    "ECCODES_SAMPLES_PATH",
-    "GRIB_DEFINITION_PATH",
-    "GRIB_SAMPLES_PATH",
-):
-    if env in os.environ:
-        del os.environ[env]
-        if "ECMWFLIBS_" + env in os.environ:
-            os.environ[env] = os.environ["ECMWFLIBS_" + env]
-            print(
-                "ecmwflibs: using provided '{}' set to '{}".format(
-                    env, os.environ[env]
-                ),
-                file=sys.stderr,
-            )
+    # This comes *after* the variables are set, so c++ has access to them
+    from ._ecmwflibs import versions as _versions
 
 
 def universal():
-    return len(_versions()) == 0
+    return _universal
 
 
 def _cleanup():
@@ -76,7 +78,8 @@ def _cleanup():
         pass
 
 
-atexit.register(_cleanup)
+if not _universal:
+    atexit.register(_cleanup)
 
 
 _MAP = {
@@ -118,6 +121,17 @@ def find(name):
             )
         return path
 
+    if _universal:  # Universal version
+        path = _find_library(name)
+        if path:
+            print(
+                f"WARNING: ecmwflibs does not contain any libraries. Found {name} at {path}",
+                file=sys.stderr,
+            )
+        raise NotImplementedError(
+            f"ecmwflibs universal: cannot find a library called {name}"
+        )
+
     env = "ECMWFLIBS_" + name.upper()
     if env in os.environ:
         print(
@@ -142,14 +156,6 @@ def find(name):
                     for name in names:
                         if name == file.split("-")[0].split(".")[0]:
                             return os.path.join(libdir, file)
-
-    if universal():  # Universal version
-        path = _find_library(name)
-        print(
-            f"WARNING: ecmwflibs does not contain any libraries. Found {name} at {path}",
-            file=sys.stderr,
-        )
-        return path
 
     raise NotImplementedError(f"This version of 'ecmwflibs' does not contain '{name}'")
 
