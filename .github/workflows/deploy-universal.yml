@@ -6,8 +6,14 @@ name: Deploy Universal
 on:
   workflow_dispatch: {}
 
-  repository_dispatch:
-    types: [ecmwflibs-windows-uploaded]
+  # repository_dispatch:
+  #   types: [ecmwflibs-windows-uploaded]
+
+  workflow_run:
+    workflows: ["Build Windows"]
+    branches: [main]
+    types: [completed]
+
 
 jobs:
 
@@ -27,6 +33,8 @@ jobs:
         shell: bash
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -34,11 +42,16 @@ jobs:
 
       - run: |
           python -m pip install --upgrade pip
-          pip install ecmwflibs=="${GITHUB_REF##*/}"
+          version=$(python ./setup.py --version)
+          mv ecmwflibs ecmwflibs.no
+          rm -fr dist *.egg*
+          ls -l
+          pip install ecmwflibs==$version
 
       - shell: python
         run: |
           import ecmwflibs
+          print(ecmwflibs.__file__)
           assert not ecmwflibs.universal()
 
 
