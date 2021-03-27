@@ -9,16 +9,10 @@
 name: Build MacOS
 
 on:
-  # push:
-  #   branches: [ master ]
-
-  # pull_request:
-  #   branches: [ master ]
-
   workflow_dispatch: {}
 
-  # release:
-  #   types: [created]
+  release:
+    types: [created]
 
   repository_dispatch:
     types: [eccodes-updated, magics-updated]
