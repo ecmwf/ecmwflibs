@@ -16,7 +16,7 @@ import sys
 import tempfile
 
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -108,11 +108,11 @@ def find(name):
 
     name = _lookup(name)
 
-    if int(os.environ("ECMWFLIBS_DISABLED", "0")):
+    if int(os.environ.get("ECMWFLIBS_DISABLED", "0")):
         print(f"ECMWFLIBS_DISABLED is set looking for {name}", file=sys.stderr)
         return None
 
-    if int(os.environ("ECMWFLIBS_USED_INSTALLED", "0")):
+    if int(os.environ.get("ECMWFLIBS_USED_INSTALLED", "0")):
         path = _find_library(name)
         if path is None:
             print(
