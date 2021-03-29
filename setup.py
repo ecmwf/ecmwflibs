@@ -26,6 +26,8 @@ for line in read("ecmwflibs/__init__.py").split("\n"):
     if line.startswith("__version__"):
         version = line.split("=")[-1].strip()[1:-1]
 
+assert version
+
 libdir = os.path.realpath("install/lib")
 incdir = os.path.realpath("install/include")
 libs = ["eccodes", "MagPlus"]
@@ -87,7 +89,7 @@ setup(
     include_package_data=True,
     package_data={"": shared_files},
     install_requires=[
-        # 'numpy',
+        "findlibs",
     ],
     zip_safe=True,
     classifiers=[

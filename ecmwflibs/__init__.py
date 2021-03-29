@@ -9,14 +9,15 @@
 #
 
 import atexit
-import ctypes
 import json
 import os
 import sys
 import tempfile
+import warnings
 
+from findlibs import find as _find_library
 
-__version__ = "0.2.8"
+__version__ = "0.3.0"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -60,11 +61,10 @@ else:
                 del os.environ[env]
                 if "ECMWFLIBS_" + env in os.environ:
                     os.environ[env] = os.environ["ECMWFLIBS_" + env]
-                    print(
+                    warnings.warn(
                         "ecmwflibs: using provided '{}' set to '{}".format(
                             env, os.environ[env]
-                        ),
-                        file=sys.stderr,
+                        )
                     )
 
     # This comes *after* the variables are set, so c++ has access to them
@@ -109,42 +109,29 @@ def find(name):
     name = _lookup(name)
 
     if int(os.environ.get("ECMWFLIBS_DISABLED", "0")):
-        print(f"ECMWFLIBS_DISABLED is set looking for {name}", file=sys.stderr)
+        warnings.warn(f"ECMWFLIBS_DISABLED is set looking for {name}")
         return None
 
     if int(os.environ.get("ECMWFLIBS_USED_INSTALLED", "0")):
         path = _find_library(name)
         if path is None:
-            print(
-                f"WARNING: ECMWFLIBS_USED_INSTALLED did not find {name}",
-                file=sys.stderr,
-            )
+            warnings.warn(f"ECMWFLIBS_USED_INSTALLED did not find {name}")
         else:
-            print(
-                f"WARNING: ECMWFLIBS_USED_INSTALLED found {name} at {path}",
-                file=sys.stderr,
-            )
+            warnings.warn(f"ECMWFLIBS_USED_INSTALLED found {name} at {path}")
         return path
 
     if _universal:  # Universal version
         path = _find_library(name)
         if path:
-            print(
-                f"WARNING: ecmwflibs universal: found {name} at {path}",
-                file=sys.stderr,
-            )
+            warnings.warn(f"ecmwflibs universal: found {name} at {path}")
         else:
-            print(
-                f"WARNING: ecmwflibs universal: cannot find a library called {name}",
-                file=sys.stderr,
-            )
+            warnings.warn(f"ecmwflibs universal: cannot find a library called {name}")
         return path
 
     env = "ECMWFLIBS_" + name.upper()
     if env in os.environ:
-        print(
-            "ecmwflibs: using provided '{}' set to '{}".format(env, os.environ[env]),
-            file=sys.stderr,
+        warnings.warn(
+            "ecmwflibs: using provided '{}' set to '{}".format(env, os.environ[env])
         )
         return os.environ[env]
 
@@ -199,32 +186,3 @@ def credits():
             print(f.read())
 
     print("*" * 80)
-
-
-def _find_library(name):
-
-    extension = EXTENSIONS.get(sys.platform, ".so")
-
-    LIB_HOME = "{}_HOME".format(name.upper())
-    if LIB_HOME in os.environ:
-        home = os.environ[LIB_HOME]
-        fullname = os.path.join(home, "lib", f"lib{name}{extension}")
-        if os.path.exists(fullname):
-            return fullname
-
-    for path in (
-        "LD_LIBRARY_PATH",
-        "DYLD_LIBRARY_PATH",
-    ):
-        for home in os.environ.get(path, "").split(":"):
-            fullname = os.path.join(home, f"lib{name}{extension}")
-            if os.path.exists(fullname):
-                return fullname
-
-    for root in ("/", "/usr/", "/usr/local/", "/opt/"):
-        for lib in ("lib", "lib64"):
-            fullname = os.path.join(home, f"{root}{lib}/lib{name}{extension}")
-            if os.path.exists(fullname):
-                return fullname
-
-    return ctypes.util.find_library(name)
