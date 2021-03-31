@@ -95,6 +95,8 @@ jobs:
 
       - run: pip freeze
 
+      - run: env | sort
+
       - name: Get some data
         run: |
           curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
