@@ -26,6 +26,17 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install packages
+        run: |
+          pip install black pytest flake8 isort
+
+      - name: Code QA
+        run: |
+          black --version
+          isort --check --profile=black .
+          black --check .
+          flake8 .
+
       - run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel
