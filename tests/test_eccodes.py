@@ -1,4 +1,4 @@
-from eccodes import *
+from eccodes import codes_get, codes_grib_new_from_file, codes_release
 
 
 def test_versions():

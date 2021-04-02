@@ -18,9 +18,7 @@ on:
     types: [eccodes-updated, magics-updated]
 
 jobs:
-
   build:
-
     runs-on: windows-latest
     strategy:
       fail-fast: true
@@ -36,7 +34,6 @@ jobs:
       WINARCH: ${{ matrix.architecture }}
 
     steps:
-
       - uses: actions/checkout@v2
 
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
@@ -67,7 +64,6 @@ jobs:
                     with open(path, "w") as f:
                       f.write(changed)
         shell: python
-
 
       - run: ./scripts/build-windows.sh
         env:
@@ -126,7 +122,6 @@ jobs:
           path: wheelhouse/*.whl
 
   test:
-
     needs: build
     runs-on: windows-latest
     strategy:
@@ -142,7 +137,6 @@ jobs:
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     steps:
-
       - uses: actions/checkout@v2
 
       - name: Set up Python
@@ -178,9 +172,7 @@ jobs:
           name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
           path: tests/*.png
 
-
   deploy:
-
     if: ${{ github.event_name == 'release' }}
 
     needs: [test, build]
@@ -195,7 +187,6 @@ jobs:
         architecture: ["x86", "x64"]
 
     steps:
-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -212,9 +203,19 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
+  notify:
+    if: ${{ github.event_name == 'release' }}
+
+    # This is done here because the windows build is the slowest
+    name: Notify universal
+
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
       - uses: mvasigh/dispatch-action@main
         with:
-            token: ${{ secrets.NOTIFY_ECMWFLIBS }}
-            repo: ecmwflibs
-            owner: ecmwf
-            event_type: ecmwflibs-windows-uploaded
+          token: ${{ secrets.NOTIFY_ECMWFLIBS }}
+          repo: ecmwflibs
+          owner: ecmwf
+          event_type: ecmwflibs-windows-uploaded

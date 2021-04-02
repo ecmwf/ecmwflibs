@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import json
 import os
 import shutil
 import sys
 
-from dlldiag.common import ModuleHeader, WindowsApi
+from dlldiag.common import ModuleHeader
 
 VCPKG1 = "C:/vcpkg/installed/{}-windows/bin/{}"
 VCPKG2 = "C:/vcpkg/installed/{}-windows/debug/bin/{}"
@@ -27,10 +26,6 @@ def scan_module(module, depth, seen):
     cwd = os.path.dirname(module)
     architecture = header.getArchitecture()
     for dll in header.listAllImports():
-        # if WindowsApi.loadModule(dll, cwd, architecture) != 0:
-        #     print(" " * depth, "ERROR cannot load", dll)
-        #     continue
-
         scan_module((cwd + "/" + dll), depth + 3, seen)
         scan_module(VCPKG1.format(architecture, dll), depth + 3, seen)
         scan_module(VCPKG2.format(architecture, dll), depth + 3, seen)
