@@ -10,8 +10,9 @@ on:
     branches: [ master ]
 
 jobs:
-
   checks:
+    name: Checks
+
     runs-on: ubuntu-latest
 
     defaults:
