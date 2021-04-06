@@ -11,7 +11,7 @@ set -eaux
 
 source scripts/common.sh
 
-for p in expat netcdf-c pango sqlite3[core,tool]
+for p in curl[non-http] expat netcdf-c pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
