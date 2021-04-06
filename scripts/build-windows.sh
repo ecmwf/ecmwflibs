@@ -13,7 +13,7 @@ source scripts/common.sh
 
 
 # Switch off dependency on curl
-sed -i .bak 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
+sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
 
 for p in expat netcdf-c pango sqlite3[core,tool]
 do
