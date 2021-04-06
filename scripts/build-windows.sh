@@ -11,6 +11,9 @@ set -eaux
 
 source scripts/common.sh
 
+
+find 'c:/vcpkg' -name '*netcdf*'
+
 for p in curl[non-http] expat netcdf-c pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
