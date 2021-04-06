@@ -12,9 +12,10 @@ set -eaux
 source scripts/common.sh
 
 
-find 'c:/vcpkg' -name '*netcdf*'
+# Switch off dependency on curl
+sed -i .bak 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
 
-for p in curl[non-http] expat netcdf-c pango sqlite3[core,tool]
+for p in expat netcdf-c pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
