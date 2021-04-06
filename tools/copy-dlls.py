@@ -26,6 +26,7 @@ def scan_module(module, depth, seen):
     cwd = os.path.dirname(module)
     architecture = header.getArchitecture()
     for dll in header.listAllImports():
+        print("DEBUG", dll)
         scan_module((cwd + "/" + dll), depth + 3, seen)
         scan_module(VCPKG1.format(architecture, dll), depth + 3, seen)
         scan_module(VCPKG2.format(architecture, dll), depth + 3, seen)
