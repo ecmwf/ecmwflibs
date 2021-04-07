@@ -8,6 +8,7 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
+uname -a
 
 source scripts/common.sh
 
