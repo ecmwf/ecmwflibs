@@ -79,11 +79,11 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Check version
-      run: |
-        release=${GITHUB_REF##*/}
-        version=$(python setup.py --version)
-        test "$release" == "$version"
+    # - name: Check version
+    #   run: |
+    #     release=${GITHUB_REF##*/}
+    #     version=$(python setup.py --version)
+    #     test "$release" == "$version"
 
     - name: Install dependencies
       run: |
