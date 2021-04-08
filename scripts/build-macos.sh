@@ -41,6 +41,8 @@ do
     echo "brew $p $v" >> versions
 done
 
+# -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+
 # Build eccodes
 
 cd $TOPDIR/build-ecmwf/eccodes
@@ -54,7 +56,6 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_BUILD_TOOLS=0 \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
-    -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib
@@ -73,7 +74,6 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
-    -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib
 
