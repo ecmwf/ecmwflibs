@@ -33,9 +33,15 @@ else:
 <dir>{_here}/share/magics/ttf</dir>
 </fontconfig>"""
 
-    _fontcfg = tempfile.mktemp("ecmwflibs")
+    _fontcfg = tempfile.mktemp("ecmwflibs.xml")
     with open(_fontcfg, "w") as _f:
         print(_fonts, file=_f)
+
+    print('============================================')
+    print(_fontcfg)
+    print('============================================')
+    print(_fonts)
+    print('============================================')
 
     if "ECMWFLIBS_MAGPUS" not in os.environ:
 
