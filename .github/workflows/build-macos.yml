@@ -14,8 +14,8 @@ on:
   release:
     types: [created]
 
-  repository_dispatch:
-    types: [eccodes-updated, magics-updated]
+  # repository_dispatch:
+  #   types: [eccodes-updated, magics-updated]
 
 jobs:
 
