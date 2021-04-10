@@ -17,7 +17,7 @@ import warnings
 
 from findlibs import find as _find_library
 
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -36,12 +36,6 @@ else:
     _fontcfg = tempfile.mktemp("ecmwflibs.xml")
     with open(_fontcfg, "w") as _f:
         print(_fonts, file=_f)
-
-    print('============================================')
-    print(_fontcfg)
-    print('============================================')
-    print(_fonts)
-    print('============================================')
 
     if "ECMWFLIBS_MAGPUS" not in os.environ:
 
