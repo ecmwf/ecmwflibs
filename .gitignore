@@ -159,3 +159,4 @@ tmp
 versions
 ecmwflibs/_ecmwflibs.py
 ecmwflibs/_universal
+*.ps
