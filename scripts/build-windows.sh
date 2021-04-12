@@ -11,7 +11,7 @@ set -eaux
 
 source scripts/common.sh
 
-PROJ_VERSION=7.2.1
+# PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
 
 # Switch off dependency on curl
