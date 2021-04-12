@@ -26,7 +26,6 @@ GIT_PROJ=https://github.com/OSGeo/PROJ.git
 PROJ_VERSION=master
 
 GIT_PIXMAN=https://github.com/freedesktop/pixman.git
-
 PIXMAN_VERSION=master
 
 GIT_CAIRO=https://github.com/freedesktop/cairo.git

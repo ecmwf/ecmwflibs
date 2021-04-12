@@ -11,6 +11,8 @@ set -eaux
 
 source scripts/common.sh
 
+PROJ_VERSION=7.2.1
+PROJ_VERSION=8.0.0
 
 # Switch off dependency on curl
 sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
@@ -28,7 +30,11 @@ pip install ninja wheel dll-diagnostics
 echo "pip $(pip freeze | grep dll-diagnostics | sed 's/==/ /')" >> versions
 # Build proj
 
-git clone --depth 1 $GIT_PROJ src/proj
+git clone $GIT_PROJ src/proj
+cd src/proj
+git checkout $PROJ_VERSION
+cd $TOPDIR
+
 mkdir -p build-other/proj
 cd build-other/proj
 
