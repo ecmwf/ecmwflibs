@@ -153,6 +153,8 @@ ALIASES = {
     "libbrotlidec": "libbrotli",
     "libproj_8_1": "libproj",
     "libproj_8_0": "libproj",
+    "libproj_7_2": "libproj",
+    "libproj_7_2_1": "libproj",
     "libpangowin32": "libpango",
     "libzlib1": "libz",
     "libeccodes_memfs": "libeccodes",
