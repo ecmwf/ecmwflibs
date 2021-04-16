@@ -17,7 +17,7 @@ import warnings
 
 from findlibs import find as _find_library
 
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -68,7 +68,12 @@ else:
                     )
 
     # This comes *after* the variables are set, so c++ has access to them
-    from ._ecmwflibs import versions as _versions
+    try:
+        from ._ecmwflibs import versions as _versions
+    except ImportError as e:
+        # ImportError: DLL load failed while importing _ecmwflibs: The specified module could not be found.
+        warnings.warn(str(e))
+        raise
 
 
 def universal():
