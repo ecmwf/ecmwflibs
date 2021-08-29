@@ -17,7 +17,7 @@ import warnings
 
 from findlibs import find as _find_library
 
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 
 _here = os.path.join(os.path.dirname(__file__))

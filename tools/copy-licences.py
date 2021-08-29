@@ -134,7 +134,7 @@ ENTRIES = {
     },
     "libglib": {
         "home": "https://gitlab.gnome.org/GNOME/glib",
-        "copying": "https://gitlab.gnome.org/GNOME/glib/-/raw/master/COPYING",
+        "copying": "https://gitlab.gnome.org/GNOME/glib/-/raw/main/COPYING",
     },
     "libbrotli": {
         "home": "https://github.com/google/brotli",
