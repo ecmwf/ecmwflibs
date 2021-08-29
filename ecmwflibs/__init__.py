@@ -17,7 +17,7 @@ import warnings
 
 from findlibs import find as _find_library
 
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 
 
 _here = os.path.join(os.path.dirname(__file__))
@@ -37,7 +37,7 @@ else:
     with open(_fontcfg, "w") as _f:
         print(_fonts, file=_f)
 
-    if "ECMWFLIBS_MAGPUS" not in os.environ:
+    if "ECMWFLIBS_MAGPLUS" not in os.environ:
 
         os.environ["FONTCONFIG_FILE"] = os.environ.get(
             "ECMWFLIBS_FONTCONFIG_FILE", _fontcfg
