@@ -53,7 +53,7 @@ ENTRIES = {
     },
     "libfontconfig": {
         "home": "https://gitlab.freedesktop.org/fontconfig/fontconfig",
-        "copying": "https://gitlab.freedesktop.org/fontconfig/fontconfig/-/raw/master/COPYING",
+        "copying": "https://gitlab.freedesktop.org/fontconfig/fontconfig/-/raw/main/COPYING",
     },
     "libbz2": {
         "home": "https://gitlab.com/federicomenaquintero/bzip2",
@@ -165,6 +165,13 @@ ALIASES = {
     "libpangocairo": "libpango",  # Assumed to be part of libpango
     "libhdf5_hl": "libhdf5",
 }
+
+if False:
+    for e in ENTRIES.values():
+        if isinstance(e, dict):
+            copying = e["copying"]
+            if copying.startswith("http"):
+                requests.head(copying).raise_for_status()
 
 libs = {}
 missing = []
