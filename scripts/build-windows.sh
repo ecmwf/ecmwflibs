@@ -25,6 +25,9 @@ do
     echo "vcpkg $n $v" >> versions
 done
 
+find /c/vcpkg -name cairo.h -print
+find /c/vcpkg -name pkg\* -print
+
 pip install ninja wheel dll-diagnostics
 
 echo "pip $(pip freeze | grep dll-diagnostics | sed 's/==/ /')" >> versions
