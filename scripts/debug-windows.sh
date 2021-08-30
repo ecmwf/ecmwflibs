@@ -11,8 +11,6 @@ set -eaux
 
 vcpkg install pango
 
-banner cairo
 find /c/vcpkg -name cairo.h -print
 
-banner pkg-conf
 find /c/vcpkg -name 'pkg-conf*' -print
