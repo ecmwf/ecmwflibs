@@ -15,7 +15,9 @@ here=$(pwd)
 cd $VCPKG_INSTALLATION_ROOT
 cd /c/vcpkg
 git remote -v
+git branch
 # git checkout $(git rev-list -n 1 --before="2021-04-01" master)
+git fetch --force --all
 git checkout cd7f976e99c2b2ee4c6d2ac55e6e6ed206c4865c
 cd $here
 
