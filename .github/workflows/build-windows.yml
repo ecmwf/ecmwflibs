@@ -65,9 +65,6 @@ jobs:
                       f.write(changed)
         shell: python
 
-      - run: find /c/vcpkg -name cairo.h -print
-      - run: find /c/vcpkg -name pkg-conf\* -print
-
       - run: ./scripts/build-windows.sh
         env:
           WINARCH: ${{ matrix.architecture }}

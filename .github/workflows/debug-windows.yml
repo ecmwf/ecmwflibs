@@ -39,6 +39,9 @@ jobs:
           python-version: 3.6
           architecture: x64
 
+      - run: ./scripts/debug-windows.sh
+        env:
+          WINARCH: x64
 
       - run: ./scripts/build-windows.sh
         env:
