@@ -13,7 +13,7 @@ source scripts/common.sh
 
 here=$(pwd)
 cd $VCPKG_INSTALLATION_ROOT
-git checkout (git rev-list -n 1 --before="2021-04-01" master)
+git checkout $(git rev-list -n 1 --before="2021-04-01" master)
 cd $here
 
 # PROJ_VERSION=7.2.1
