@@ -11,11 +11,20 @@ set -eaux
 
 source scripts/common.sh
 
+here=$(pwd)
+cd $VCPKG_INSTALLATION_ROOT
+git checkout (git rev-list -n 1 --before="2021-04-01" master)
+cd $here
+
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
 
 # Switch off dependency on curl
 sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
+
+
+v=$(vcpkg version | sed 's/.* //')
+echo "vcpkg vcpkg $v" >> versions
 
 for p in expat netcdf-c pango sqlite3[core,tool]
 do
