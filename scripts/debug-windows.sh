@@ -9,7 +9,7 @@
 
 set -eaux
 
-vcpkg install pango
+vcpkg install glib-2.0 pango
 
 find /c/vcpkg -name cairo.h -print
 
