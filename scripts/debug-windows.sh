@@ -8,8 +8,8 @@
 # nor does it submit to any jurisdiction.
 
 
-set -eaux
-set +e
+# set -eaux
+set -x
 /c/msys64/mingw32/bin/pkg-config.exe --version
 /c/msys64/mingw64/bin/pkg-config.exe --version
 /c/msys64/usr/bin/pkg-config.exe --version
