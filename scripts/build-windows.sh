@@ -24,18 +24,18 @@ source scripts/common.sh
 # git rev-parse HEAD
 # cd $here
 
-rm -f "/c/Strawberry/perl/bin/pkg-config*"
+rm /c/Strawberry/perl/bin/pkg-config
+which pkg-config
 
+pkg-config --version
+exit 1
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
 
 # Switch off dependency on curl
 sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
 
-which pkg-config
 
-pkg-config --version
-exit 1
 
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
