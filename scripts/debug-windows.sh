@@ -7,7 +7,7 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-
+exit
 # set -eaux
 set -x
 /c/msys64/mingw32/bin/pkg-config.exe --version
