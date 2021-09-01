@@ -24,8 +24,9 @@ source scripts/common.sh
 # git rev-parse HEAD
 # cd $here
 
-mkdir -p $HOME/bin
-ln -s /c/msys64/usr/bin/pkg-config.exe $HOME/bin/
+# Use pkg-config from there
+PATH="/c/msys64/usr/bin:$PATH"
+
 which pkg-config
 
 pkg-config --version
