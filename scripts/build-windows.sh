@@ -24,7 +24,8 @@ source scripts/common.sh
 # git rev-parse HEAD
 # cd $here
 
-rm /c/Strawberry/perl/bin/pkg-config
+mkdir -p $HOME/bin
+ln -s /c/msys64/usr/bin/pkg-config.exe $HOME/bin/
 which pkg-config
 
 pkg-config --version
