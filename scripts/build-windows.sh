@@ -34,7 +34,7 @@ sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
 
-for p in expat netcdf-c glib cairo pango sqlite3[core,tool]
+for p in expat netcdf-c pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
@@ -108,7 +108,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DCMAKE_C_COMPILER=cl.exe
 
 cd $TOPDIR
-cmake --build build-ecmwf/magics --target install
+cmake VERBOSE=1 --build build-ecmwf/magics --target install
 
 # Create wheel
 
