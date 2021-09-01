@@ -7,7 +7,21 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+
+/c/msys64/mingw32/bin/pkg-config.exe --version
+/c/msys64/mingw64/bin/pkg-config.exe --version
+/c/msys64/usr/bin/pkg-config.exe --version
+/c/rtools40/mingw32/bin/pkg-config.exe --version
+/c/rtools40/mingw64/bin/pkg-config.exe --version
+/c/rtools40/ucrt64/bin/pkg-config.exe --version
+/c/Strawberry/perl/bin/pkg-config --version
+/c/Strawberry/perl/bin/pkg-config.bat --version
+
+
 set -eaux
+
+
+
 exit
 
 vcpkg install glib pango
