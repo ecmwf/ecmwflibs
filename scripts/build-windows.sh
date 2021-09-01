@@ -24,7 +24,7 @@ source scripts/common.sh
 # git rev-parse HEAD
 # cd $here
 
-# rm -f "/c/Strawberry/perl/bin/pkg-config.bat"
+rm -f "/c/Strawberry/perl/bin/pkg-config*"
 
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
@@ -34,8 +34,8 @@ sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c
 
 which pkg-config
 
-find /c -name 'pkg-config*' -print
-find /d -name 'pkg-config*' -print
+pkg-config --version
+exit 1
 
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
