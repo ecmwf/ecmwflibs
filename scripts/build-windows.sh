@@ -11,18 +11,20 @@ set -eaux
 
 source scripts/common.sh
 
-here=$(pwd)
-cd $VCPKG_INSTALLATION_ROOT
-cd /c/vcpkg
-git remote -v
-git branch
-#
-git fetch --force --all
-git pull
-git rev-parse HEAD
-git checkout $(git rev-list -n 1 --before="2021-04-01" master)
-git rev-parse HEAD
-cd $here
+# here=$(pwd)
+# cd $VCPKG_INSTALLATION_ROOT
+# cd /c/vcpkg
+# git remote -v
+# git branch
+# #
+# git fetch --force --all
+# git pull
+# git rev-parse HEAD
+# git checkout $(git rev-list -n 1 --before="2021-04-01" master)
+# git rev-parse HEAD
+# cd $here
+
+rm -f "/c/Strawberry/perl/bin/pkg-config.bat"
 
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
@@ -108,7 +110,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DCMAKE_C_COMPILER=cl.exe
 
 cd $TOPDIR
-cmake VERBOSE=1 --build build-ecmwf/magics --target install
+cmake --build build-ecmwf/magics --target install
 
 # Create wheel
 
