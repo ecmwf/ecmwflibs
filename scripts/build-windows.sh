@@ -24,7 +24,7 @@ source scripts/common.sh
 # git rev-parse HEAD
 # cd $here
 
-rm -f "/c/Strawberry/perl/bin/pkg-config.bat"
+# rm -f "/c/Strawberry/perl/bin/pkg-config.bat"
 
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
@@ -104,6 +104,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
