@@ -24,13 +24,9 @@ source scripts/common.sh
 # git rev-parse HEAD
 # cd $here
 
-# Use pkg-config from there
-PATH="/c/msys64/usr/bin:$PATH"
+rm /c/Strawberry/perl/bin/pkg-config
+rm /c/Strawberry/perl/bin/pkg-config.bat
 
-which pkg-config
-
-pkg-config --version
-exit 1
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
 
