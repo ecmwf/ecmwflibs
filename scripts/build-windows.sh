@@ -32,6 +32,10 @@ source scripts/common.sh
 # Switch off dependency on curl
 sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
 
+which pkg-config
+
+find /c -name 'pkg-config*' -print
+find /d -name 'pkg-config*' -print
 
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
