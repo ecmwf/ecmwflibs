@@ -8,6 +8,8 @@
 # nor does it submit to any jurisdiction.
 
 
+set -eaux
+set +e
 /c/msys64/mingw32/bin/pkg-config.exe --version
 /c/msys64/mingw64/bin/pkg-config.exe --version
 /c/msys64/usr/bin/pkg-config.exe --version
@@ -18,7 +20,6 @@
 /c/Strawberry/perl/bin/pkg-config.bat --version
 
 
-set -eaux
 
 
 

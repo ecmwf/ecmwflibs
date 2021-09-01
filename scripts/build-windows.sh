@@ -107,7 +107,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-    -DPKG_CONFIG_EXECUTABLE=/c/msys64/mingw32/bin/pkg-config.exe \
+    -DPKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
