@@ -140,10 +140,10 @@ ENTRIES = {
         "home": "https://github.com/google/brotli",
         "copying": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
     },
-    "libcurl": {
-        "home": "https://github.com/curl/curl",
-        "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
-    },
+    # "libcurl": {
+    #     "home": "https://github.com/curl/curl",
+    #     "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
+    # },
 }
 
 ALIASES = {

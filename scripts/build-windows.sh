@@ -30,6 +30,8 @@ source scripts/common.sh
 # PROJ_VERSION=7.2.1
 # PROJ_VERSION=8.0.0
 
+cat /c/vcpkg/ports/netcdf-c/portfile.cmake
+
 # Switch off dependency on curl
 sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
 
