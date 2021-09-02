@@ -94,7 +94,7 @@ ENTRIES = {
         "copying": "https://jpegclub.org/reference/libjpeg-license/",
         "html": True,
     },
-    "libsz": {
+    "libszip": {
         "home": "https://support.hdfgroup.org/doc_resource/SZIP/",
         "copying": "https://support.hdfgroup.org/doc_resource/SZIP/Commercial_szip.html",
         "html": True,
@@ -140,10 +140,10 @@ ENTRIES = {
         "home": "https://github.com/google/brotli",
         "copying": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
     },
-    #    "libcurl": {
-    #        "home": "https://github.com/curl/curl",
-    #        "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
-    #    },
+    "libcurl": {
+        "home": "https://github.com/curl/curl",
+        "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
+    },
 }
 
 ALIASES = {
@@ -152,6 +152,7 @@ ALIASES = {
     "libbrotlicommon": "libbrotli",
     "libbrotlidec": "libbrotli",
     "libproj_8_1": "libproj",
+    "libproj_8_2": "libproj",
     "libproj_8_0": "libproj",
     "libproj_7_2": "libproj",
     "libproj_7_2_1": "libproj",
@@ -164,6 +165,7 @@ ALIASES = {
     "libpangoft2": "libpango",  # Assumed to be part of libpango
     "libpangocairo": "libpango",  # Assumed to be part of libpango
     "libhdf5_hl": "libhdf5",
+    "libsz": "libszip",
 }
 
 if False:
