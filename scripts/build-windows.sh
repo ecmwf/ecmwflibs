@@ -40,7 +40,7 @@ cat /c/vcpkg/ports/netcdf-c/portfile.cmake
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
 
-for p in expat netcdf-c[dap] pango sqlite3[core,tool]
+for p in expat netcdf-c[core,netcdf-4] pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
