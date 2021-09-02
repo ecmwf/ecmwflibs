@@ -11,6 +11,7 @@
 import atexit
 import json
 import os
+import re
 import sys
 import tempfile
 import warnings
@@ -152,7 +153,8 @@ def find(name):
 
         if os.path.exists(libdir):
             for file in os.listdir(libdir):
-                if file.endswith(extension):
+                if re.match(".*\\" + extension + "[.0-9]*", file):
+                    # matches *.so or *.so.10.0.1
                     for name in names:
                         if name == file.split("-")[0].split(".")[0]:
                             return os.path.join(libdir, file)
