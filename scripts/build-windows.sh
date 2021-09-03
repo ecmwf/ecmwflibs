@@ -27,16 +27,6 @@ source scripts/common.sh
 # rm /c/Strawberry/perl/bin/pkg-config
 # rm /c/Strawberry/perl/bin/pkg-config.bat
 
-# PROJ_VERSION=7.2.1
-# PROJ_VERSION=8.0.0
-
-cat /c/vcpkg/ports/netcdf-c/portfile.cmake
-
-# Switch off dependency on curl
-# sed -i.bak -e 's/-DENABLE_EXAMPLES=OFF/-DENABLE_EXAMPLES=OFF -DENABLE_DAP=0/' /c/vcpkg/ports/netcdf-c/portfile.cmake
-
-
-
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
 
@@ -100,6 +90,9 @@ cmake --build build-ecmwf/eccodes --target install
 
 # Build magics
 
+# -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+# -DPKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe
+
 cd $TOPDIR/build-ecmwf/magics
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
@@ -108,8 +101,6 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
-    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-    -DPKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
