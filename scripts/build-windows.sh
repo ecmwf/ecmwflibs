@@ -27,6 +27,12 @@ source scripts/common.sh
 # rm /c/Strawberry/perl/bin/pkg-config
 # rm /c/Strawberry/perl/bin/pkg-config.bat
 
+if [[ $WINARCH == "x64" ]]; then
+    PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe
+else
+    PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw32/bin/pkg-config.exe
+fi
+
 v=$(vcpkg version | sed 's/.* //')
 echo "vcpkg vcpkg $v" >> versions
 
@@ -82,6 +88,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
+    -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DCMAKE_C_COMPILER=cl.exe
 
@@ -91,7 +98,7 @@ cmake --build build-ecmwf/eccodes --target install
 # Build magics
 
 # -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
-# -DPKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe
+#
 
 cd $TOPDIR/build-ecmwf/magics
 $TOPDIR/src/ecbuild/bin/ecbuild \
@@ -103,6 +110,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
+    -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DCMAKE_C_COMPILER=cl.exe
 
