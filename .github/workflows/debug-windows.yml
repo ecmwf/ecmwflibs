@@ -14,8 +14,8 @@ on:
   repository_dispatch:
     types: [eccodes-updated, magics-updated]
 
-  push:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
 
 jobs:
   build:

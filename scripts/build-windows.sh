@@ -11,30 +11,19 @@ set -eaux
 
 source scripts/common.sh
 
-# here=$(pwd)
-# cd $VCPKG_INSTALLATION_ROOT
-# cd /c/vcpkg
-# git remote -v
-# git branch
-# #
-# git fetch --force --all
-# git pull
-# git rev-parse HEAD
-# git checkout $(git rev-list -n 1 --before="2021-04-01" master)
-# git rev-parse HEAD
-# cd $here
+here=$(pwd)
+cd $VCPKG_INSTALLATION_ROOT
+url=$(git remote -v | head -1 | awk '{print $2;}')
+sha1=$(git rev-parse HEAD)
+cd $here
 
-# rm /c/Strawberry/perl/bin/pkg-config
-# rm /c/Strawberry/perl/bin/pkg-config.bat
+echo git $url $sha1 > versions
 
 if [[ $WINARCH == "x64" ]]; then
     PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe
 else
     PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw32/bin/pkg-config.exe
 fi
-
-v=$(vcpkg version | sed 's/.* //')
-echo "vcpkg vcpkg $v" >> versions
 
 for p in expat netcdf-c[core,netcdf-4] pango sqlite3[core,tool]
 do
