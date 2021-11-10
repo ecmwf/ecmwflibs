@@ -14,6 +14,9 @@ source scripts/common.sh
 
 brew install cmake ninja pkg-config automake
 
+brew developer on
+EDITOR=cat brew edit cairo
+
 # We don't want a dependency on X11
 EDITOR=cat brew edit cairo | sed '
 s/^Editing .*//
