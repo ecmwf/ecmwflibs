@@ -18,7 +18,6 @@ brew cat cairo
 
 # We don't want a dependency on X11
 brew cat cairo | sed '
-s/^Editing .*//
 s/enable-gobject/disable-gobject/
 s/enable-tee/disable-tee/
 s/enable-xcb/disable-xcb/
@@ -26,13 +25,11 @@ s/enable-xlib/disable-xlib/
 s/enable-xlib-xrender/disable-xlib-xrender/
 s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
-brew install --build-from-source cairo.rb
+brew install --verbose ./cairo.rb
 
-brew cat pango | sed '
-s/^Editing .*//
-s/introspection=enabled/introspection=disabled/' > pango.rb
+brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
 
-brew install --build-from-source pango.rb
+brew install --verbose ./pango.rb
 
 brew install netcdf
 brew install proj
