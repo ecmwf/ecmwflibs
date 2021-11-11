@@ -25,11 +25,15 @@ s/enable-xlib/disable-xlib/
 s/enable-xlib-xrender/disable-xlib-xrender/
 s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
-brew install --build-from-source --verbose ./cairo.rb
+cat cairo.rb
+
+brew install --build-from-source ./cairo.rb
 
 brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
 
-brew install --build-from-source --verbose ./pango.rb
+cat pango.rb
+
+brew install --build-from-source ./pango.rb
 
 brew install netcdf
 brew install proj
