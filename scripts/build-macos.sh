@@ -14,11 +14,10 @@ source scripts/common.sh
 
 brew install cmake ninja pkg-config automake
 
-brew developer on
-EDITOR=cat brew edit cairo
+brew cat cairo
 
 # We don't want a dependency on X11
-EDITOR=cat brew edit cairo | sed '
+brew cat cairo | sed '
 s/^Editing .*//
 s/enable-gobject/disable-gobject/
 s/enable-tee/disable-tee/
@@ -29,7 +28,7 @@ s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
 brew install --build-from-source cairo.rb
 
-EDITOR=cat brew edit pango | sed '
+brew cat pango | sed '
 s/^Editing .*//
 s/introspection=enabled/introspection=disabled/' > pango.rb
 
