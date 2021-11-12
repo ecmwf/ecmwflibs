@@ -16,9 +16,10 @@ brew_home=$(brew config | grep HOMEBREW_PREFIX | sed 's/.* //')
 
 brew install cmake ninja pkg-config automake
 
+brew cat cairo
+
 # We don't want a dependency on X11
-EDITOR=cat brew edit cairo | sed '
-s/^Editing .*//
+brew cat cairo | sed '
 s/enable-gobject/disable-gobject/
 s/enable-tee/disable-tee/
 s/enable-xcb/disable-xcb/
@@ -26,13 +27,17 @@ s/enable-xlib/disable-xlib/
 s/enable-xlib-xrender/disable-xlib-xrender/
 s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
-brew install --build-from-source cairo.rb
+cat cairo.rb
 
-EDITOR=cat brew edit pango | sed '
-s/^Editing .*//
-s/introspection=enabled/introspection=disabled/' > pango.rb
+brew install --build-from-source ./cairo.rb
 
-brew install --build-from-source pango.rb
+# brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
+
+# cat pango.rb
+
+# brew install --build-from-source ./pango.rb
+
+brew install pango
 
 brew install netcdf
 brew install proj
