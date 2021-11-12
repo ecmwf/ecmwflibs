@@ -23,6 +23,7 @@ on:
       - 'scripts/common.sh'
       - 'scripts/build-linux.sh'
       - 'scripts/wheel-linux.sh'
+      - 'tools/copy-licences.sh'
 
 jobs:
   build:

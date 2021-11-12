@@ -67,7 +67,6 @@ cmake --build build-other/netcdf --target install
 [[ -d src/pixman ]] || git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
 meson setup --prefix=$TOPDIR/install \
-    -Dintrospection=disabled \
     -Dwrap_mode=nofallback \
     $TOPDIR/build-other/pixman
 
