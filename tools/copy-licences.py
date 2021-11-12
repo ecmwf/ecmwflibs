@@ -184,6 +184,8 @@ for line in open(sys.argv[1], "r"):
     line = line.strip().split()[-1].split("/")[-1]
     lib = line.split("-")[0].split(".")[0]
 
+    assert lib, "Invalid line %s" % (line,)
+
     if not lib.startswith("lib"):
         lib = f"lib{lib}"
 
