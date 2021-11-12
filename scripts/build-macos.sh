@@ -12,6 +12,8 @@ uname -a
 
 source scripts/common.sh
 
+brew_home=$(brew config | grep HOMEBREW_PREFIX | sed 's/.* //')
+
 brew install cmake ninja pkg-config automake
 
 # We don't want a dependency on X11
@@ -86,7 +88,7 @@ cmake --build build-ecmwf/magics --target install
 rm -fr dist wheelhouse ecmwflibs/share
 mkdir -p install/share/magics
 cp -r install/share ecmwflibs/
-cp -r /usr/local/Cellar/proj/*/share ecmwflibs/
+cp -r $brew_home/Cellar/proj/*/share ecmwflibs/
 strip -S install/lib/*.dylib
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
