@@ -24,6 +24,9 @@ rm -fr dist wheelhouse
 auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
+
+cat lib
+
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
