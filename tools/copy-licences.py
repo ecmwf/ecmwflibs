@@ -181,12 +181,11 @@ seen = set()
 
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
-    lib = line.strip().split()[-1].split("/")[-1]
+    lib = line.strip().split("/")[-1]
     lib = lib.split("-")[0].split(".")[0]
 
-    print(f"LIB {lib} LINE {line}")
-
-    assert lib, "Invalid line [%s]" % (line,)
+    if lib == '':
+        continue
 
     if not lib.startswith("lib"):
         lib = f"lib{lib}"
