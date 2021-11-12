@@ -181,8 +181,8 @@ seen = set()
 
 for line in open(sys.argv[1], "r"):
     lib = "-no-regex-"
-    line = line.strip().split()[-1].split("/")[-1]
-    lib = line.split("-")[0].split(".")[0]
+    lib = line.strip().split()[-1].split("/")[-1]
+    lib = lib.split("-")[0].split(".")[0]
 
     assert lib, "Invalid line [%s]" % (line,)
 
