@@ -29,11 +29,13 @@ cat cairo.rb
 
 brew install --build-from-source ./cairo.rb
 
-brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
+# brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
 
-cat pango.rb
+# cat pango.rb
 
-brew install --build-from-source ./pango.rb
+# brew install --build-from-source ./pango.rb
+
+brew install pango
 
 brew install netcdf
 brew install proj
