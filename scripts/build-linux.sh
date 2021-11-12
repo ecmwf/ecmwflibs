@@ -66,6 +66,7 @@ cmake --build build-other/netcdf --target install
 
 [[ -d src/pixman ]] || git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
+meson config
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     $TOPDIR/build-other/pixman
@@ -77,6 +78,7 @@ ninja -C build-other/pixman install
 
 [[ -d src/cairo ]] || git clone --depth 1 $GIT_CAIRO src/cairo
 cd src/cairo
+meson config
 meson setup --prefix=$TOPDIR/install \
     -Dintrospection=disabled \
     -Dwrap_mode=nofallback \
@@ -95,6 +97,7 @@ ninja -C build-other/cairo install
 
 mkdir -p build-other/harfbuzz
 cd src/harfbuzz
+meson config
 meson setup --prefix=$TOPDIR/install \
     -Dintrospection=disabled \
     -Dwrap_mode=nofallback \
@@ -109,6 +112,7 @@ ninja -C build-other/harfbuzz install
 
 mkdir -p build-other/fridibi
 cd src/fridibi
+meson config
 meson setup --prefix=$TOPDIR/install \
     -Dintrospection=disabled \
     -Dwrap_mode=nofallback \
