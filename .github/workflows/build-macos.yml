@@ -17,6 +17,12 @@ on:
   # repository_dispatch:
   #   types: [eccodes-updated, magics-updated]
 
+  push:
+    paths:
+      - 'scripts/common.sh'
+      - 'scripts/build-macos.sh'
+      - 'scripts/wheel-macos.sh'
+
 jobs:
 
   build:

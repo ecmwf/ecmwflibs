@@ -17,6 +17,11 @@ on:
   # repository_dispatch:
   #   types: [eccodes-updated, magics-updated]
 
+  push:
+    paths:
+      - 'scripts/common.sh'
+      - 'scripts/build-windows.sh'
+      - 'scripts/wheel-windows.sh'
 jobs:
   build:
     runs-on: windows-latest
