@@ -22,8 +22,8 @@ on:
       - 'scripts/common.sh'
       - 'scripts/build-windows.sh'
       - 'scripts/wheel-windows.sh'
-      - 'tools/copy-licences.sh'
-      - 'tools/copy-dlls.sh'
+      - 'tools/copy-licences.py'
+      - 'tools/copy-dlls.py'
 jobs:
   build:
     runs-on: windows-latest

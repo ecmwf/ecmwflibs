@@ -22,7 +22,7 @@ on:
       - 'scripts/common.sh'
       - 'scripts/build-macos.sh'
       - 'scripts/wheel-macos.sh'
-      - 'tools/copy-licences.sh'
+      - 'tools/copy-licences.py'
 
 jobs:
 
