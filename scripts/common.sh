@@ -13,11 +13,11 @@ rm -f versions
 GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
-GIT_ECCODES=https://github.com/b8raoult/eccodes.git
+GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=master
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=master
+MAGICS_VERSION=develop
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 SQLITE_VERSION=master
