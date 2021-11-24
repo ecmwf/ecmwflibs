@@ -184,7 +184,7 @@ for line in open(sys.argv[1], "r"):
     lib = line.strip().split("/")[-1]
     lib = lib.split("-")[0].split(".")[0]
 
-    if lib == '':
+    if lib == "":
         continue
 
     if not lib.startswith("lib"):
