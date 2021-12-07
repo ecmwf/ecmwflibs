@@ -14,10 +14,10 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=develop
+ECCODES_VERSION=master
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=develop
+MAGICS_VERSION=master
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 SQLITE_VERSION=master
