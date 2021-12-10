@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import pytest
-
 from Magics import macro
 
 
@@ -116,6 +115,7 @@ def test_climetlab_grib():
 
     print(actions)
     macro.plot(*actions)
+
 
 @pytest.mark.parametrize("filename", ["climetlab.nc", "climetlab4.nc"])
 def test_climetlab_netcdf(filename):
