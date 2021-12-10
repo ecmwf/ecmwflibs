@@ -13,6 +13,7 @@ source scripts/common.sh
 
 here=$(pwd)
 cd $VCPKG_INSTALLATION_ROOT
+git checkout 6bc4362fb49e53f1fff7f51e4e27e1946755ecc6
 url=$(git remote -v | head -1 | awk '{print $2;}')
 sha1=$(git rev-parse HEAD)
 cd $here
@@ -25,7 +26,7 @@ else
     PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw32/bin/pkg-config.exe
 fi
 
-for p in expat netcdf-c[hdf5,core,netcdf-4] pango sqlite3[core,tool]
+for p in expat netcdf-c[core,netcdf-4] pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
