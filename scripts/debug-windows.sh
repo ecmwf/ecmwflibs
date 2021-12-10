@@ -7,11 +7,13 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-for p in expat netcdf-c[core,netcdf-4] pango sqlite3[core,tool]
+for p in hdf5 expat netcdf-c[core,netcdf-4] pango sqlite3[core,tool]
 do
+    echo $p:$WINARCH-windows
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
     v=$(vcpkg list $n | awk '{print $2;}')
+    echo "vcpkg $n $v"
     echo "vcpkg $n $v" >> versions
 done
 
