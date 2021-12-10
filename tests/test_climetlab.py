@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import pytest
+
 from Magics import macro
 
 
@@ -115,8 +117,8 @@ def test_climetlab_grib():
     print(actions)
     macro.plot(*actions)
 
-
-def test_climetlab_netcdf():
+@pytest.mark.parametrize("filename", ["climetlab.nc", "climetlab4.nc"])
+def test_climetlab_netcdf(filename):
     from Magics import macro
 
     actions = [
@@ -155,7 +157,7 @@ def test_climetlab_netcdf():
             map_label=False,
         ),
         macro.mnetcdf(
-            netcdf_filename="climetlab.nc",
+            netcdf_filename=filename,
             netcdf_value_variable="t2m",
         ),
         macro.mcont(
