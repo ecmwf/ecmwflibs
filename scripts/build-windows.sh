@@ -14,7 +14,7 @@ source scripts/common.sh
 here=$(pwd)
 cd $VCPKG_INSTALLATION_ROOT
 # git checkout 6bc4362fb49e53f1fff7f51e4e27e1946755ecc6
-git checkout 6941e69f9a536bab06b2a7027f993bfa9eb85593
+git checkout c4f3862e4ce56ddd612a53845a467e945a2341a8
 url=$(git remote -v | head -1 | awk '{print $2;}')
 sha1=$(git rev-parse HEAD)
 cd $here
