@@ -25,7 +25,7 @@ else
     PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw32/bin/pkg-config.exe
 fi
 
-for p in hdf5 expat netcdf-c[core,netcdf-4] pango sqlite3[core,tool]
+for p in expat netcdf-c[hdf5,core,netcdf-4] pango sqlite3[core,tool]
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
