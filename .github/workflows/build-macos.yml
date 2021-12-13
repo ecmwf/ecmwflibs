@@ -125,7 +125,6 @@ jobs:
           curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
           curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
           curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
-          curl -L https://storage.ecmwf.europeanweather.cloud/climetlab/s3/climetlab/test-data/climetlab4.nc -o climetlab4.nc
           ls -l
         working-directory: tests
 

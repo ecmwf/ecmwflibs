@@ -117,13 +117,15 @@ def test_climetlab_grib():
     macro.plot(*actions)
 
 
-@pytest.mark.parametrize("filename", ["climetlab.nc", "climetlab4.nc"])
+@pytest.mark.parametrize("filename", ["climetlab.nc", "test.nc4"])
 def test_climetlab_netcdf(filename):
     from Magics import macro
 
+    output = filename.replace(".", "-") + ".png"
+
     actions = [
         macro.output(
-            output_file="test-nc.png",
+            output_file=output,
             output_width=680,
             page_frame=False,
             page_id_line=False,
