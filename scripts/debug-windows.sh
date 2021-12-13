@@ -16,6 +16,14 @@ do
 done
 
 cd tests
-cmake .
-make
+
+cmake . \
+    -G"NMake Makefiles"  \
+    -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    -DCMAKE_C_COMPILER=cl.exe
+
+cmake --build .
+
+ls -lrt
+
 ./open_netcdf test.nc4
