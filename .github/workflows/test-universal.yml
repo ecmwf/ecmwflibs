@@ -6,9 +6,6 @@ name: Test Universal
 on:
   workflow_dispatch: {}
 
-  push:
-    branches: [ master ]
-
 jobs:
   checks:
     name: Checks
