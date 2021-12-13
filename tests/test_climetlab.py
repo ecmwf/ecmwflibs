@@ -117,7 +117,7 @@ def test_climetlab_grib():
     macro.plot(*actions)
 
 
-@pytest.mark.parametrize("filename", ["climetlab.nc", "climetlab4.nc"])
+@pytest.mark.parametrize("filename", ["climetlab.nc", "climetlab.nc4"])
 def test_climetlab_netcdf(filename):
     from Magics import macro
 
