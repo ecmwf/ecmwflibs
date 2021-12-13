@@ -11,11 +11,9 @@ name: Debug Windows
 on:
   workflow_dispatch: {}
 
-  repository_dispatch:
-    types: [eccodes-updated, magics-updated]
-
-  # push:
-  #   branches: [ master ]
+  push:
+    paths:
+      - 'scripts/debug-windows.sh'
 
 jobs:
   build:
@@ -39,73 +37,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       - run: ./scripts/debug-windows.sh
         env:
           WINARCH: x64
-
-      - run: ./scripts/build-windows.sh
-        env:
-          WINARCH: x64
-
-      ################################################################
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-          architecture: x64
-
-      - run: ./scripts/wheel-windows.sh 3.8
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.8
-        with:
-          name: wheel-windows-3.8-x64
-          path: wheelhouse/*.whl
-
-  test:
-    needs: build
-    runs-on: windows-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    name: Test
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-          architecture: x64
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: wheel-windows-3.8-x64
-
-      - run: pip install *.whl
-
-      - run: pip install -r tests/requirements.txt
-
-      - run: pip freeze
-
-      - name: Get some data
-        run: |
-          curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
-          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
-          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
-          ls -l
-        working-directory: tests
-
-      - run: pytest --verbose -s
-        working-directory: tests
-        timeout-minutes: 2
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: tests-windows-3.8-x64
-          path: tests/*.png
