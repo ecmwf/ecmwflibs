@@ -161,3 +161,4 @@ ecmwflibs/_ecmwflibs.py
 ecmwflibs/_universal
 *.ps
 .DS_Store
+build-m1/
