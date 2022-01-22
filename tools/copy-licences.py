@@ -87,7 +87,7 @@ ENTRIES = {
     },
     "libjasper": {
         "home": "https://github.com/jasper-software/jasper",
-        "copying": "https://raw.githubusercontent.com/jasper-software/jasper/master/LICENSE",
+        "copying": "https://raw.githubusercontent.com/jasper-software/jasper/master/LICENSE.txt",
     },
     "libjpeg": {
         "home": "http://ijg.org",
