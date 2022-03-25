@@ -25,6 +25,9 @@ SQLITE_VERSION=master
 GIT_PROJ=https://github.com/OSGeo/PROJ.git
 PROJ_VERSION=master
 
+GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
+AEC_VERSION=master
+
 GIT_PIXMAN=https://github.com/freedesktop/pixman.git
 PIXMAN_VERSION=master
 
