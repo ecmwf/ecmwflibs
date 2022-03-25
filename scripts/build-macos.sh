@@ -41,6 +41,7 @@ brew install pango
 
 brew install netcdf
 brew install proj
+brew install libaec
 
 for p in  netcdf proj pango cairo
 do
