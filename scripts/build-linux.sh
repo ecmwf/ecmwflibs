@@ -44,6 +44,41 @@ PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
+# Build sqlite
+
+[[ -d src/sqlite ]] || git clone --depth 1 $GIT_SQLITE src/sqlite
+
+cd src/sqlite
+./configure \
+	--disable-tcl \
+	--prefix=$TOPDIR/install
+
+
+cd $TOPDIR
+make -C src/sqlite install
+
+# Build proj
+[[ -d src/proj ]] || git clone $GIT_PROJ src/proj
+cd src/proj
+git checkout $PROJ_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/proj
+cd build-other/proj
+
+cmake  \
+    $TOPDIR/src/proj -GNinja  \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_TIFF=0 \
+    -DENABLE_CURL=0 \
+    -DBUILD_TESTING=0 \
+    -DBUILD_PROJSYNC=0 \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install 
+   
+cd $TOPDIR
+cmake --build build-other/proj --target install
+
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
@@ -142,37 +177,7 @@ meson setup --prefix=$TOPDIR/install \
 cd $TOPDIR
 ninja -C build-other/pango install
 
-# Build sqlite
 
-[[ -d src/sqlite ]] || git clone --depth 1 $GIT_SQLITE src/sqlite
-
-cd src/sqlite
-./configure \
-	--disable-tcl \
-	--prefix=$TOPDIR/install
-
-
-cd $TOPDIR
-make -C src/sqlite install
-
-# Build proj
-[[ -d src/proj ]] || git clone $GIT_PROJ src/proj
-cd src/proj
-git checkout $PROJ_VERSION
-cd $TOPDIR
-
-mkdir -p build-other/proj
-cd build-other/proj
-
-cmake  \
-    $TOPDIR/src/proj -GNinja  \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DENABLE_TIFF=0 \
-    -DENABLE_CURL=0 \
-    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install 
-   
-cd $TOPDIR
-cmake --build build-other/proj --target install
 
 # Build eccodes
 
