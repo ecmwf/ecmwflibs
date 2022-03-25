@@ -74,6 +74,7 @@ cd $TOPDIR
 ninja -C build-other/pixman install
 
 # Build cairo
+# -Dqt=disabled 
 
 [[ -d src/cairo ]] || git clone --depth 1 $GIT_CAIRO src/cairo
 cd src/cairo
@@ -81,7 +82,6 @@ meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dxlib=disabled \
     -Dxcb=disabled \
-    -Dqt=disabled \
     -Dgl-backend=disabled \
     $TOPDIR/build-other/cairo
 
