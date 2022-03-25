@@ -17,7 +17,7 @@ GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=master
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=master
+MAGICS_VERSION=feature/cds
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 SQLITE_VERSION=master
