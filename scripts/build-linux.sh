@@ -160,14 +160,19 @@ make -C src/sqlite install
 [[ -d src/proj ]] || git clone --depth 1 $GIT_PROJ src/proj
 
 cd src/proj
-./autogen.sh
-./configure \
-    --prefix=$TOPDIR/install \
-    --disable-tiff \
-    --with-curl=no
+mkdir build
+cd build
+cmake \
+    -DENABLE_TIFF=OFF \
+    -DENABLE_CURL=OFF \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \ 
+    ..
 
 cd $TOPDIR
-make -C src/proj install
+cmake \
+    --build src/proj/build \
+    --target install
+
 
 # Build eccodes
 
