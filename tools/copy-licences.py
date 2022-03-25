@@ -11,6 +11,10 @@ def identity(x):
 
 
 ENTRIES = {
+    "libaec": {
+        "home": "https://github.com/MathisRosenhauer/libaec",
+        "copying": "https://raw.githubusercontent.com/MathisRosenhauer/libaec/master/LICENSE.txt",
+    },
     "libMagPlus": {
         "home": "https://github.com/ecmwf/magics",
         "copying": "https://raw.githubusercontent.com/ecmwf/magics/develop/LICENSE",
