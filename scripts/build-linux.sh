@@ -156,23 +156,23 @@ cd $TOPDIR
 make -C src/sqlite install
 
 # Build proj
-
-[[ -d src/proj ]] || git clone --depth 1 $GIT_PROJ src/proj
-
+[[ -d src/proj ]] || git clone $GIT_PROJ src/proj
 cd src/proj
-mkdir build
-cd build
-cmake \
-    -DENABLE_TIFF=OFF \
-    -DENABLE_CURL=OFF \
-    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \ 
-    ..
-
+git checkout $PROJ_VERSION
 cd $TOPDIR
-cmake \
-    --build src/proj/build \
-    --target install
 
+mkdir -p build-other/proj
+cd build-other/proj
+
+cmake  \
+    $TOPDIR/src/proj -GNinja  \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DENABLE_TIFF=0 \
+    -DENABLE_CURL=0 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install 
+   
+cd $TOPDIR
+cmake --build build-other/proj --target install
 
 # Build eccodes
 
