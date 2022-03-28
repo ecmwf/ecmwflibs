@@ -17,13 +17,16 @@ GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=develop
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=master
+MAGICS_VERSION=feature/cds
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 SQLITE_VERSION=master
 
 GIT_PROJ=https://github.com/OSGeo/PROJ.git
 PROJ_VERSION=master
+
+GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
+AEC_VERSION=master
 
 GIT_PIXMAN=https://github.com/freedesktop/pixman.git
 PIXMAN_VERSION=master

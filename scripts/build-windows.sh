@@ -37,6 +37,26 @@ done
 pip install ninja wheel dll-diagnostics
 
 echo "pip $(pip freeze | grep dll-diagnostics | sed 's/==/ /')" >> versions
+
+# Build libaec
+git clone $GIT_AEC src/aec
+cd src/aec
+git checkout $AEC_VERSION
+cd $TOPDIR
+mkdir -p build-other/aec
+cd build-other/aec
+
+cmake  \
+    $TOPDIR/src/proj -G"NMake Makefiles" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
+    -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    -DCMAKE_C_COMPILER=cl.exe
+
+cd $TOPDIR
+cmake --build build-other/aec --target install
+
+
 # Build proj
 
 git clone $GIT_PROJ src/proj
