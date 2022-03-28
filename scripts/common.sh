@@ -14,7 +14,7 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=master
+ECCODES_VERSION=develop
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
 MAGICS_VERSION=master

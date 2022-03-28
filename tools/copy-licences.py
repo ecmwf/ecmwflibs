@@ -69,8 +69,8 @@ ENTRIES = {
         "copying": "https://raw.githubusercontent.com/glennrp/libpng/libpng16/LICENSE",
     },
     "libaec": {
-        "home": "https://github.com/erget/libaec",
-        "copying": "https://raw.githubusercontent.com/erget/libaec/cmake-install-instructions/COPYING",
+        "home": "https://github.com/MathisRosenhauer/libaec",
+        "copying": "https://raw.githubusercontent.com/MathisRosenhauer/libaec/master/LICENSE.txt",
     },
     "libexpat": {
         "home": "https://libexpat.github.io",
