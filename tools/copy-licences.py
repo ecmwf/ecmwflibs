@@ -151,6 +151,7 @@ ALIASES = {
     "libpng16": "libpng",
     "libbrotlicommon": "libbrotli",
     "libbrotlidec": "libbrotli",
+    "libproj_9_1": "libproj",
     "libproj_8_1": "libproj",
     "libproj_8_2": "libproj",
     "libproj_8_0": "libproj",
