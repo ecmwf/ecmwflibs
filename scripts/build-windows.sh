@@ -47,7 +47,7 @@ mkdir -p build-other/aec
 cd build-other/aec
 
 cmake  \
-    $TOPDIR/src/proj -G"NMake Makefiles" \
+    $TOPDIR/src/aec -G"NMake Makefiles" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
