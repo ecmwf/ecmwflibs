@@ -153,8 +153,7 @@ PATTERNS = {
 }
 
 ALIASES = {
-    "libpng15": "libpng",
-    "libpng16": "libpng",
+
     "libbrotlicommon": "libbrotli",
     "libbrotlidec": "libbrotli",
     "libpangowin32": "libpango",
