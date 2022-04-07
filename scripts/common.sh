@@ -15,7 +15,7 @@ ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
 ECCODES_VERSION=develop
-ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON"
+ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
 MAGICS_VERSION=feature/cds
