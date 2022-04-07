@@ -24,7 +24,7 @@ rm -fr build* dist install wheelhouse cairo.rb
 
 ./scripts/build-macos.sh
 
-for n in 8 9
+for n in 8 9 10
 do
     rm -fr wheelhouse
     brew install python@3.$n
