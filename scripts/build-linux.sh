@@ -74,8 +74,8 @@ cmake  \
     -DBUILD_TESTING=0 \
     -DBUILD_PROJSYNC=0 \
     -DBUILD_SHARED_LIBS=1 \
-    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install 
-   
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
 cd $TOPDIR
 cmake --build build-other/proj --target install
 
@@ -109,7 +109,7 @@ cd $TOPDIR
 ninja -C build-other/pixman install
 
 # Build cairo
-# -Dqt=disabled 
+# -Dqt=disabled
 
 [[ -d src/cairo ]] || git clone --depth 1 $GIT_CAIRO src/cairo
 cd src/cairo
@@ -193,7 +193,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
-    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR
 cmake --build build-ecmwf/eccodes --target install

@@ -191,3 +191,10 @@ def credits():
             print(f.read())
 
     print("*" * 80)
+
+
+def builds():
+    here = os.path.dirname(__file__)
+    with open(os.path.join(here, "versions.txt")) as f:
+        for d in f.readlines():
+            print(d)

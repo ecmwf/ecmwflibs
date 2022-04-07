@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import json
+import re
 import sys
 
 import requests
@@ -146,17 +147,16 @@ ENTRIES = {
     # },
 }
 
+PATTERNS = {
+    r"^libpng\d+$": "libpng",
+    r"^libproj(_\d+)+$": "libproj",
+}
+
 ALIASES = {
     "libpng15": "libpng",
     "libpng16": "libpng",
     "libbrotlicommon": "libbrotli",
     "libbrotlidec": "libbrotli",
-    "libproj_9_1": "libproj",
-    "libproj_8_1": "libproj",
-    "libproj_8_2": "libproj",
-    "libproj_8_0": "libproj",
-    "libproj_7_2": "libproj",
-    "libproj_7_2_1": "libproj",
     "libpangowin32": "libpango",
     "libzlib1": "libz",
     "libeccodes_memfs": "libeccodes",
@@ -190,6 +190,10 @@ for line in open(sys.argv[1], "r"):
 
     if not lib.startswith("lib"):
         lib = f"lib{lib}"
+
+    for k, v in PATTERNS.items():
+        if re.match(k, lib):
+            lib = v
 
     lib = ALIASES.get(lib, lib)
 

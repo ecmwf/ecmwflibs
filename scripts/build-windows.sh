@@ -100,7 +100,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    -DCMAKE_C_COMPILER=cl.exe
+    -DCMAKE_C_COMPILER=cl.exe $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR
 cmake --build build-ecmwf/eccodes --target install

@@ -65,7 +65,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib
+    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR
 cmake --build build-ecmwf/eccodes --target install
