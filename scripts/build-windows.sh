@@ -34,6 +34,11 @@ do
     echo "vcpkg $n $v" >> versions
 done
 
+echo =================================================================
+find $VCPKG_INSTALLATION_ROOT -type f -name png.h -print
+echo =================================================================
+
+
 pip install ninja wheel dll-diagnostics
 
 echo "pip $(pip freeze | grep dll-diagnostics | sed 's/==/ /')" >> versions
