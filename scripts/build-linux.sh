@@ -219,6 +219,7 @@ cmake --build build-ecmwf/magics --target install
 lddtree install/lib*/libMagPlus.so
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
+rm -fr ecmwflibs/share/magics/efas
 cp install/lib64/*.so install/lib/
 strip --strip-debug install/lib/*.so
 

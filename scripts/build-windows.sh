@@ -136,6 +136,7 @@ cmake --build build-ecmwf/magics --target install
 
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
+rm -fr ecmwflibs/share/magics/efas
 mkdir -p ecmwflibs/share/proj
 python tools/copy-dlls.py install/bin/MagPlus.dll ecmwflibs/
 pip install -r tools/requirements.txt

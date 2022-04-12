@@ -94,6 +94,11 @@ rm -fr dist wheelhouse ecmwflibs/share
 mkdir -p install/share/magics
 cp -r install/share ecmwflibs/
 cp -r $brew_home/Cellar/proj/*/share ecmwflibs/
+rm -fr ecmwflibs/share/proj/*.tif
+rm -fr ecmwflibs/share/proj/*.txt
+rm -fr ecmwflibs/share/proj/*.pol
+rm -fr ecmwflibs/share/magics/efas
+
 strip -S install/lib/*.dylib
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
