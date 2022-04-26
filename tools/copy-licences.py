@@ -91,10 +91,9 @@ ENTRIES = {
         "copying": "https://raw.githubusercontent.com/jasper-software/jasper/master/LICENSE.txt",
     },
     "libopenjp2": {
-        "home": "https://github.com/uclouvain/openjpeg",        
-        "copying": "https://raw.githubusercontent.com/uclouvain/openjpeg/master/LICENSE"
+        "home": "https://github.com/uclouvain/openjpeg",
+        "copying": "https://raw.githubusercontent.com/uclouvain/openjpeg/master/LICENSE",
     },
-
     "libjpeg": {
         "home": "http://ijg.org",
         "copying": "https://jpegclub.org/reference/libjpeg-license/",
