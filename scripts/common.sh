@@ -18,7 +18,7 @@ ECCODES_VERSION=develop
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=feature/cds
+MAGICS_VERSION=release/4.12.0
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 SQLITE_VERSION=master
