@@ -58,7 +58,6 @@ else:
             "GRIB_SAMPLES_PATH",
         ):
             if env in os.environ:
-                del os.environ[env]
                 if "ECMWFLIBS_" + env in os.environ:
                     os.environ[env] = os.environ["ECMWFLIBS_" + env]
                     warnings.warn(
@@ -66,6 +65,15 @@ else:
                             env, os.environ[env]
                         )
                     )
+                else:
+                    warnings.warn(
+                        (
+                            "ecmwflibs: ignoring provided '{}' set to '{}'. "
+                            "If you want ecmwflibs to use this environment variable, use ECMWFLIBS_{} instead. "
+                            "If you want to use your own ECCODES library, use ECMWFLIBS_ECCODES."
+                        ).format(env, os.environ[env], env)
+                    )
+                    del os.environ[env]
 
     # This comes *after* the variables are set, so c++ has access to them
     try:
