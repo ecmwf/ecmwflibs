@@ -122,7 +122,7 @@ ENTRIES = {
     },
     "libtiff": {
         "home": "https://gitlab.com/libtiff/libtiff",
-        "copying": "https://gitlab.com/libtiff/libtiff/-/raw/master/COPYRIGHT",
+        "copying": "https://gitlab.com/libtiff/libtiff/-/raw/master/LICENSE.md",
     },
     # See also https://www.gnu.org/software/gettext/manual/html_node/Discussions.html
     # intl(gettext) is GPL while libintl is LGPL
