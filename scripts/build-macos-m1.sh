@@ -29,8 +29,8 @@ do
     rm -fr wheelhouse
     brew install python@3.$n
 
-    py=$(ls -1d /opt/homebrew/Cellar/python@3.$n/*/bin/)
-    PATH=$py:$PATH ./scripts/wheel-macos.sh
+    py=/opt/homebrew/opt/python@3.$n/libexec/bin
+    env PATH=$py:$PATH ./scripts/wheel-macos.sh
     pip3 install twine
     twine upload wheelhouse/*.whl
 
