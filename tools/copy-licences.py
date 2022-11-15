@@ -145,6 +145,11 @@ ENTRIES = {
         "home": "https://github.com/google/brotli",
         "copying": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
     },
+    "libpcre2" {
+        "home": "https://github.com/PCRE2Project/pcre2",
+        "copying": "https://raw.githubusercontent.com/PCRE2Project/pcre2/master/LICENCE",
+    }
+
     # "libcurl": {
     #     "home": "https://github.com/curl/curl",
     #     "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
