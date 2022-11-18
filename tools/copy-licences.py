@@ -153,7 +153,6 @@ ENTRIES = {
         "home": "https://github.com/facebook/zstd",
         "copying": "https://raw.githubusercontent.com/facebook/zstd/master/LICENSE",
     }
-
     # "libcurl": {
     #     "home": "https://github.com/curl/curl",
     #     "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
