@@ -19,11 +19,11 @@ on:
 
   push:
     paths:
-      - 'scripts/common.sh'
-      - 'scripts/build-windows.sh'
-      - 'scripts/wheel-windows.sh'
-      - 'tools/copy-licences.py'
-      - 'tools/copy-dlls.py'
+    - 'scripts/common.sh'
+    - 'scripts/build-windows.sh'
+    - 'scripts/wheel-windows.sh'
+    - 'tools/copy-licences.py'
+    - 'tools/copy-dlls.py'
 jobs:
   build:
     runs-on: windows-latest
@@ -41,106 +41,112 @@ jobs:
       WINARCH: ${{ matrix.architecture }}
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - uses: seanmiddleditch/gha-setup-vsdevenv@master
-        with:
-          arch: ${{ matrix.architecture }}
+    - uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: ${{ matrix.architecture }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.6
-          architecture: ${{ matrix.architecture }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: ${{ matrix.architecture }}
 
-      - name: Apply mirror
-        if: "false"
-        run: |
-          import os
-          a = "repo.msys2.org"
-          b = "mirror.yandex.ru/mirrors/msys2"
-          for root, _, files in os.walk("c:/vcpkg"):
-              for f in files:
-                if f.endswith(".cmake"):
-                  path = os.path.join(root, f)
-                  with open(path) as f:
-                    text = f.read()
-                    changed = text.replace(a, b)
-                  if text != changed:
-                    print("CHANGED", path)
-                    with open(path, "w") as f:
-                      f.write(changed)
-        shell: python
+    - name: Apply mirror
+      if: "false"
+      run: |
+        import os
+        a = "repo.msys2.org"
+        b = "mirror.yandex.ru/mirrors/msys2"
+        for root, _, files in os.walk("c:/vcpkg"):
+            for f in files:
+              if f.endswith(".cmake"):
+                path = os.path.join(root, f)
+                with open(path) as f:
+                  text = f.read()
+                  changed = text.replace(a, b)
+                if text != changed:
+                  print("CHANGED", path)
+                  with open(path, "w") as f:
+                    f.write(changed)
+      shell: python
 
-      - run: ./scripts/build-windows.sh
-        env:
-          WINARCH: ${{ matrix.architecture }}
+    - run: ./scripts/build-windows.sh
+      env:
+        WINARCH: ${{ matrix.architecture }}
 
-      ################################################################
-      - run: ./scripts/wheel-windows.sh 3.6
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.6
-        with:
-          name: wheel-windows-3.6-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
 
-      - run: ls -lrt
+    ################################################################
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        architecture: ${{ matrix.architecture }}
 
-      ################################################################
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-          architecture: ${{ matrix.architecture }}
+    - run: ./scripts/wheel-windows.sh 3.7
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.7
+      with:
+        name: wheel-windows-3.7-${{ matrix.architecture }}
+        path: wheelhouse/*.whl
 
-      - run: ./scripts/wheel-windows.sh 3.7
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.7
-        with:
-          name: wheel-windows-3.7-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: ${{ matrix.architecture }}
 
-      ################################################################
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-          architecture: ${{ matrix.architecture }}
+    - run: ./scripts/wheel-windows.sh 3.8
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.8
+      with:
+        name: wheel-windows-3.8-${{ matrix.architecture }}
+        path: wheelhouse/*.whl
 
-      - run: ./scripts/wheel-windows.sh 3.8
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.8
-        with:
-          name: wheel-windows-3.8-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+        architecture: ${{ matrix.architecture }}
 
-      ################################################################
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-          architecture: ${{ matrix.architecture }}
+    - run: ./scripts/wheel-windows.sh 3.9
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.9
+      with:
+        name: wheel-windows-3.9-${{ matrix.architecture }}
+        path: wheelhouse/*.whl
 
-      - run: ./scripts/wheel-windows.sh 3.9
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.9
-        with:
-          name: wheel-windows-3.9-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+        architecture: ${{ matrix.architecture }}
 
-      ################################################################
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-          architecture: ${{ matrix.architecture }}
+    - run: ./scripts/wheel-windows.sh "3.10"
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.10
+      with:
+        name: wheel-windows-3.10-${{ matrix.architecture }}
+        path: wheelhouse/*.whl
 
-      - run: ./scripts/wheel-windows.sh "3.10"
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.10
-        with:
-          name: wheel-windows-3.10-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11"
+        architecture: ${{ matrix.architecture }}
+
+    - run: ./scripts/wheel-windows.sh "3.11"
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.11
+      with:
+        name: wheel-windows-3.11-${{ matrix.architecture }}
+        path: wheelhouse/*.whl
+
 
   test:
     needs: build
@@ -148,7 +154,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         architecture: ["x86", "x64"]
 
     defaults:
@@ -158,40 +164,40 @@ jobs:
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.architecture }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: ${{ matrix.architecture }}
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
 
-      - run: pip install *.whl
+    - run: pip install *.whl
 
-      - run: pip install -r tests/requirements.txt
+    - run: pip install -r tests/requirements.txt
 
-      - run: pip freeze
+    - run: pip freeze
 
-      - name: Get some data
-        run: |
-          curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
-          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
-          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
-          ls -l
-        working-directory: tests
+    - name: Get some data
+      run: |
+        curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
+        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
+        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
+        ls -l
+      working-directory: tests
 
-      - run: pytest --verbose -s
-        working-directory: tests
-        timeout-minutes: 2
+    - run: pytest --verbose -s
+      working-directory: tests
+      timeout-minutes: 2
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
-          path: tests/*.png
+    - uses: actions/upload-artifact@v2
+      with:
+        name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+        path: tests/*.png
 
   deploy:
     if: ${{ github.event_name == 'release' }}
@@ -204,25 +210,25 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         architecture: ["x86", "x64"]
 
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - run: pip install twine
+    - run: pip install twine
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
 
-      - run: twine upload *.whl
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    - run: twine upload *.whl
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
   notify:
     if: ${{ github.event_name == 'release' }}
@@ -234,9 +240,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: mvasigh/dispatch-action@main
-        with:
-          token: ${{ secrets.NOTIFY_ECMWFLIBS }}
-          repo: ecmwflibs
-          owner: ecmwf
-          event_type: ecmwflibs-windows-uploaded
+    - uses: mvasigh/dispatch-action@main
+      with:
+        token: ${{ secrets.NOTIFY_ECMWFLIBS }}
+        repo: ecmwflibs
+        owner: ecmwf
+        event_type: ecmwflibs-windows-uploaded
