@@ -19,10 +19,10 @@ on:
 
   push:
     paths:
-      - 'scripts/common.sh'
-      - 'scripts/build-macos.sh'
-      - 'scripts/wheel-macos.sh'
-      - 'tools/copy-licences.py'
+    - 'scripts/common.sh'
+    - 'scripts/build-macos.sh'
+    - 'scripts/wheel-macos.sh'
+    - 'tools/copy-licences.py'
 
 jobs:
 
@@ -35,63 +35,75 @@ jobs:
     name: Build
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
 
-      - run: ./scripts/build-macos.sh
+    - run: ./scripts/build-macos.sh
 
 
-      ################################################################
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - run: ./scripts/wheel-macos.sh 3.7
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.7
-        with:
-          name: wheel-macos-3.7
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - run: ./scripts/wheel-macos.sh 3.7
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.7
+      with:
+        name: wheel-macos-3.7
+        path: wheelhouse/*.whl
 
-      ################################################################
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - run: ./scripts/wheel-macos.sh 3.8
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.8
-        with:
-          name: wheel-macos-3.8
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - run: ./scripts/wheel-macos.sh 3.8
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.8
+      with:
+        name: wheel-macos-3.8
+        path: wheelhouse/*.whl
 
-      ################################################################
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - run: ./scripts/wheel-macos.sh 3.9
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.9
-        with:
-          name: wheel-macos-3.9
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - run: ./scripts/wheel-macos.sh 3.9
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.9
+      with:
+        name: wheel-macos-3.9
+        path: wheelhouse/*.whl
 
-      ################################################################
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-      - run: ./scripts/wheel-macos.sh "3.10"
-      - uses: actions/upload-artifact@v2
-        name: Upload wheel 3.10
-        with:
-          name: wheel-macos-3.10
-          path: wheelhouse/*.whl
+    ################################################################
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+    - run: ./scripts/wheel-macos.sh "3.10"
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.10
+      with:
+        name: wheel-macos-3.10
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11"
+    - run: ./scripts/wheel-macos.sh "3.11"
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.11
+      with:
+        name: wheel-macos-3.11
+        path: wheelhouse/*.whl
 
   test:
     needs: build
@@ -99,47 +111,47 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     name: Test with Python ${{ matrix.python-version }}
 
     steps:
 
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: wheel-macos-${{ matrix.python-version }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-macos-${{ matrix.python-version }}
 
-      # This is needed by mumpy and python 3.9
-      - run: pip install numpy
+    # This is needed by mumpy and python 3.9
+    - run: pip install numpy
 
-      - run: pip install *.whl
+    - run: pip install *.whl
 
-      - run: pip install -r tests/requirements.txt
+    - run: pip install -r tests/requirements.txt
 
-      - run: pip freeze
+    - run: pip freeze
 
-      - name: Get some data
-        run: |
-          curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
-          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
-          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
-          ls -l
-        working-directory: tests
+    - name: Get some data
+      run: |
+        curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
+        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
+        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
+        ls -l
+      working-directory: tests
 
-      - run: pytest -v -s
-        working-directory: tests
+    - run: pytest -v -s
+      working-directory: tests
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: tests-macos-${{ matrix.python-version }}
-          path: tests/*.png
+    - uses: actions/upload-artifact@v2
+      with:
+        name: tests-macos-${{ matrix.python-version }}
+        path: tests/*.png
 
   deploy:
 
@@ -153,22 +165,22 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - run: pip install twine
+    - run: pip install twine
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: wheel-macos-${{ matrix.python-version }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-macos-${{ matrix.python-version }}
 
-      - run: twine upload *.whl
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    - run: twine upload *.whl
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
