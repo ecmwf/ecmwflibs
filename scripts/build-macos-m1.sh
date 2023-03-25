@@ -24,13 +24,21 @@ rm -fr build* dist install wheelhouse cairo.rb
 
 ./scripts/build-macos.sh
 
-for n in 8 9 10
+mkdir -p /tmp/build-macos-m1
+PATH=/tmp/build-macos-m1:$PATH
+
+for n in 8 9 10 11
 do
     rm -fr wheelhouse
     brew install python@3.$n
 
-    py=$(ls -1d /opt/homebrew/Cellar/python@3.$n/*/bin/)
-    PATH=$py:$PATH ./scripts/wheel-macos.sh
+
+    ln -sf $(ls -1d /opt/homebrew/Cellar/python@3.$n/*/bin/python3.$n) /tmp/build-macos-m1/python3
+    ln -sf $(ls -1d /opt/homebrew/Cellar/python@3.$n/*/bin/python3.$n) /tmp/build-macos-m1/python
+    ln -sf $(ls -1d /opt/homebrew/Cellar/python@3.$n/*/bin/pip3.$n) /tmp/build-macos-m1/pip3
+    ln -sf $(ls -1d /opt/homebrew/Cellar/python@3.$n/*/bin/pip3.$n) /tmp/build-macos-m1/pip
+
+    ./scripts/wheel-macos.sh
     pip3 install twine
     twine upload wheelhouse/*.whl
 
