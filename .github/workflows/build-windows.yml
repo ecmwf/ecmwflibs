@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        architecture: ["x86", "x64"]
+        architecture: ["x64"]
 
     defaults:
       run:
@@ -140,7 +140,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        architecture: ["x86", "x64"]
+        architecture: ["x64"]
 
     defaults:
       run:
@@ -196,7 +196,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        architecture: ["x86", "x64"]
+        architecture: ["x64"]
 
     steps:
     - name: Set up Python
