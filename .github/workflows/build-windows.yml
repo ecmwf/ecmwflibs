@@ -50,7 +50,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.6
+        python-version: 3.7
         architecture: ${{ matrix.architecture }}
 
     - name: Apply mirror
@@ -75,21 +75,6 @@ jobs:
     - run: ./scripts/build-windows.sh
       env:
         WINARCH: ${{ matrix.architecture }}
-
-
-    ################################################################
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-        architecture: ${{ matrix.architecture }}
-
-    - run: ./scripts/wheel-windows.sh 3.7
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.7
-      with:
-        name: wheel-windows-3.7-${{ matrix.architecture }}
-        path: wheelhouse/*.whl
 
     ################################################################
     - name: Set up Python 3.8
