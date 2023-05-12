@@ -29,8 +29,8 @@ ENTRIES = {
         "copying": "https://raw.githubusercontent.com/OSGeo/PROJ/master/COPYING",
     },
     "libpixman": {
-        "home": "https://github.com/freedesktop/pixman",
-        "copying": "https://raw.githubusercontent.com/freedesktop/pixman/master/COPYING",
+        "home": "https://gitlab.freedesktop.org/pixman/pixman",
+        "copying": "https://gitlab.freedesktop.org/pixman/pixman/-/raw/master/COPYING",
     },
     "libfribidi": {
         "home": "https://github.com/fribidi/fribidi",
@@ -84,7 +84,7 @@ ENTRIES = {
     },
     "libcairo": {
         "home": "https://cairographics.org",
-        "copying": "https://raw.githubusercontent.com/freedesktop/cairo/master/COPYING",
+        "copying": "https://gitlab.freedesktop.org/cairo/cairo/-/raw/master/COPYING",
     },
     "libjasper": {
         "home": "https://github.com/jasper-software/jasper",
