@@ -14,7 +14,7 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.30.4
+ECCODES_VERSION=2.31.0
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
