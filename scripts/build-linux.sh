@@ -31,14 +31,14 @@ done
 sudo yum install -y flex bison
 sudo yum install -y pax-utils # For lddtree
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
-sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
-sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+sudo ln -sf /opt/python/cp38-cp38m/bin/python /usr/local/bin/python3
+sudo ln -sf /opt/python/cp38-cp38m/bin/python3-config /usr/local/bin/python3-config
+sudo ln -sf /opt/python/cp38-cp38m/bin/pip /usr/local/bin/pip3
 
 sudo pip3 install ninja auditwheel meson
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
-sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
+sudo ln -sf /opt/python/cp38-cp38m/bin/meson /usr/local/bin/meson
+sudo ln -sf /opt/python/cp38-cp38m/bin/ninja /usr/local/bin/ninja
 
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH

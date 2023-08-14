@@ -14,11 +14,11 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.30.4
+ECCODES_VERSION=2.31.1
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=4.13.0
+MAGICS_VERSION=4.14.2
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
 SQLITE_VERSION=master
@@ -29,7 +29,7 @@ PROJ_VERSION=master
 GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
 AEC_VERSION=master
 
-GIT_PIXMAN=https://github.com/freedesktop/pixman.git
+GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman.git
 PIXMAN_VERSION=master
 
 GIT_CAIRO=https://github.com/freedesktop/cairo.git
