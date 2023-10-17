@@ -21,9 +21,9 @@ cd $here
 echo git $url $sha1 > versions
 
 if [[ $WINARCH == "x64" ]]; then
-    PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw64/bin/pkg-config.exe
+    PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw64/bin/pkg-config.exe
 else
-    PKG_CONFIG_EXECUTABLE=/c/rtools40/mingw32/bin/pkg-config.exe
+    PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw32/bin/pkg-config.exe
 fi
 
 for p in expat netcdf-c[core,netcdf-4,hdf5] pango sqlite3[core,tool] libpng
