@@ -20,7 +20,7 @@ cd $here
 
 echo git $url $sha1 > versions
 
-find / -name pkg-config.exe
+find /c/ -name pkg-config.exe
 exit 1
 
 if [[ $WINARCH == "x64" ]]; then
