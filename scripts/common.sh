@@ -33,7 +33,7 @@ GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
 
 GIT_CAIRO=https://gitlab.freedesktop.org/cairo/cairo
-CAIRO_VERSION=1.16
+CAIRO_VERSION=1.17.6
 
 GIT_HARFBUZZ=https://github.com/harfbuzz/harfbuzz.git
 HARFBUZZ_VERSION=master
