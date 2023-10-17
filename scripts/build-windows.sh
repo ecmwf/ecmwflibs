@@ -20,8 +20,10 @@ cd $here
 
 echo git $url $sha1 > versions
 
-find /c/ -name pkg-config.exe
-exit 1
+# the results of the following suggested that pkg-config.exe is not installed on the latest
+# Windows runner
+#find /c/ -name pkg-config.exe
+#exit 1
 
 if [[ $WINARCH == "x64" ]]; then
     PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw64/bin/pkg-config.exe
