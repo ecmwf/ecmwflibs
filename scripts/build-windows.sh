@@ -20,6 +20,9 @@ cd $here
 
 echo git $url $sha1 > versions
 
+find / -name pkg-config.exe
+exit 1
+
 if [[ $WINARCH == "x64" ]]; then
     PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw64/bin/pkg-config.exe
 else
