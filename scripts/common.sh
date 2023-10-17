@@ -29,7 +29,7 @@ PROJ_VERSION=master
 GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
 AEC_VERSION=master
 
-GIT_PIXMAN=https://github.com/freedesktop/pixman.git
+GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
 
 GIT_CAIRO=https://github.com/freedesktop/cairo.git
