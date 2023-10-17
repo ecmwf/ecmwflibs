@@ -32,7 +32,7 @@ AEC_VERSION=master
 GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
 
-GIT_CAIRO=https://github.com/freedesktop/cairo.git
+GIT_CAIRO=https://gitlab.freedesktop.org/cairo/cairo
 CAIRO_VERSION=master
 
 GIT_HARFBUZZ=https://github.com/harfbuzz/harfbuzz.git
