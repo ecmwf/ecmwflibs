@@ -152,7 +152,12 @@ ENTRIES = {
     "libzstd": {
         "home": "https://github.com/facebook/zstd",
         "copying": "https://raw.githubusercontent.com/facebook/zstd/master/LICENSE",
-    }
+    },
+    # not completely clear what the definitive source for this library is
+    "liblzma": {
+        "home": "https://github.com/ShiftMediaProject/liblzma",
+        "copying": "https://raw.githubusercontent.com/ShiftMediaProject/liblzma/master/COPYING",
+    },
     # "libcurl": {
     #     "home": "https://github.com/curl/curl",
     #     "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
