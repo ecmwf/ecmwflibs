@@ -29,11 +29,11 @@ PROJ_VERSION=master
 GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
 AEC_VERSION=master
 
-GIT_PIXMAN=https://github.com/freedesktop/pixman.git
+GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
 
-GIT_CAIRO=https://github.com/freedesktop/cairo.git
-CAIRO_VERSION=master
+GIT_CAIRO=https://gitlab.freedesktop.org/cairo/cairo
+CAIRO_VERSION=1.17.6
 
 GIT_HARFBUZZ=https://github.com/harfbuzz/harfbuzz.git
 HARFBUZZ_VERSION=master
