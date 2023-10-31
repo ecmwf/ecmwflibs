@@ -3,7 +3,6 @@ from Magics import macro as magics
 
 
 def test_magics_plot():
-
     # Setting of the output file name
     output = magics.output(
         output_formats=["png"],

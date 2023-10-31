@@ -4,7 +4,6 @@ import ecmwflibs
 
 
 def test_versions():
-
     versions = ecmwflibs.versions()
     print(json.dumps(versions, sort_keys=True, indent=4))
 

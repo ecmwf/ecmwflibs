@@ -38,7 +38,6 @@ else:
         print(_fonts, file=_f)
 
     if "ECMWFLIBS_MAGPLUS" not in os.environ:
-
         os.environ["FONTCONFIG_FILE"] = os.environ.get(
             "ECMWFLIBS_FONTCONFIG_FILE", _fontcfg
         )
@@ -48,7 +47,6 @@ else:
         os.environ["MAGPLUS_HOME"] = os.environ.get("ECMWFLIBS_MAGPLUS_HOME", _here)
 
     if "ECMWFLIBS_ECCODES" not in os.environ:
-
         for env in (
             "ECCODES_DEFINITION_PATH",
             "ECCODES_EXTRA_DEFINITION_PATH",
@@ -152,7 +150,6 @@ def find(name):
     extension = EXTENSIONS.get(sys.platform, ".so")
 
     for libdir in [here + ".libs", os.path.join(here, ".dylibs"), here]:
-
         if not name.startswith("lib"):
             names = ["lib" + name, name]
         else:

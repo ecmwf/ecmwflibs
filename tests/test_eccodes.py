@@ -2,7 +2,6 @@ from eccodes import codes_get, codes_grib_new_from_file, codes_release
 
 
 def test_versions():
-
     with open("data.grib", "rb") as f:
         grib = codes_grib_new_from_file(f)
 

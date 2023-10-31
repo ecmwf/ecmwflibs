@@ -234,7 +234,6 @@ for line in open(sys.argv[1], "r"):
 
     with open(f"ecmwflibs/copying/{lib}.txt", "w") as f:
         if copying.startswith("http://") or copying.startswith("https://"):
-
             r = requests.get(copying)
             r.raise_for_status()
             for n in filtering(r.text).split("\n"):
