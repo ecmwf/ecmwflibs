@@ -10,7 +10,6 @@ VCPKG2 = "C:/vcpkg/installed/{}-windows/debug/bin/{}"
 
 
 def scan_module(module, depth, seen):
-
     name = os.path.basename(module)
 
     if name in seen:

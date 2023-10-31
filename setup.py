@@ -49,7 +49,7 @@ ext_modules = [
 
 def shared(directory):
     result = []
-    for (path, dirs, files) in os.walk(directory):
+    for path, dirs, files in os.walk(directory):
         for f in files:
             result.append(os.path.join(path, f))
     return result

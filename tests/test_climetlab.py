@@ -4,7 +4,6 @@ from Magics import macro
 
 
 def test_climetlab_grib():
-
     actions = [
         macro.output(
             output_formats=["png"],
@@ -180,6 +179,5 @@ def test_climetlab_netcdf(filename):
 
 
 if __name__ == "__main__":
-
     test_climetlab_netcdf()
     # test_climetlab_grib()
