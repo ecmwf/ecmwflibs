@@ -1,0 +1,16 @@
+name: on-release
+
+on:
+  push:
+    tags:
+    - "*"
+
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+  
+  defaults:
+    run:
+      shell: bash -l {0}
+  

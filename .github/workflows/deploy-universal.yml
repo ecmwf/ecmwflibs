@@ -42,7 +42,7 @@ jobs:
 
       - name: Install packages
         run: |
-          pip install black pytest flake8 isort
+          pip install black pytest flake8 isort setuptools
 
       - name: Code QA
         run: |
