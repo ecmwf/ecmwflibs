@@ -19,6 +19,8 @@ on:
   #   types: [eccodes-updated, magics-updated]
 
   push:
+    branches:
+    - master
     paths:
     - 'scripts/common.sh'
     - 'scripts/build-linux.sh'
@@ -27,6 +29,11 @@ on:
   pull_request:
     branches:
     - master
+    paths:
+    - 'scripts/common.sh'
+    - 'scripts/build-linux.sh'
+    - 'scripts/wheel-linux.sh'
+    - 'tools/copy-licences.py'
   
 
 jobs:
