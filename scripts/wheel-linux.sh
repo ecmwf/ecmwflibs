@@ -17,7 +17,6 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
 
 rm -fr dist wheelhouse
-/opt/python/cp${version}-cp${version}*/bin/python3 -m pip install setuptools_scm
 /opt/python/cp${version}-cp${version}*/bin/python3 setup.py bdist_wheel
 
 # Do it twice to get the list of libraries
