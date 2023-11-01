@@ -14,6 +14,7 @@ import os.path
 import sys
 
 from setuptools import Extension, find_packages, setup
+import setuptools_scm
 
 
 def read(fname):
@@ -21,11 +22,12 @@ def read(fname):
     return io.open(file_path, encoding="utf-8").read()
 
 
-version = None
-for line in read("ecmwflibs/__init__.py").split("\n"):
-    if line.startswith("__version__"):
-        version = line.split("=")[-1].strip()[1:-1]
-
+version = setuptools_scm.get_version(".")
+setuptools_scm.dump_version(
+    version=version,
+    write_to = "versions.py",
+    root="ecmwflibs"
+)
 assert version
 
 libdir = os.path.realpath("install/lib")

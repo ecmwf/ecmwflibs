@@ -1,5 +1,0 @@
-include climetlab/*/*.yaml
-include climetlab/*/*/*.yaml
-include climetlab/*/*/*/*.yaml
-include climetlab/*/*/*/*/*.yaml
-include climetlab/*/*/*/*/*/*.yaml

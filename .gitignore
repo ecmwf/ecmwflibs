@@ -162,3 +162,4 @@ ecmwflibs/_universal
 *.ps
 .DS_Store
 build-m1/
+version.py
