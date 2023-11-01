@@ -32,6 +32,7 @@ sudo yum install -y flex bison
 sudo yum install -y pax-utils # For lddtree
 
 sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
+sudo ln -sf /opt/python/cp36-cp36m/bin/python3 /usr/local/bin/python3
 sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
 sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
 

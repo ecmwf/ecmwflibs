@@ -1,3 +1,4 @@
 magics
 eccodes
 pytest
+setuptools_scm
