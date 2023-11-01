@@ -24,6 +24,10 @@ on:
     - 'scripts/build-linux.sh'
     - 'scripts/wheel-linux.sh'
     - 'tools/copy-licences.py'
+  pull_request:
+    branches:
+    - master
+  
 
 jobs:
   build:
@@ -38,6 +42,14 @@ jobs:
 
     - run: ./scripts/build-linux.sh
 
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.6
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.6
+      with:
+        name: wheel-manylinux2014-3.6
+        path: wheelhouse/*.whl
 
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.7
