@@ -42,9 +42,9 @@ sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
 
 if [ -z ${PKG_CONFIG_PATH} ]
 then 
-   LD_LIBRARY_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig
+   PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig
 else
-   LD_LIBRARY_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
+   PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 fi
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
 
