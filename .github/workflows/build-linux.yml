@@ -40,7 +40,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: dockcross/manylinux2014-x64:latest
+    container: dockcross/manylinux2014-x64:20211222-f096312
 
     name: Build manylinux2014
 
