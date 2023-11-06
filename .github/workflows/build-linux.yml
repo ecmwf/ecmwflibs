@@ -45,9 +45,9 @@ jobs:
     name: Build manylinux2014
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
-    - run: ./scripts/build-linux.sh
+    # - run: ./scripts/build-linux.sh
     
 
     ################################################################
