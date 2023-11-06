@@ -15,17 +15,6 @@ TOPDIR=$(/bin/pwd)
 
 LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 
-# if [ "$version" -eq "36" ]
-# then
-#     conda config --set restore_free_channel True
-#     conda create -n py36 python=3.6
-#     conda activate py36
-#     alias this_python=python3
-# else
-#     alias this_python=/opt/python/cp${version}-cp${version}*/bin/python3
-# fi
-alias this_python=/opt/python/cp${version}-cp${version}*/bin/python3
-
 rm -fr dist wheelhouse
 /opt/python/cp${version}-cp${version}*/bin/python3 setup.py bdist_wheel
 
@@ -35,7 +24,7 @@ auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
 
-/opt/python/cp${version}-cp${version}*/bin/python3 ./tools/copy-licences.py libs
+python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 /opt/python/cp${version}-cp${version}*/bin/python3 setup.py bdist_wheel
