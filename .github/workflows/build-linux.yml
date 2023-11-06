@@ -37,17 +37,17 @@ on:
   
 
 jobs:
-  build:
+  build_legacy:
 
     runs-on: ubuntu-latest
     container: dockcross/manylinux2014-x64:20211222-f096312
 
-    name: Build manylinux2014
+    name: Legacy build manylinux2014
 
     steps:
     - uses: actions/checkout@v2
 
-    # - run: ./scripts/build-linux.sh
+    - run: ./scripts/build-linux.sh
     
 
     ################################################################
@@ -58,6 +58,18 @@ jobs:
         name: wheel-manylinux2014-3.6
         path: wheelhouse/*.whl
 
+  build:
+
+    runs-on: ubuntu-latest
+    container: dockcross/manylinux2014-x64:latest
+
+    name: Build manylinux2014
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: ./scripts/build-linux.sh
+          
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.7
     - uses: actions/upload-artifact@v2
