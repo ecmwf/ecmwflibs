@@ -45,14 +45,14 @@ jobs:
     name: Build manylinux2014
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - run: ./scripts/build-linux.sh
     
 
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.6
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       name: Upload wheel 3.6
       with:
         name: wheel-manylinux2014-3.6
