@@ -27,7 +27,7 @@ LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
 alias this_python=/opt/python/cp${version}-cp${version}*/bin/python3
 
 rm -fr dist wheelhouse
-this_python setup.py bdist_wheel
+/opt/python/cp${version}-cp${version}*/bin/python3 setup.py bdist_wheel
 
 # Do it twice to get the list of libraries
 
@@ -35,9 +35,9 @@ auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
 
-this_python ./tools/copy-licences.py libs
+/opt/python/cp${version}-cp${version}*/bin/python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-this_python setup.py bdist_wheel
+/opt/python/cp${version}-cp${version}*/bin/python3 setup.py bdist_wheel
 auditwheel repair dist/*.whl
 rm -fr dist
