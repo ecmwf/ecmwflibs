@@ -21,6 +21,10 @@ ls -lrt dist
 unzip -l dist/*.whl
 echo =================================================================
 
+file ecmwflibs/_ecmwflibs.cpython-310-darwin.so
+otool -L ecmwflibs/_ecmwflibs.cpython-310-darwin.so
+echo =================================================================
+
 # Do it twice to get the list of libraries
 
 arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
