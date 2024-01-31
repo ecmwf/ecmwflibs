@@ -35,6 +35,13 @@ jobs:
     name: Build
 
     steps:
+
+    - name: debug
+      run: ls -l /Users
+
+    - name: home
+      run: sudo mkdir /Users/runner
+
     - uses: actions/checkout@v2
 
     - name: Set up Python 3.10
