@@ -6,7 +6,7 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-name: Build MacOS
+name: Build MacOS ARM64
 
 on:
   workflow_dispatch: {}
@@ -37,37 +37,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.9
 
     - run: ./scripts/build-macos.sh
 
-
-    ################################################################
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-    - run: ./scripts/wheel-macos.sh 3.7
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.7
-      with:
-        name: wheel-macos-3.7
-        path: wheelhouse/*.whl
-
-    ################################################################
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - run: ./scripts/wheel-macos.sh 3.8
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.8
-      with:
-        name: wheel-macos-3.8
-        path: wheelhouse/*.whl
 
     ################################################################
     - name: Set up Python 3.9
@@ -111,7 +87,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11"]
 
     name: Test with Python ${{ matrix.python-version }}
 
