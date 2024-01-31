@@ -25,6 +25,9 @@ ls -l
 so=$(ls -1 *.so)
 lipo -extract $(arch) $so -output $so.$(arch)
 mv $so.$(arch) $so
+echo =================================================================
+otool -L $so
+echo =================================================================
 cd ..
 zip -r $name ecmwflibs
 cd ..
