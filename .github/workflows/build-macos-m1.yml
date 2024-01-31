@@ -36,14 +36,8 @@ jobs:
 
     steps:
 
-    - name: debug
-      run: echo $HOME
-
-    - name: id
-      run: id
-
-    - name: home
-      run: sudo mkdir /Users/runner
+    - run: sudo mkdir /Users/runner
+    - run: sudo chown administrator:staff /Users/runner
 
     - uses: actions/checkout@v2
 
