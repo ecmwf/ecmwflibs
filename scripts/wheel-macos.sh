@@ -22,14 +22,6 @@ unzip ../dist/*.whl
 find . -name '*.so' -print | xargs lipo -info
 find . -name '*.so' -print | xargs otool -L
 cd ..
-echo =================================================================
-ls -lrt dist
-unzip -l dist/*.whl
-echo =================================================================
-
-file ecmwflibs/_ecmwflibs.cpython-310-darwin.so
-otool -L ecmwflibs/_ecmwflibs.cpython-310-darwin.so
-echo =================================================================
 
 # Do it twice to get the list of libraries
 

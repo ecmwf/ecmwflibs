@@ -114,8 +114,11 @@ rm -fr ecmwflibs/share/proj/*.txt
 rm -fr ecmwflibs/share/proj/*.pol
 rm -fr ecmwflibs/share/magics/efas
 
-
-find install/lib -print0 | xargs -0 file
+cd ecmwflibs
+so=$(ls -1 *.so)
+lipo -extract $(arch) $so -output $so.$(arch)
+mv $so.$(arch) $so
+cd ..
 
 strip -S install/lib/*.dylib
 
