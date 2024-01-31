@@ -10,6 +10,9 @@
 set -eaux
 uname -a
 
+HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+HOMEBREW_NO_INSTALL_CLEANUP=1
+
 source scripts/common.sh
 
 brew_home=$(brew config | grep HOMEBREW_PREFIX | sed 's/.* //')

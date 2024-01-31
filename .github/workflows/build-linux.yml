@@ -34,7 +34,7 @@ on:
     - 'scripts/build-linux.sh'
     - 'scripts/wheel-linux.sh'
     - 'tools/copy-licences.py'
-  
+
 
 jobs:
   build_legacy:
@@ -48,7 +48,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: ./scripts/build-linux.sh
-    
+
 
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.6
@@ -69,7 +69,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: ./scripts/build-linux.sh
-          
+
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.7
     - uses: actions/upload-artifact@v2
@@ -191,5 +191,5 @@ jobs:
 
     - run: twine upload *.whl
       env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}

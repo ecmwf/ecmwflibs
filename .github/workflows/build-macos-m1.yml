@@ -30,7 +30,7 @@ jobs:
 
     # if: false
 
-    runs-on: macos-latest
+    runs-on: [self-hosted, macOS, ARM64]
 
     name: Build
 
