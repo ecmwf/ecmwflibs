@@ -111,7 +111,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    -DCMAKE_C_COMPILER=cl.exe $ECCODES_EXTRA_CMAKE_OPTIONS
+    -DCMAKE_C_COMPILER=cl.exe $ECCODES_EXTRA_CMAKE_OPTIONS 
 
     # -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE
 
@@ -136,7 +136,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DCMAKE_C_COMPILER=cl.exe
 
-    # -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE 
+    # -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE
 
 
 cd $TOPDIR
