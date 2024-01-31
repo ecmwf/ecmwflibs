@@ -18,11 +18,11 @@ python3 setup.py bdist_wheel
 
 # Do it twice to get the list of libraries
 
-delocate-wheel -w wheelhouse dist/*.whl
+arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'dylib' > libs
 pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 python3 setup.py bdist_wheel
-delocate-wheel -w wheelhouse dist/*.whl
+arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
