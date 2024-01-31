@@ -53,11 +53,11 @@ NETCDF_VERSION=${NETCDF_VERSION:=master}
 GIT_HDF5=https://github.com/HDFGroup/hdf5.git
 HDF5_VERSION=${HDF5_VERSION:=hdf5-1_10_5}
 
-# rm -fr src build build-ecmwf
+rm -fr src build build-ecmwf
 
-# git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
-# git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes
-# git clone --branch $MAGICS_VERSION $GIT_MAGICS src/magics
+git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
+git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes
+git clone --branch $MAGICS_VERSION $GIT_MAGICS src/magics
 
 mkdir -p build-ecmwf/eccodes
 mkdir -p build-ecmwf/magics
