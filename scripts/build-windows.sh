@@ -25,11 +25,13 @@ echo git $url $sha1 > versions
 #find /c/ -name pkg-config.exe
 #exit 1
 
-if [[ $WINARCH == "x64" ]]; then
-    PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw64/bin/pkg-config.exe
-else
-    PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw32/bin/pkg-config.exe
-fi
+# if [[ $WINARCH == "x64" ]]; then
+#     PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw64/bin/pkg-config.exe
+# else
+#     PKG_CONFIG_EXECUTABLE=/c/rtools43/mingw32/bin/pkg-config.exe
+# fi
+
+vcpkg install pkgconf
 
 for p in expat netcdf-c[core,netcdf-4,hdf5] pango sqlite3[core,tool] libpng
 do
@@ -108,9 +110,10 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DCMAKE_C_COMPILER=cl.exe $ECCODES_EXTRA_CMAKE_OPTIONS
+
+    # -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE
 
 cd $TOPDIR
 cmake --build build-ecmwf/eccodes --target install
@@ -130,9 +133,11 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE \
     -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DCMAKE_C_COMPILER=cl.exe
+
+    # -DPKG_CONFIG_EXECUTABLE=$PKG_CONFIG_EXECUTABLE 
+
 
 cd $TOPDIR
 cmake --build build-ecmwf/magics --target install
