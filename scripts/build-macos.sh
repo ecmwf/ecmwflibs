@@ -115,7 +115,7 @@ rm -fr ecmwflibs/share/proj/*.pol
 rm -fr ecmwflibs/share/magics/efas
 
 
-find install/lib -print
+find install/lib -print0 | xargs -0 file
 
 strip -S install/lib/*.dylib
 
