@@ -37,7 +37,10 @@ jobs:
     steps:
 
     - name: debug
-      run: ls -l /Users
+      run: echo $HOME
+
+    - name: id
+      run: id
 
     - name: home
       run: sudo mkdir /Users/runner
