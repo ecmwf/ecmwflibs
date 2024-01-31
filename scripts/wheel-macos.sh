@@ -14,7 +14,7 @@ set -eaux
 pip3 install wheel delocate
 
 rm -fr dist wheelhouse
-arch -$(arch) python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel --plat-name $(arch)
 
 # Do it twice to get the list of libraries
 
