@@ -102,8 +102,6 @@ arch -$(arch) $TOPDIR/src/ecbuild/bin/ecbuild \
 cd $TOPDIR
 arch -$(arch) cmake --build build-ecmwf/magics --target install
 
-
-
 # Create wheel
 rm -fr dist wheelhouse ecmwflibs/share
 mkdir -p install/share/magics
@@ -115,6 +113,7 @@ rm -fr ecmwflibs/share/proj/*.pol
 rm -fr ecmwflibs/share/magics/efas
 
 cd ecmwflibs
+ls -l
 so=$(ls -1 *.so)
 lipo -extract $(arch) $so -output $so.$(arch)
 mv $so.$(arch) $so
