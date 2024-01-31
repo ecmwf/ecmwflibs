@@ -40,7 +40,7 @@ jobs:
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10
+        python-version: "3.10"
 
     - run: ./scripts/build-macos.sh
 
@@ -49,7 +49,7 @@ jobs:
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10
+        python-version: "3.10"
     - run: ./scripts/wheel-macos.sh 3.10
     - uses: actions/upload-artifact@v2
       name: Upload wheel 3.10
@@ -87,7 +87,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.10", "3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12"]
 
     name: Test with Python ${{ matrix.python-version }}
 
