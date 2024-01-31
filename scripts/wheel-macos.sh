@@ -13,9 +13,15 @@ set -eaux
 
 pip3 install wheel delocate
 
-rm -fr dist wheelhouse
+rm -fr dist wheelhouse tmp
 python3 setup.py bdist_wheel --plat-name $(arch)
 
+mkdir tmp
+cd tmp
+unzip ../dist/*.whl
+find . -name '*.so' -print | xargs lipo -info
+find . -name '*.so' -print | xargs otool -L
+cd ..
 echo =================================================================
 ls -lrt dist
 unzip -l dist/*.whl
