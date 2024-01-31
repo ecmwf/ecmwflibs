@@ -36,7 +36,7 @@ jobs:
 
     steps:
 
-    - run: sudo mkdir /Users/runner
+    - run: sudo mkdir -p /Users/runner
     - run: sudo chown administrator:staff /Users/runner
 
     - uses: actions/checkout@v2
