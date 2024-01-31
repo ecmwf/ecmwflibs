@@ -16,6 +16,19 @@ pip3 install wheel delocate
 rm -fr dist wheelhouse tmp
 python3 setup.py bdist_wheel --plat-name $(arch)
 
+cd dist
+name=$(ls -1 *.whl)
+unzip *.whl
+ls -l
+cd ecmwflibs
+ls -l
+so=$(ls -1 *.so)
+lipo -extract $(arch) $so -output $so.$(arch)
+mv $so.$(arch) $so
+cd ..
+zip -r $name ecmwflibs
+cd ..
+
 # mkdir tmp
 # cd tmp
 # unzip ../dist/*.whl

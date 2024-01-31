@@ -112,13 +112,6 @@ rm -fr ecmwflibs/share/proj/*.txt
 rm -fr ecmwflibs/share/proj/*.pol
 rm -fr ecmwflibs/share/magics/efas
 
-cd ecmwflibs
-ls -l
-so=$(ls -1 *.so)
-lipo -extract $(arch) $so -output $so.$(arch)
-mv $so.$(arch) $so
-cd ..
-
 strip -S install/lib/*.dylib
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
