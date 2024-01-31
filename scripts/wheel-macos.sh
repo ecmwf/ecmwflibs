@@ -16,7 +16,7 @@ pip3 install wheel delocate
 rm -fr dist wheelhouse
 python3 setup.py bdist_wheel --plat-name $(arch)
 
-unzip -l wheelhouse/*.whl | grep 'dylib' > libs
+unzip -l dist/*.whl | grep 'dylib' > libs
 cat libs
 for n in $(cat libs)
 do
