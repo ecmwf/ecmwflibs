@@ -16,13 +16,10 @@ pip3 install wheel delocate
 rm -fr dist wheelhouse
 python3 setup.py bdist_wheel --plat-name $(arch)
 
-unzip -l dist/*.whl | grep 'dylib' > libs
-cat libs
-for n in $(cat libs)
-do
-    echo $n
-    otool -L $n
-done
+unzip -l dist/*.whl
+echo =================================================================
+unzip dist/*.whl
+echo =================================================================
 
 # Do it twice to get the list of libraries
 
