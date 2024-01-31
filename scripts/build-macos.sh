@@ -15,6 +15,12 @@ HOMEBREW_NO_INSTALL_CLEANUP=1
 
 arch=$(arch)
 
+if [[ $arch == "arm64" ]]; then
+    PLATFORM_CMAKE_OPTIONS="-DCMAKE_OSX_ARCHITECTURES=arm64"
+else
+    PLATFORM_CMAKE_OPTIONS="-DCMAKE_OSX_ARCHITECTURES=x86_64"
+fi
+
 
 source scripts/common.sh
 
@@ -74,7 +80,7 @@ arch -$(arch) $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib $ECCODES_EXTRA_CMAKE_OPTIONS
+    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib $ECCODES_EXTRA_CMAKE_OPTIONS $PLATFORM_CMAKE_OPTIONS
 
 cd $TOPDIR
 arch -$(arch) cmake --build build-ecmwf/eccodes --target install
@@ -91,7 +97,7 @@ arch -$(arch) $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib 
+    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib $PLATFORM_CMAKE_OPTIONS
 
 cd $TOPDIR
 arch -$(arch) cmake --build build-ecmwf/magics --target install
