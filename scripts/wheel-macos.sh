@@ -16,6 +16,14 @@ pip3 install wheel delocate
 rm -fr dist wheelhouse
 python3 setup.py bdist_wheel --plat-name $(arch)
 
+unzip -l wheelhouse/*.whl | grep 'dylib' > libs
+cat libs
+for n in $(cat libs)
+do
+    echo $n
+    otool -L $n
+done
+
 # Do it twice to get the list of libraries
 
 arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
