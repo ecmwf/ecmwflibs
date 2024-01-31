@@ -16,9 +16,9 @@ pip3 install wheel delocate
 rm -fr dist wheelhouse
 python3 setup.py bdist_wheel --plat-name $(arch)
 
-unzip -l dist/*.whl
 echo =================================================================
-unzip dist/*.whl
+ls -lrt dist
+unzip -l dist/*.whl
 echo =================================================================
 
 # Do it twice to get the list of libraries
