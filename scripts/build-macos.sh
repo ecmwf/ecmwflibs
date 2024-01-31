@@ -91,7 +91,7 @@ arch -$(arch) $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install \
-    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib $PLATFORM_CMAKE_OPTIONS
+    -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib 
 
 cd $TOPDIR
 arch -$(arch) cmake --build build-ecmwf/magics --target install
