@@ -34,7 +34,7 @@ diet() {
     so=$(ls -1 *.so)
     echo "$so"
 
-    lipo -extract $arch $so -output $so.$arch
+    lipo -thin $arch $so -output $so.$arch
     mv $so.$arch $so
     lipo -info $so
     cd ..
@@ -66,4 +66,7 @@ echo $name
 rm -fr dist wheelhouse
 $ARCH python3 setup.py bdist_wheel # --plat-name $arch
 diet
+
+newname=$(ls -1 wheelhouse/*.whl | sed "s/-universal2/-${arch}-/")
+mv $name $newname
 $ARCH delocate-wheel -w wheelhouse dist/*.whl
