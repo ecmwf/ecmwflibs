@@ -16,33 +16,31 @@ pip3 install wheel delocate
 rm -fr dist wheelhouse tmp
 python3 setup.py bdist_wheel --plat-name $(arch)
 
+echo =================================================================
+
 cd dist
 name=$(ls -1 *.whl)
+echo $name
 unzip *.whl
 ls -l
 cd ecmwflibs
 ls -l
 so=$(ls -1 *.so)
+echo "$so"
+lipo -info $so
 lipo -extract $(arch) $so -output $so.$(arch)
 mv $so.$(arch) $so
-echo =================================================================
-otool -L $so
-echo =================================================================
+lipo -info $so
 cd ..
 zip -r $name ecmwflibs
 cd ..
 
-# mkdir tmp
-# cd tmp
-# unzip ../dist/*.whl
-# find . -name '*.so' -print | xargs lipo -info
-# find . -name '*.so' -print | xargs otool -L
-# cd ..
+echo =================================================================
 
 # Do it twice to get the list of libraries
 
 arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
-unzip -l wheelhouse/*.whl | grep 'dylib' > libs
+unzip -l wheelhouse/*.whl | grep 'dylib' >libs
 pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
