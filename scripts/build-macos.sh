@@ -13,12 +13,13 @@ uname -a
 # HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 HOMEBREW_NO_INSTALL_CLEANUP=1
 
+ARCH="arch -$(arch)"
 
 source scripts/common.sh
 
 brew_home=$(brew config | grep HOMEBREW_PREFIX | sed 's/.* //')
 
-brew install cmake ninja pkg-config automake
+$ARCH brew install cmake ninja pkg-config automake
 
 # brew cat cairo
 
@@ -34,13 +35,13 @@ s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
 cat cairo.rb
 
-brew install pango
-brew install netcdf
-brew install proj
-brew install libaec
+$ARCH brew install pango
+$ARCH brew install netcdf
+$ARCH brew install proj
+$ARCH brew install libaec
 
 
-brew reinstall --build-from-source --formula cairo.rb
+$ARCH brew reinstall --build-from-source --formula cairo.rb
 
 
 for p in  netcdf proj pango cairo
@@ -55,7 +56,7 @@ cd $TOPDIR/build-ecmwf/eccodes
 
 # We disable JASPER because of a linking issue. JPEG support comes from
 # other librarues
-$TOPDIR/src/ecbuild/bin/ecbuild \
+$ARCH $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/eccodes \
     -GNinja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -70,12 +71,12 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR
-cmake --build build-ecmwf/eccodes --target install
+$ARCH cmake --build build-ecmwf/eccodes --target install
 
 # Build magics
 
 cd $TOPDIR/build-ecmwf/magics
-$TOPDIR/src/ecbuild/bin/ecbuild \
+$ARCH $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
     -GNinja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -87,7 +88,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DCMAKE_INSTALL_RPATH=$TOPDIR/install/lib
 
 cd $TOPDIR
-cmake --build build-ecmwf/magics --target install
+$ARCH cmake --build build-ecmwf/magics --target install
 
 # Create wheel
 rm -fr dist wheelhouse ecmwflibs/share

@@ -9,12 +9,14 @@
 
 set -eaux
 
+ARCH="arch -$(arch)"
+
 # version=$(echo $1| sed 's/\.//')
 
 pip3 install wheel delocate
 
 rm -fr dist wheelhouse tmp
-python3 setup.py bdist_wheel --plat-name $(arch)
+$ARCH python3 setup.py bdist_wheel --plat-name $(arch)
 
 echo =================================================================
 
@@ -39,11 +41,11 @@ echo =================================================================
 
 # Do it twice to get the list of libraries
 
-arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
+$ARCH delocate-wheel -w wheelhouse dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'dylib' >libs
 pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 python3 setup.py bdist_wheel
-arch -$(arch) delocate-wheel -w wheelhouse dist/*.whl
+$ARCH delocate-wheel -w wheelhouse dist/*.whl
