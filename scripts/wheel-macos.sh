@@ -50,7 +50,7 @@ diet() {
 pip3 install wheel delocate setuptools
 
 rm -fr dist wheelhouse tmp
-$ARCH python3 setup.py bdist_wheel --plat-name $arch
+$ARCH python3 setup.py bdist_wheel
 diet
 
 # Do it twice to get the list of libraries
@@ -60,7 +60,10 @@ unzip -l wheelhouse/*.whl | grep 'dylib' >libs
 pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
+name=$(ls -1 wheelhouse/*.whl)
+echo $name
+
 rm -fr dist wheelhouse
-$ARCH python3 setup.py bdist_wheel --plat-name $arch
+$ARCH python3 setup.py bdist_wheel # --plat-name $arch
 diet
 $ARCH delocate-wheel -w wheelhouse dist/*.whl
