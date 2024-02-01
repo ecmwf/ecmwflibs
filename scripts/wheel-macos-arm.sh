@@ -58,7 +58,7 @@ $ARCH python3 setup.py bdist_wheel
 diet
 
 name=$(ls -1 dist/*.whl)
-newname=$(echo $name | sed "s/_universal2/-${arch}/")
+newname=$(echo $name | sed "s/_universal2/_${arch}/")
 echo $name $newname
 
 # Do it twice to get the list of libraries
