@@ -10,6 +10,8 @@
 set -eaux
 
 arch=$(arch)
+[[ $arch == "i386" ]] && arch="x86_64" # GitHub Actions on macOS declare i386
+
 ARCH="arch -$arch"
 
 diet() {
