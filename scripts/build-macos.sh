@@ -13,7 +13,9 @@ uname -a
 # HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 HOMEBREW_NO_INSTALL_CLEANUP=1
 
-ARCH="arch -$(arch)"
+arch=$(arch)
+
+ARCH="arch -$arch"
 
 source scripts/common.sh
 
@@ -59,6 +61,7 @@ cd $TOPDIR/build-ecmwf/eccodes
 $ARCH $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/eccodes \
     -GNinja \
+    -DCMAKE_OSX_ARCHITECTURES=$arch \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
@@ -79,6 +82,7 @@ cd $TOPDIR/build-ecmwf/magics
 $ARCH $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
     -GNinja \
+    -DCMAKE_OSX_ARCHITECTURES=$arch \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
