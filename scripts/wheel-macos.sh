@@ -61,12 +61,13 @@ pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 name=$(ls -1 wheelhouse/*.whl)
-echo $name
+
+newname=$(ls -1 wheelhouse/*.whl | sed "s/-universal2/-${arch}-/")
+echo $name $newname
 
 rm -fr dist wheelhouse
 $ARCH python3 setup.py bdist_wheel # --plat-name $arch
 diet
 
-newname=$(ls -1 wheelhouse/*.whl | sed "s/-universal2/-${arch}-/")
 mv $name $newname
 $ARCH delocate-wheel -w wheelhouse dist/*.whl
