@@ -54,6 +54,6 @@ pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-$ARCH python3 setup.py bdist_wheel
+$ARCH python3 setup.py bdist_wheel --plat-name $arch
 diet
 $ARCH delocate-wheel -w wheelhouse dist/*.whl
