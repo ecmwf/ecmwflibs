@@ -28,7 +28,13 @@ diet() {
     ls -l
     so=$(ls -1 *.so)
     echo "$so"
-    lipo -info $so
+
+    non_fat=$(lipo -info $so | grep 'Non-fat file')
+    if [[ -n $non_fat ]]; then
+        echo "Not a fat file"
+        return
+    fi
+
     lipo -extract $(arch) $so -output $so.$(arch)
     mv $so.$(arch) $so
     lipo -info $so
@@ -42,7 +48,7 @@ diet() {
 
 # version=$(echo $1| sed 's/\.//')
 
-pip3 install wheel delocate
+pip3 install wheel delocate setuptools
 
 rm -fr dist wheelhouse tmp
 $ARCH python3 setup.py bdist_wheel --plat-name $arch
