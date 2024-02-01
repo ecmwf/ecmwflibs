@@ -32,6 +32,8 @@ brew install cmake ninja pkg-config automake
 
 # We don't want a dependency on X11
 brew cat cairo | sed '
+s/xcb=enabled/xcb=disabled/
+s/xlib=enabled/xlib=disabled/
 s/enable-tee/disable-tee/
 s/enable-xcb/disable-xcb/
 s/enable-xlib/disable-xlib/
@@ -48,11 +50,8 @@ brew install libaec
 
 
 # cat cairo.rb
-ls -l  /opt/homebrew/opt/cairo/lib || true
-brew uninstall --ignore-dependencies  cairo || true
-ls -l  /opt/homebrew/opt/cairo/lib || true
+
 brew reinstall --build-from-source --formula cairo.rb
-ls -l  /opt/homebrew/opt/cairo/lib || true
 
 
 # brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
