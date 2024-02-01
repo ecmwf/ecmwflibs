@@ -23,8 +23,9 @@ diet() {
     # Remove the architectures we don't need
 
     echo =================================================================
-
+    pwd
     cd dist
+    pwd
     name=$(ls -1 *.whl)
     echo $name
     unzip *.whl
@@ -38,11 +39,14 @@ diet() {
     mv $so.$arch $so
     lipo -info $so
     cd ..
+    pwd
     zip -r $name ecmwflibs
     cd ..
 
     echo =================================================================
+    pwd
 
+    ls -l dist
 }
 
 # version=$(echo $1| sed 's/\.//')
