@@ -10,7 +10,7 @@
 set -eaux
 uname -a
 
-HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+# HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 HOMEBREW_NO_INSTALL_CLEANUP=1
 
 arch=$(arch)
@@ -38,9 +38,19 @@ s/enable-xlib/disable-xlib/
 s/enable-xlib-xrender/disable-xlib-xrender/
 s/enable-quartz-image/disable-quartz-image/' > cairo.rb
 
-cat cairo.rb
+brew install pango
+brew install netcdf
+brew install proj
+brew install libaec
+
+
+# cat cairo.rb
+ls -l  /opt/homebrew/opt/cairo/lib || true
 brew uninstall --ignore-dependencies  cairo || true
+ls -l  /opt/homebrew/opt/cairo/lib || true
 brew install --build-from-source --formula cairo.rb
+ls -l  /opt/homebrew/opt/cairo/lib || true
+
 
 # brew cat pango | sed 's/introspection=enabled/introspection=disabled/' > pango.rb
 
@@ -48,11 +58,7 @@ brew install --build-from-source --formula cairo.rb
 
 # brew install --build-from-source ./pango.rb
 
-brew install pango
 
-brew install netcdf
-brew install proj
-brew install libaec
 
 for p in  netcdf proj pango cairo
 do
