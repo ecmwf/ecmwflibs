@@ -15,6 +15,11 @@ arch=$(arch)
 ARCH="arch -$arch"
 
 diet() {
+
+    if [[ $arch == "x86_64" ]]; then
+        return
+    fi
+
     # Remove the architectures we don't need
 
     echo =================================================================
@@ -29,14 +34,8 @@ diet() {
     so=$(ls -1 *.so)
     echo "$so"
 
-    non_fat=$(lipo -info $so | grep 'Non-fat file')
-    if [[ -n $non_fat ]]; then
-        echo "Not a fat file"
-        return
-    fi
-
-    lipo -extract $(arch) $so -output $so.$(arch)
-    mv $so.$(arch) $so
+    lipo -extract $arch $so -output $so.$arch
+    mv $so.$arch $so
     lipo -info $so
     cd ..
     zip -r $name ecmwflibs
