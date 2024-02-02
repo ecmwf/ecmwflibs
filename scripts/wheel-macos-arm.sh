@@ -74,7 +74,7 @@ rm -fr dist wheelhouse
 $ARCH python3 setup.py bdist_wheel # --plat-name $arch
 diet
 
-mv dist/$name $newname
-find dist/*.dist-info -print
+# mv dist/$name $newname
+# find dist/*.dist-info -print
 
 $ARCH delocate-wheel -w wheelhouse dist/*.whl
