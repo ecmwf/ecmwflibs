@@ -77,6 +77,20 @@ jobs:
         WINARCH: ${{ matrix.architecture }}
 
     ################################################################
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.7
+        architecture: ${{ matrix.architecture }}
+
+    - run: ./scripts/wheel-windows.sh 3.7
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.7
+      with:
+        name: wheel-windows-3.7-${{ matrix.architecture }}
+        path: wheelhouse/*.whl
+
+    ################################################################
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
       with:
