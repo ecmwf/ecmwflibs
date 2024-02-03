@@ -91,14 +91,17 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
-
     - uses: actions/download-artifact@v2
       with:
         name: wheel-macos-${{ matrix.python-version }}
 
+    - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
+    - run: echo $PATH
+    - run: pip3 install --upgrade pip
     - run: which python3
     - run: python3 --version
+    - run: pwd
+    - run: ls -l
     - run: pip3 install *.whl
     - run: pip3 install -r tests/requirements.txt
     - run: pip3 freeze
