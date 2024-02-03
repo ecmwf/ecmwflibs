@@ -19,14 +19,11 @@ pip3 install wheel delocate setuptools
 
 # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#cross-platform-compilation
 
+CXX=./scripts/cxx-no-arch.sh
 
 which python3
 python3 --version
 which delocate-wheel
-
-# Make sure we don't build a universal wheel
-CFLAGS=$(./scripts/fix-flags.py CFLAGS $(arch))
-CPPFLAGS=$(./scripts/fix-flags.py CPPFLAGS $(arch))
 
 rm -fr dist wheelhouse tmp
 python3 setup.py bdist_wheel

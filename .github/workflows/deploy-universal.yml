@@ -6,8 +6,8 @@ name: Deploy Universal
 on:
   workflow_dispatch: {}
 
-  repository_dispatch:
-    types: [ecmwflibs-windows-uploaded]
+  # repository_dispatch:
+  #   types: [ecmwflibs-windows-uploaded]
 
   # workflow_run:
   #   workflows: ["Build Windows"]
