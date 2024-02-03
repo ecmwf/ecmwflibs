@@ -17,9 +17,18 @@ env | sort
 pip3 install --upgrade pip
 pip3 install wheel delocate setuptools
 
+# https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#cross-platform-compilation
+
+
 which python3
 python3 --version
 which delocate-wheel
+
+python3 -c '
+import sysconfig
+for v in sorted(sysconfig.get_config_vars()):
+    print(v, sysconfig.get_config_var(v))
+'
 
 rm -fr dist wheelhouse tmp
 python3 setup.py bdist_wheel
