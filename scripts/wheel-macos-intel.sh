@@ -9,6 +9,8 @@
 
 set -eaux
 
+env | sort
+
 pip3 install wheel delocate setuptools
 
 rm -fr dist wheelhouse tmp

@@ -50,7 +50,7 @@ diet() {
 }
 
 # version=$(echo $1| sed 's/\.//')
-
+env | sort
 pip3 install wheel delocate setuptools
 
 rm -fr dist wheelhouse tmp
