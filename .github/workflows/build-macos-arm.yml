@@ -98,6 +98,7 @@ jobs:
     - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
     - run: echo $PATH
     - run: pip3 install --upgrade pip
+    - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
     - run: which python3
     - run: python3 --version
     - run: pwd
