@@ -15,4 +15,4 @@ for c do
     set -- "$@" "$c"
 done
 
-clang++ "$@"
+clang "$@"
