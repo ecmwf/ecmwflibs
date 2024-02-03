@@ -8,6 +8,9 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
+VERSION=$1
+
+PATH=/opt/homebrew/opt/python@$VERSION/libexec/bin:$PATH
 
 # PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin
 # unset PKG_CONFIG_PATH
@@ -19,8 +22,8 @@ pip3 install wheel delocate setuptools
 
 # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#cross-platform-compilation
 # Prevent ext_modules from being built as universal
-CXX=./scripts/cxx-no-arch.sh
-CC=./scripts/c-no-arch.sh
+# CXX=./scripts/cxx-no-arch.sh
+# CC=./scripts/c-no-arch.sh
 
 which python3
 python3 --version
