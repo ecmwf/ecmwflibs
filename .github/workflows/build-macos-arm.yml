@@ -133,7 +133,7 @@ jobs:
         name: tests-macos-${{ matrix.python-version }}
         path: tests/*.png
 
-    - run: rm -f *.whl tests
+    - run: rm -fr *.whl tests
 
   deploy:
 
