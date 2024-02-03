@@ -68,7 +68,7 @@ jobs:
         path: wheelhouse/*.whl
 
     ################################################################
-    - run: ./scripts/select-python.sh "3.10"
+    - run: ./scripts/select-python.sh "3.11"
     - run: ./scripts/wheel-macos.sh "3.11"
     - uses: actions/upload-artifact@v2
       name: Upload wheel 3.11

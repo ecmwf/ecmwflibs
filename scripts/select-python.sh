@@ -2,3 +2,6 @@
 version=$1
 
 brew install python@$1
+::add-path::/opt/homebrew/opt/python@$VERSION/libexec/bin
+
+# echo "$HOME/.local/bin" >> $GITHUB_PATH

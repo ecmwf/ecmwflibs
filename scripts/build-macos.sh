@@ -105,13 +105,13 @@ rm -fr ecmwflibs/share/proj/*.txt
 rm -fr ecmwflibs/share/proj/*.pol
 rm -fr ecmwflibs/share/magics/efas
 
-echo "================================================================================"
-for n in install/lib/*.dylib
-do
-    echo $n
-    ./scripts/libs-macos.py $n
-done
-echo "================================================================================"
+# echo "================================================================================"
+# for n in install/lib/*.dylib
+# do
+#     echo $n
+#     ./scripts/libs-macos.py $n
+# done
+# echo "================================================================================"
 
 strip -S install/lib/*.dylib
 

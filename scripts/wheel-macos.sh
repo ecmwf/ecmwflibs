@@ -10,12 +10,14 @@
 set -eaux
 VERSION=$1
 
-PATH=/opt/homebrew/opt/python@$VERSION/libexec/bin:$PATH
-
+which python3
+which pip3
 # PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin
 # unset PKG_CONFIG_PATH
 
-env | sort
+# env | sort
+
+
 
 pip3 install --upgrade pip
 pip3 install wheel delocate setuptools
