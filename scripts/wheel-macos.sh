@@ -8,6 +8,7 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
+echo $PATH
 VERSION=$1
 
 echo $GITHUB_PATH || true

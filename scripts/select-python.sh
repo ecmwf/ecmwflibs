@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 version=$1
 
 brew install python@$1
