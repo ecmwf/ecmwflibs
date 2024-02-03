@@ -10,6 +10,9 @@
 set -eaux
 VERSION=$1
 
+echo $GITHUB_PATH || true
+cat $GITHUB_PATH || true
+python3 --version
 which python3
 which pip3
 # PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin
