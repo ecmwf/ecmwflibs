@@ -9,6 +9,9 @@
 
 set -eaux
 
+PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin
+unset PKG_CONFIG_PATH
+
 env | sort
 
 pip3 install wheel delocate setuptools
