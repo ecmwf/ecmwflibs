@@ -21,7 +21,7 @@ on:
     paths:
     - 'scripts/common.sh'
     - 'scripts/build-macos.sh'
-    - 'scripts/wheel-macos-arm.sh'
+    - 'scripts/wheel-macos-intel.sh'
     - 'tools/copy-licences.py'
 
 jobs:
@@ -30,7 +30,8 @@ jobs:
 
     # if: false
 
-    runs-on: [self-hosted, macOS, ARM64]
+    # runs-on: [self-hosted, macOS, ARM64]
+    runs-on: [self-hosted, platform-builder-macos13-m2-000]
 
     name: Build
 
