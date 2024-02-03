@@ -181,7 +181,9 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        # We cannot use 3.6 as it is not supported anymore by github actions
+        # but we still want to deploy the wheels we built for it
+        python-version: 3.10
 
     - run: pip install twine
 
