@@ -58,7 +58,7 @@ jobs:
       with:
         name: wheel-macos-3.9
         path: wheelhouse/*.whl
-    - run: rm -f wheelhouse/*.whl
+    - run: rm -f wheelhouse
 
     ################################################################
     - run: ./scripts/select-python.sh "3.10"
@@ -69,7 +69,7 @@ jobs:
       with:
         name: wheel-macos-3.10
         path: wheelhouse/*.whl
-    - run: rm -f wheelhouse/*.whl
+    - run: rm -f wheelhouse
 
     ################################################################
     - run: ./scripts/select-python.sh "3.11"
@@ -80,7 +80,7 @@ jobs:
       with:
         name: wheel-macos-3.11
         path: wheelhouse/*.whl
-    - run: rm -f wheelhouse/*.whl
+    - run: rm -f wheelhouse
 
   test:
     needs: build
@@ -133,7 +133,7 @@ jobs:
         name: tests-macos-${{ matrix.python-version }}
         path: tests/*.png
 
-    - run: rm -f *.whl
+    - run: rm -f *.whl tests
 
   deploy:
 
