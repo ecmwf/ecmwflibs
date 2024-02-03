@@ -107,15 +107,15 @@ jobs:
     - run: ls -l
     - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
     - run: echo $PATH
-    - run: pip3 install --upgrade pip
+    - run: pip install --upgrade pip
     - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
-    - run: which python3
-    - run: python3 --version
+    - run: which python
+    - run: python --version
     - run: pwd
     - run: ls -l
-    - run: pip3 install *.whl
-    - run: pip3 install -r tests/requirements.txt
-    - run: pip3 freeze
+    - run: pip install *.whl
+    - run: pip install -r tests/requirements.txt
+    - run: pip freeze
 
     - name: Get some data
       run: |
@@ -154,7 +154,7 @@ jobs:
     steps:
 
     - run: ./scripts/select-python.sh ${{ matrix.python-version }}
-    - run: pip3 install twine
+    - run: pip install twine
 
     - uses: actions/download-artifact@v2
       with:
