@@ -26,6 +26,7 @@ which delocate-wheel
 
 # Make sure we don't build a universal wheel
 CFLAGS=$(./scripts/fix-flags.py CFLAGS $(arch))
+CPPFLAGS=$(./scripts/fix-flags.py CPPFLAGS $(arch))
 
 rm -fr dist wheelhouse tmp
 python3 setup.py bdist_wheel
