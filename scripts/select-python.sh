@@ -9,3 +9,5 @@ echo /opt/homebrew/opt/python@$version/libexec/bin >> $GITHUB_PATH
 
 echo $GITHUB_PATH
 cat $GITHUB_PATH
+ls -l $GITHUB_PATH
+pwd
