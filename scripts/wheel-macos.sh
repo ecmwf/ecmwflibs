@@ -18,7 +18,7 @@ pip3 install --upgrade pip
 pip3 install wheel delocate setuptools
 
 # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#cross-platform-compilation
-
+# Prevent ext_modules from being built as universal
 CXX=./scripts/cxx-no-arch.sh
 
 which python3
