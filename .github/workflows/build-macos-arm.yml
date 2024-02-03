@@ -81,6 +81,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       fail-fast: true
+      max-parallel: 1
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
 
@@ -89,7 +90,9 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
+
     - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
+
     - uses: actions/download-artifact@v2
       with:
         name: wheel-macos-${{ matrix.python-version }}
@@ -115,6 +118,8 @@ jobs:
       with:
         name: tests-macos-${{ matrix.python-version }}
         path: tests/*.png
+
+    - run: rm -f *.whl
 
   deploy:
 
