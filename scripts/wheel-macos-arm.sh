@@ -54,7 +54,7 @@ diet() {
 pip3 install wheel delocate setuptools
 
 rm -fr dist wheelhouse tmp
-$ARCH python3 setup.py bdist_wheel --debug
+$ARCH python3 setup.py --debug bdist_wheel
 diet
 
 name=$(ls -1 dist/*.whl)
@@ -71,7 +71,7 @@ python3 ./tools/copy-licences.py libs
 
 
 rm -fr dist wheelhouse
-$ARCH python3 setup.py bdist_wheel --debug # --plat-name $arch
+$ARCH python3 setup.py --debug  bdist_wheel # --plat-name $arch
 diet
 
 # mv dist/$name $newname
