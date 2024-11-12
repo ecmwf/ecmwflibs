@@ -19,19 +19,17 @@ on:
 
   push:
     paths:
-    - 'scripts/common.sh'
-    - 'scripts/build-macos.sh'
-    - 'scripts/wheel-macos.sh'
-    - 'tools/copy-licences.py'
+      - "scripts/common.sh"
+      - "scripts/build-macos.sh"
+      - "scripts/wheel-macos.sh"
+      - "tools/copy-licences.py"
 
 # We don't use "actions/setup-python@v4" as it installs a universal python
 # which creates universal wheels. We want to create wheels for the specific
 # architecture we are running on.
 
 jobs:
-
   build:
-
     # if: false
 
     runs-on: [self-hosted, macOS, ARM64]
@@ -40,47 +38,46 @@ jobs:
     name: Build
 
     steps:
+      - run: sudo mkdir -p /Users/runner
+      - run: sudo chown administrator:staff /Users/runner
 
-    - run: sudo mkdir -p /Users/runner
-    - run: sudo chown administrator:staff /Users/runner
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+      - run: ./scripts/select-python.sh "3.10"
+      - run: ./scripts/build-macos.sh
 
-    - run: ./scripts/select-python.sh "3.10"
-    - run: ./scripts/build-macos.sh
+      ################################################################
+      - run: ./scripts/select-python.sh "3.9"
+      - run: ./scripts/wheel-macos.sh "3.9"
+      - run: ls -l wheelhouse
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.9
+        with:
+          name: wheel-macos-3.9
+          path: wheelhouse/*.whl
+      - run: rm -fr wheelhouse
 
-    ################################################################
-    - run: ./scripts/select-python.sh "3.9"
-    - run: ./scripts/wheel-macos.sh "3.9"
-    - run: ls -l wheelhouse
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.9
-      with:
-        name: wheel-macos-3.9
-        path: wheelhouse/*.whl
-    - run: rm -fr wheelhouse
+      ################################################################
+      - run: ./scripts/select-python.sh "3.10"
+      - run: ./scripts/wheel-macos.sh "3.10"
+      - run: ls -l wheelhouse
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.10
+        with:
+          name: wheel-macos-3.10
+          path: wheelhouse/*.whl
+      - run: rm -fr wheelhouse
 
-    ################################################################
-    - run: ./scripts/select-python.sh "3.10"
-    - run: ./scripts/wheel-macos.sh "3.10"
-    - run: ls -l wheelhouse
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.10
-      with:
-        name: wheel-macos-3.10
-        path: wheelhouse/*.whl
-    - run: rm -fr wheelhouse
-
-    ################################################################
-    - run: ./scripts/select-python.sh "3.11"
-    - run: ./scripts/wheel-macos.sh "3.11"
-    - run: ls -l wheelhouse
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.11
-      with:
-        name: wheel-macos-3.11
-        path: wheelhouse/*.whl
-    - run: rm -fr wheelhouse
+      ################################################################
+      - run: ./scripts/select-python.sh "3.11"
+      - run: ./scripts/wheel-macos.sh "3.11"
+      - run: ls -l wheelhouse
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.11
+        with:
+          name: wheel-macos-3.11
+          path: wheelhouse/*.whl
+      - run: rm -fr wheelhouse
 
   test:
     needs: build
@@ -97,46 +94,44 @@ jobs:
     name: Test with Python ${{ matrix.python-version }}
 
     steps:
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-macos-${{ matrix.python-version }}
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: wheel-macos-${{ matrix.python-version }}
+      - run: ls -l
+      - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
+      - run: echo $PATH
+      - run: pip3 install --upgrade pip
+      - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
+      - run: which python3
+      - run: python3 --version
+      - run: pwd
+      - run: ls -l
+      - run: pip3 install *.whl
+      - run: pip3 install -r tests/requirements.txt
+      - run: pip3 freeze
 
-    - run: ls -l
-    - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
-    - run: echo $PATH
-    - run: pip3 install --upgrade pip
-    - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
-    - run: which python3
-    - run: python3 --version
-    - run: pwd
-    - run: ls -l
-    - run: pip3 install *.whl
-    - run: pip3 install -r tests/requirements.txt
-    - run: pip3 freeze
+      - name: Get some data
+        run: |
+          curl -L https://get.ecmwf.int/repository/test-data/metview/gallery/2m_temperature.grib  -o data.grib
+          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
+          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
+          ls -l
+        working-directory: tests
 
-    - name: Get some data
-      run: |
-        curl -L https://get.ecmwf.int/repository/test-data/metview/gallery/2m_temperature.grib  -o data.grib
-        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
-        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
-        ls -l
-      working-directory: tests
+      - run: pytest -v -s
+        working-directory: tests
 
-    - run: pytest -v -s
-      working-directory: tests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tests-macos-${{ matrix.python-version }}
+          path: tests/*.png
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: tests-macos-${{ matrix.python-version }}
-        path: tests/*.png
-
-    - run: rm -fr *.whl tests
+      - run: rm -fr *.whl tests
 
   deploy:
-
     if: ${{ github.event_name == 'release' }}
 
     needs: [test, build]
@@ -152,15 +147,14 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
 
     steps:
+      - run: ./scripts/select-python.sh ${{ matrix.python-version }}
+      - run: pip3 install twine
 
-    - run: ./scripts/select-python.sh ${{ matrix.python-version }}
-    - run: pip3 install twine
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-macos-${{ matrix.python-version }}
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: wheel-macos-${{ matrix.python-version }}
-
-    - run: twine upload *.whl
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      - run: twine upload *.whl
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
