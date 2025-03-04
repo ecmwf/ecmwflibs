@@ -160,6 +160,93 @@ jobs:
         name: tests-manylinux2014-${{ matrix.python-version }}
         path: tests/*.png
 
+
+  build_arm64:
+
+    runs-on: ubuntu-latest
+    container: dockcross/manylinux2014-aarch64:latest
+
+    name: Build manylinux2014 for ARM64
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: ./scripts/build-linux.sh
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.7
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.7
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.8
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.8
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.9
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.9
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.10
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.10
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.11
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.11
+        path: wheelhouse/*.whl
+
+  test_arm64:
+
+    needs: build_arm64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    runs-on: [self-hosted, ARM64]  # Use an ARM64 runner
+
+    name: Test with ARM64 - ${{ matrix.python-version }}
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-${{ matrix.python-version }}
+
+    - run: pip install *.whl
+
+    - run: pip install -r tests/requirements.txt
+
+    - run: pip freeze
+
+    - run: env | sort
+
+    - name: Run tests
+      run: pytest -v -s
+      working-directory: tests
+      
+    
   deploy:
 
     if: ${{ github.event_name == 'release' }}
@@ -168,13 +255,13 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        arch: ["x86_64", "aarch64"]
 
-    needs: [test, build, build_legacy]
+    needs: [test, test_arm64, build, build_arm64, build_legacy]
 
     name: Deploy wheel ${{ matrix.python-version }}
 
     runs-on: ubuntu-latest
-
 
     steps:
 
