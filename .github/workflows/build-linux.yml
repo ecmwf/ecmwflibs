@@ -9,7 +9,6 @@
 name: Build Linux
 
 on:
-
   workflow_dispatch: {}
 
   release:
@@ -20,98 +19,93 @@ on:
 
   push:
     branches:
-    - master
+      - master
     paths:
-    - 'scripts/common.sh'
-    - 'scripts/build-linux.sh'
-    - 'scripts/wheel-linux.sh'
-    - 'tools/copy-licences.py'
+      - "scripts/common.sh"
+      - "scripts/build-linux.sh"
+      - "scripts/wheel-linux.sh"
+      - "tools/copy-licences.py"
   pull_request:
     branches:
-    - master
+      - master
     paths:
-    - 'scripts/common.sh'
-    - 'scripts/build-linux.sh'
-    - 'scripts/wheel-linux.sh'
-    - 'tools/copy-licences.py'
-
+      - "scripts/common.sh"
+      - "scripts/build-linux.sh"
+      - "scripts/wheel-linux.sh"
+      - "tools/copy-licences.py"
 
 jobs:
   build_legacy:
-
     runs-on: ubuntu-latest
     container: dockcross/manylinux2014-x64:20211222-f096312
 
     name: Legacy build manylinux2014
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - run: ./scripts/build-linux.sh
+      - run: ./scripts/build-linux.sh
 
-
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.6
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.6
-      with:
-        name: wheel-manylinux2014-3.6
-        path: wheelhouse/*.whl
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.6
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.6
+        with:
+          name: wheel-manylinux2014-3.6
+          path: wheelhouse/*.whl
 
   build:
-
     runs-on: ubuntu-latest
     container: dockcross/manylinux2014-x64:latest
 
     name: Build manylinux2014
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - run: ./scripts/build-linux.sh
+      - run: ./scripts/build-linux.sh
 
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.7
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.7
-      with:
-        name: wheel-manylinux2014-3.7
-        path: wheelhouse/*.whl
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.7
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.7
+        with:
+          name: wheel-manylinux2014-3.7
+          path: wheelhouse/*.whl
 
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.8
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.8
-      with:
-        name: wheel-manylinux2014-3.8
-        path: wheelhouse/*.whl
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.8
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.8
+        with:
+          name: wheel-manylinux2014-3.8
+          path: wheelhouse/*.whl
 
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.9
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.9
-      with:
-        name: wheel-manylinux2014-3.9
-        path: wheelhouse/*.whl
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.9
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.9
+        with:
+          name: wheel-manylinux2014-3.9
+          path: wheelhouse/*.whl
 
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.10
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.10
-      with:
-        name: wheel-manylinux2014-3.10
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.10
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.10
+        with:
+          name: wheel-manylinux2014-3.10
 
-        path: wheelhouse/*.whl
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.11
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.11
-      with:
-        name: wheel-manylinux2014-3.11
-        path: wheelhouse/*.whl
+          path: wheelhouse/*.whl
+      ################################################################
+      - run: ./scripts/wheel-linux.sh 3.11
+      - uses: actions/upload-artifact@v4
+        name: Upload wheel 3.11
+        with:
+          name: wheel-manylinux2014-3.11
+          path: wheelhouse/*.whl
 
   test:
-
     needs: build
 
     strategy:
@@ -124,44 +118,42 @@ jobs:
     name: Test with ${{ matrix.python-version }}
 
     steps:
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-manylinux2014-${{ matrix.python-version }}
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: wheel-manylinux2014-${{ matrix.python-version }}
+      - run: pip install *.whl
 
-    - run: pip install *.whl
+      - run: pip install -r tests/requirements.txt
 
-    - run: pip install -r tests/requirements.txt
+      - run: pip freeze
 
-    - run: pip freeze
+      - run: env | sort
 
-    - run: env | sort
+      - name: Get some data
+        run: |
+          curl -L https://get.ecmwf.int/repository/test-data/metview/gallery/2m_temperature.grib -o data.grib
+          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
+          curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
+          ls -l
+        working-directory: tests
 
-    - name: Get some data
-      run: |
-        curl -L https://get.ecmwf.int/repository/test-data/metview/gallery/2m_temperature.grib -o data.grib
-        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
-        curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
-        ls -l
-      working-directory: tests
+      - run: pytest -v -s
+        working-directory: tests
 
-    - run: pytest -v -s
-      working-directory: tests
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: tests-manylinux2014-${{ matrix.python-version }}
-        path: tests/*.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tests-manylinux2014-${{ matrix.python-version }}
+          path: tests/*.png
 
   deploy:
-
     if: ${{ github.event_name == 'release' }}
 
     strategy:
@@ -175,23 +167,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
-
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          # We cannot use 3.6 as it is not supported anymore by github actions
+          # but we still want to deploy the wheels we built for it
+          python-version: "3.10"
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        # We cannot use 3.6 as it is not supported anymore by github actions
-        # but we still want to deploy the wheels we built for it
-        python-version: "3.10"
+      - run: pip install twine
 
-    - run: pip install twine
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-manylinux2014-${{ matrix.python-version }}
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: wheel-manylinux2014-${{ matrix.python-version }}
-
-    - run: twine upload *.whl
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      - run: twine upload *.whl
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
