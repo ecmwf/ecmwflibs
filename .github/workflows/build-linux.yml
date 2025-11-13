@@ -52,7 +52,7 @@ jobs:
 
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.12
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       name: Upload wheel 3.12
       with:
         name: wheel-manylinux2014-3.12
@@ -80,7 +80,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: wheel-manylinux2014-${{ matrix.python-version }}
 
@@ -103,7 +103,7 @@ jobs:
     - run: pytest -v -s
       working-directory: tests
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: tests-manylinux2014-${{ matrix.python-version }}
         path: tests/*.png
@@ -135,7 +135,7 @@ jobs:
 
     - run: pip install twine
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: wheel-manylinux2014-${{ matrix.python-version }}
 
