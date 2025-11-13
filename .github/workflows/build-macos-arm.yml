@@ -82,6 +82,17 @@ jobs:
         path: wheelhouse/*.whl
     - run: rm -fr wheelhouse
 
+    ################################################################
+    - run: ./scripts/select-python.sh "3.12"
+    - run: ./scripts/wheel-macos.sh "3.12"
+    - run: ls -l wheelhouse
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.12
+      with:
+        name: wheel-macos-3.12
+        path: wheelhouse/*.whl
+    - run: rm -fr wheelhouse
+  
   test:
     needs: build
 
@@ -91,8 +102,8 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-        # python-version: ["3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        # python-version: ["3.10", "3.11", "3.12"]
 
     name: Test with Python ${{ matrix.python-version }}
 
@@ -149,7 +160,7 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
 
