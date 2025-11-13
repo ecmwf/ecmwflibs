@@ -37,26 +37,6 @@ on:
 
 
 jobs:
-  build_legacy:
-
-    runs-on: ubuntu-latest
-    container: dockcross/manylinux2014-x64:20211222-f096312
-
-    name: Legacy build manylinux2014
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: ./scripts/build-linux.sh
-
-
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.6
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.6
-      with:
-        name: wheel-manylinux2014-3.6
-        path: wheelhouse/*.whl
 
   build:
 
@@ -70,45 +50,6 @@ jobs:
 
     - run: ./scripts/build-linux.sh
 
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.7
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.7
-      with:
-        name: wheel-manylinux2014-3.7
-        path: wheelhouse/*.whl
-
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.8
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.8
-      with:
-        name: wheel-manylinux2014-3.8
-        path: wheelhouse/*.whl
-
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.9
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.9
-      with:
-        name: wheel-manylinux2014-3.9
-        path: wheelhouse/*.whl
-
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.10
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.10
-      with:
-        name: wheel-manylinux2014-3.10
-
-        path: wheelhouse/*.whl
-    ################################################################
-    - run: ./scripts/wheel-linux.sh 3.11
-    - uses: actions/upload-artifact@v2
-      name: Upload wheel 3.11
-      with:
-        name: wheel-manylinux2014-3.11
-        path: wheelhouse/*.whl
     ################################################################
     - run: ./scripts/wheel-linux.sh 3.12
     - uses: actions/upload-artifact@v2
@@ -124,7 +65,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: # We don't test 3.6, as it is not supported anymore by github actions
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.12"]
 
     runs-on: ubuntu-latest
 
@@ -169,14 +110,14 @@ jobs:
 
   deploy:
 
-    if: ${{ github.event_name == 'release' }}
+    #if: ${{ github.event_name == 'release' }}
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.12"]
 
-    needs: [test, build, build_legacy]
+    needs: [test, build]
 
     name: Deploy wheel ${{ matrix.python-version }}
 
