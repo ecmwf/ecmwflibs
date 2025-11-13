@@ -109,6 +109,13 @@ jobs:
       with:
         name: wheel-manylinux2014-3.11
         path: wheelhouse/*.whl
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.12
+    - uses: actions/upload-artifact@v2
+      name: Upload wheel 3.12
+      with:
+        name: wheel-manylinux2014-3.12
+        path: wheelhouse/*.whl
 
   test:
 
@@ -117,7 +124,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: # We don't test 3.6, as it is not supported anymore by github actions
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 
     runs-on: ubuntu-latest
 
@@ -167,7 +174,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 
     needs: [test, build, build_legacy]
 
