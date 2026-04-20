@@ -9,10 +9,13 @@
 
 set -eaux
 echo $PATH
-VERSION=$1
+VERSION=${1:-""}
 
-echo $GITHUB_PATH || true
-cat $GITHUB_PATH || true
+echo ${GITHUB_PATH:-""} || true
+if [[ -n "${GITHUB_PATH:-}" && -f "${GITHUB_PATH}" ]]
+then
+	cat "${GITHUB_PATH}" || true
+fi
 python3 --version
 which python3
 which pip3

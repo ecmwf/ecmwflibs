@@ -3,12 +3,38 @@ import json
 import re
 import sys
 
-import requests
+import urllib.error
+import urllib.request
 from html2text import html2text
 
 
 def identity(x):
     return x
+
+
+def fetch_url_text(url, lib_name):
+    try:
+        with urllib.request.urlopen(url) as response:
+            return response.read().decode("utf-8")
+    except urllib.error.HTTPError as error:
+        body_preview = error.read().decode("utf-8", errors="replace").strip()
+        if len(body_preview) > 500:
+            body_preview = f"{body_preview[:500]}..."
+        details = [
+            f"Failed to download license for {lib_name}",
+            f"URL: {url}",
+            f"HTTP status: {error.code}",
+            f"Reason: {error.reason}",
+        ]
+        if body_preview:
+            details.append(f"Response body (first 500 chars):\n{body_preview}")
+        raise RuntimeError("\n".join(details)) from error
+    except urllib.error.URLError as error:
+        raise RuntimeError(
+            f"Failed to download license for {lib_name}\n"
+            f"URL: {url}\n"
+            f"Network error: {error.reason}"
+        ) from error
 
 
 ENTRIES = {
@@ -62,7 +88,7 @@ ENTRIES = {
     },
     "libhdf5": {
         "home": "https://github.com/HDFGroup/hdf5",
-        "copying": "https://raw.githubusercontent.com/HDFGroup/hdf5/develop/COPYING",
+        "copying": "https://raw.githubusercontent.com/HDFGroup/hdf5/develop/LICENSE",
     },
     "libhdf5_hl": None,  # Assumed to be part of libhdf5 (hl = high level)
     "libpng": {
@@ -99,14 +125,25 @@ ENTRIES = {
         "copying": "https://jpegclub.org/reference/libjpeg-license/",
         "html": True,
     },
-    "libszip": {
-        "home": "https://support.hdfgroup.org/doc_resource/SZIP/",
-        "copying": "https://support.hdfgroup.org/doc_resource/SZIP/Commercial_szip.html",
-        "html": True,
-    },
     "libfreetype": {
         "home": "https://gitlab.freedesktop.org/freetype/freetype/",
         "copying": "https://gitlab.freedesktop.org/freetype/freetype/-/raw/master/docs/FTL.TXT",
+    },
+    "libdatrie": {
+        "home": "https://github.com/tlwg/libdatrie",
+        "copying": "https://raw.githubusercontent.com/tlwg/libdatrie/master/COPYING",
+    },
+    "libthai": {
+        "home": "https://github.com/tlwg/libthai",
+        "copying": "https://raw.githubusercontent.com/tlwg/libthai/master/COPYING",
+    },
+    "libX11": {
+        "home": "https://github.com/mirror/libX11",
+        "copying": "https://raw.githubusercontent.com/mirror/libX11/master/COPYING",
+    },
+    "libxcb": {
+        "home": "https://github.com/corngood/libxcb",
+        "copying": "https://raw.githubusercontent.com/corngood/libxcb/master/COPYING",
     },
     "libpcre": {
         "home": "https://github.com/vmg/libpcre",
@@ -147,7 +184,7 @@ ENTRIES = {
     },
     "libpcre2": {
         "home": "https://github.com/PCRE2Project/pcre2",
-        "copying": "https://raw.githubusercontent.com/PCRE2Project/pcre2/master/LICENCE",
+        "copying": "https://raw.githubusercontent.com/PCRE2Project/pcre2/main/LICENCE.md",
     },
     "libzstd": {
         "home": "https://github.com/facebook/zstd",
@@ -181,7 +218,14 @@ ALIASES = {
     "libpangoft2": "libpango",  # Assumed to be part of libpango
     "libpangocairo": "libpango",  # Assumed to be part of libpango
     "libhdf5_hl": "libhdf5",
-    "libsz": "libszip",
+    # Legacy HDF SZIP license pages were retired; map to libaec.
+    "libsz": "libaec",
+    "libszip": "libaec",
+    # X.Org stack libraries shipped transitively with cairo/pango.
+    "libXrender": "libX11",
+    "libXdmcp": "libX11",
+    "libXau": "libX11",
+    "libXext": "libX11",
 }
 
 if False:
@@ -189,7 +233,7 @@ if False:
         if isinstance(e, dict):
             copying = e["copying"]
             if copying.startswith("http"):
-                requests.head(copying).raise_for_status()
+                urllib.request.urlopen(copying).close()
 
 libs = {}
 missing = []
@@ -234,9 +278,8 @@ for line in open(sys.argv[1], "r"):
 
     with open(f"ecmwflibs/copying/{lib}.txt", "w") as f:
         if copying.startswith("http://") or copying.startswith("https://"):
-            r = requests.get(copying)
-            r.raise_for_status()
-            for n in filtering(r.text).split("\n"):
+            text = fetch_url_text(copying, lib)
+            for n in filtering(text).split("\n"):
                 print(n, file=f)
         else:
             for n in copying.split("\n"):

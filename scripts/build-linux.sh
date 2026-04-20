@@ -9,6 +9,24 @@
 # (rm -fr build-other/netcdf/; cd src/netcdf/; git checkout -- .; git clean -f .)
 set -eaux
 
+SUDO=""
+if [[ $(id -u) -ne 0 ]]
+then
+    SUDO="sudo"
+fi
+
+PKG_MGR=""
+if command -v yum >/dev/null 2>&1
+then
+    PKG_MGR="yum"
+elif command -v dnf >/dev/null 2>&1
+then
+    PKG_MGR="dnf"
+else
+    echo "Neither yum nor dnf found"
+    exit 1
+fi
+
 # We want the sqlite3 we just compiled
 PATH=$(pwd)/install/bin:$PATH
 
@@ -19,26 +37,30 @@ source scripts/common.sh
 
 for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
 do
-    sudo yum install -y $p
+    $SUDO $PKG_MGR install -y $p
     # There may be a better way
-    sudo yum install $p 2>&1 > tmp
+    $SUDO $PKG_MGR install $p 2>&1 > tmp
     cat tmp
     v=$(grep 'already installed' < tmp | awk '{print $2;}' | sed 's/\\d://')
     echo "yum $p $v" >> versions
 done
 
 
-sudo yum install -y flex bison
-sudo yum install -y pax-utils # For lddtree
+$SUDO $PKG_MGR install -y flex bison
+$SUDO $PKG_MGR install -y pax-utils # For lddtree
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
-sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
-sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+bootstrap_python=$(ls -1d /opt/python/cp3*/bin/python3 | head -1)
+bootstrap_pip=$(dirname "$bootstrap_python")/pip3
+bootstrap_python_config=$(dirname "$bootstrap_python")/python3-config
 
-sudo pip3 install ninja auditwheel meson
+$SUDO ln -sf "$bootstrap_python" /usr/local/bin/python3
+$SUDO ln -sf "$bootstrap_python_config" /usr/local/bin/python3-config
+$SUDO ln -sf "$bootstrap_pip" /usr/local/bin/pip3
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
-sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
+$SUDO pip3 install ninja auditwheel meson
+
+$SUDO ln -sf $(dirname "$bootstrap_python")/meson /usr/local/bin/meson
+$SUDO ln -sf $(dirname "$bootstrap_python")/ninja /usr/local/bin/ninja
 
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
 PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH

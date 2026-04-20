@@ -2,6 +2,10 @@
 
 A Python package that wraps some of ECMWF libraries to be used by Python interfaces to ECMWF software.
 
+## Requirements
+
+- Python 3.10 or newer
+
 The snippet of code below should return the path to the *ecCodes* shared library.
 
 ```python
@@ -14,7 +18,7 @@ You can  get the versions of libraries:
 ```python
 import ecmwflibs
 print(ecmwflibs.versions())
-{'eccodes': '2.19.0', 'magics': '4.4.3', 'ecmwflibs': '0.4.5'}
+{'eccodes': '2.46.3', 'magics': '4.16.1', 'ecmwflibs': '0.7.0'}
 ```
 
 ## Possible issues

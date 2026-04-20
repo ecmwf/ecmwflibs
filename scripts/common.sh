@@ -14,12 +14,11 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.34.1
+ECCODES_VERSION=2.46.3
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-# MAGICS_VERSION=4.14.2
-MAGICS_VERSION=develop
+MAGICS_VERSION=4.16.1
 
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
@@ -53,9 +52,10 @@ GIT_NETCDF=https://github.com/Unidata/netcdf-c.git
 NETCDF_VERSION=${NETCDF_VERSION:=master}
 
 GIT_HDF5=https://github.com/HDFGroup/hdf5.git
-HDF5_VERSION=${HDF5_VERSION:=hdf5-1_10_5}
+HDF5_VERSION=${HDF5_VERSION:=hdf5-1_14_6}
 
-rm -fr src build build-ecmwf
+mkdir -p src
+rm -fr src/ecbuild src/eccodes src/magics build build-ecmwf
 
 git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
 git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes
