@@ -39,17 +39,26 @@ jobs:
   build_manylinux2014:
 
     runs-on: ubuntu-latest
-    container: dockcross/manylinux2014-x64:latest
 
     name: Build manylinux2014
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - run: ./scripts/build-linux.sh
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux2014-x64:latest \
+            bash -lc './scripts/build-linux.sh'
 
       ################################################################
-      - run: ./scripts/wheel-linux.sh 3.10
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux2014-x64:latest \
+            bash -lc './scripts/wheel-linux.sh 3.10'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.10
         with:
@@ -57,7 +66,12 @@ jobs:
           path: wheelhouse/*.whl
 
       ################################################################
-      - run: ./scripts/wheel-linux.sh 3.11
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux2014-x64:latest \
+            bash -lc './scripts/wheel-linux.sh 3.11'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.11
         with:
@@ -65,7 +79,12 @@ jobs:
           path: wheelhouse/*.whl
 
       ################################################################
-      - run: ./scripts/wheel-linux.sh 3.12
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux2014-x64:latest \
+            bash -lc './scripts/wheel-linux.sh 3.12'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.12
         with:
@@ -73,7 +92,12 @@ jobs:
           path: wheelhouse/*.whl
 
       ################################################################
-      - run: ./scripts/wheel-linux.sh 3.13
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux2014-x64:latest \
+            bash -lc './scripts/wheel-linux.sh 3.13'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.13
         with:
@@ -83,17 +107,26 @@ jobs:
   build_manylinux_2_28:
 
     runs-on: ubuntu-latest
-    container: dockcross/manylinux_2_28-x64:latest
 
     name: Build manylinux_2_28
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - run: ./scripts/build-linux.sh
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux_2_28-x64:latest \
+            bash -lc './scripts/build-linux.sh'
 
       ################################################################
-      - run: ./scripts/wheel-linux.sh 3.14
+      - run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            dockcross/manylinux_2_28-x64:latest \
+            bash -lc './scripts/wheel-linux.sh 3.14'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.14
         with:
@@ -124,7 +157,7 @@ jobs:
     name: Test with ${{ matrix.python-version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v5

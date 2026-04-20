@@ -8,6 +8,11 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
+if [[ ! -s versions ]]
+then
+  echo "versions is missing or empty" >&2
+  exit 1
+fi
 cat versions
 cd src
 

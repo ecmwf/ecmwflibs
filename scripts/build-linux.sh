@@ -8,6 +8,7 @@
 # nor does it submit to any jurisdiction.
 # (rm -fr build-other/netcdf/; cd src/netcdf/; git checkout -- .; git clean -f .)
 set -eaux
+: > versions
 
 SUDO=""
 if [[ $(id -u) -ne 0 ]]

@@ -50,7 +50,7 @@ jobs:
       WINARCH: ${{ matrix.architecture }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
         with:
@@ -177,7 +177,7 @@ jobs:
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v5

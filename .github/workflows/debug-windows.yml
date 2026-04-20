@@ -28,7 +28,7 @@ jobs:
       WINARCH: x64
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
         with:

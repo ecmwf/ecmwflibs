@@ -8,6 +8,7 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
+: > versions
 uname -a
 
 # HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
