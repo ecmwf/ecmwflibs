@@ -102,6 +102,24 @@ cmake  \
 cd $TOPDIR
 cmake --build build-other/proj --target install
 
+# Build libaec (required by ecCodes for CCSDS/AEC compression)
+[[ -d src/aec ]] || git clone $GIT_AEC src/aec
+cd src/aec
+git checkout $AEC_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/aec
+cd build-other/aec
+
+cmake \
+    $TOPDIR/src/aec -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/aec --target install
+
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
@@ -216,6 +234,8 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -Dlibaec_DIR=$TOPDIR/install/lib/cmake/libaec \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR
