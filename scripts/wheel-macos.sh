@@ -30,8 +30,8 @@ rm -fr tmp/wheel-venv
 python3 -m venv tmp/wheel-venv
 source tmp/wheel-venv/bin/activate
 
-python -m pip install --upgrade pip
-python -m pip install wheel delocate setuptools
+python3 -m pip install --upgrade pip
+python3 -m pip install wheel delocate setuptools
 
 # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#cross-platform-compilation
 # Prevent ext_modules from being built as universal
@@ -42,14 +42,14 @@ which python3
 python3 --version
 which delocate-wheel
 
-rm -fr dist wheelhouse tmp
+rm -fr dist wheelhouse
 python3 setup.py bdist_wheel
 
 # Do it twice to get the list of libraries
 
 delocate-wheel -w wheelhouse dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'dylib' >libs
-python -m pip install -r tools/requirements.txt
+python3 -m pip install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
