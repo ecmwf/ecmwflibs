@@ -34,7 +34,7 @@ echo git $url $sha1 > versions
 
 vcpkg install pkgconf
 
-for p in expat netcdf-c[core,netcdf-4,hdf5] pango sqlite3[core,tool] libpng
+for p in expat netcdf-c[netcdf-4] pango sqlite3[core,tool] libpng
 do
     vcpkg install $p:$WINARCH-windows
     n=$(echo $p | sed 's/\[.*//')
