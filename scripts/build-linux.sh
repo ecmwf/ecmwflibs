@@ -219,6 +219,7 @@ cmake --build build-other/hdf5 --target install
 cd src/netcdf
 git checkout $NETCDF_VERSION
 
+rm -fr $TOPDIR/build-other/netcdf
 mkdir -p $TOPDIR/build-other/netcdf
 cd $TOPDIR/build-other/netcdf
 
@@ -227,8 +228,8 @@ cmake -GNinja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_DAP=0 \
     -DENABLE_DISKLESS=0 \
-    -DBUILD_TESTING=OFF \
-    -DENABLE_TESTS=OFF \
+    -DBUILD_TESTING:BOOL=OFF \
+    -DENABLE_TESTS:BOOL=OFF \
     -DHDF5_ROOT=$TOPDIR/install \
     -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
