@@ -1,14 +1,86 @@
 #!/usr/bin/env python
 import json
+import os
 import re
+import socket
+import time
 import sys
 
-import requests
-from html2text import html2text
+import urllib.error
+import urllib.request
+try:
+    from html2text import html2text
+except ImportError:
+    html2text = None
 
 
 def identity(x):
     return x
+
+
+_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"
+    ),
+    "Accept": "text/html,text/plain,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+}
+
+
+def _local_fallback_path(url):
+    base = os.path.basename(url.rstrip("/"))
+    if not base:
+        return None
+
+    licenses_dir = os.path.join(os.path.dirname(__file__), "licenses")
+    for candidate in (base, base.lower()):
+        path = os.path.join(licenses_dir, candidate)
+        if os.path.exists(path):
+            return path
+    return None
+
+
+def fetch_url_text(url, lib_name, timeout=30, attempts=3):
+    errors = []
+
+    for attempt in range(1, attempts + 1):
+        try:
+            req = urllib.request.Request(url, headers=_HEADERS)
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                return response.read().decode("utf-8")
+        except urllib.error.HTTPError as error:
+            body_preview = error.read().decode("utf-8", errors="replace").strip()
+            if len(body_preview) > 500:
+                body_preview = f"{body_preview[:500]}..."
+            details = [
+                f"URL: {url}",
+                f"Attempt: {attempt}/{attempts}",
+                f"HTTP status: {error.code}",
+                f"Reason: {error.reason}",
+            ]
+            if body_preview:
+                details.append(f"Response body (first 500 chars):\n{body_preview}")
+            errors.append("\n".join(details))
+        except (urllib.error.URLError, TimeoutError, socket.timeout, OSError) as error:
+            reason = getattr(error, "reason", str(error))
+            errors.append(
+                f"URL: {url}\n"
+                f"Attempt: {attempt}/{attempts}\n"
+                f"Network error: {reason}"
+            )
+
+        if attempt < attempts:
+            time.sleep(attempt)
+
+    fallback_path = _local_fallback_path(url)
+    if fallback_path:
+        with open(fallback_path, "r", encoding="utf-8") as fallback_file:
+            return fallback_file.read()
+
+    raise RuntimeError(
+        f"Failed to download license for {lib_name}.\n"
+        + "\n\n---\n\n".join(errors)
+    )
 
 
 ENTRIES = {
@@ -62,7 +134,7 @@ ENTRIES = {
     },
     "libhdf5": {
         "home": "https://github.com/HDFGroup/hdf5",
-        "copying": "https://raw.githubusercontent.com/HDFGroup/hdf5/develop/COPYING",
+        "copying": "https://raw.githubusercontent.com/HDFGroup/hdf5/develop/LICENSE",
     },
     "libhdf5_hl": None,  # Assumed to be part of libhdf5 (hl = high level)
     "libpng": {
@@ -94,19 +166,30 @@ ENTRIES = {
         "home": "https://github.com/uclouvain/openjpeg",
         "copying": "https://raw.githubusercontent.com/uclouvain/openjpeg/master/LICENSE",
     },
+    # We build libjpeg-turbo from source (drop-in replacement, installs as libjpeg.so.62)
     "libjpeg": {
-        "home": "http://ijg.org",
-        "copying": "https://jpegclub.org/reference/libjpeg-license/",
-        "html": True,
-    },
-    "libszip": {
-        "home": "https://support.hdfgroup.org/doc_resource/SZIP/",
-        "copying": "https://support.hdfgroup.org/doc_resource/SZIP/Commercial_szip.html",
-        "html": True,
+        "home": "https://github.com/libjpeg-turbo/libjpeg-turbo",
+        "copying": "https://raw.githubusercontent.com/libjpeg-turbo/libjpeg-turbo/main/LICENSE.md",
     },
     "libfreetype": {
         "home": "https://gitlab.freedesktop.org/freetype/freetype/",
         "copying": "https://gitlab.freedesktop.org/freetype/freetype/-/raw/master/docs/FTL.TXT",
+    },
+    "libdatrie": {
+        "home": "https://github.com/tlwg/libdatrie",
+        "copying": "https://raw.githubusercontent.com/tlwg/libdatrie/master/COPYING",
+    },
+    "libthai": {
+        "home": "https://github.com/tlwg/libthai",
+        "copying": "https://raw.githubusercontent.com/tlwg/libthai/master/COPYING",
+    },
+    "libX11": {
+        "home": "https://github.com/mirror/libX11",
+        "copying": "https://raw.githubusercontent.com/mirror/libX11/master/COPYING",
+    },
+    "libxcb": {
+        "home": "https://github.com/corngood/libxcb",
+        "copying": "https://raw.githubusercontent.com/corngood/libxcb/master/COPYING",
     },
     "libpcre": {
         "home": "https://github.com/vmg/libpcre",
@@ -147,7 +230,7 @@ ENTRIES = {
     },
     "libpcre2": {
         "home": "https://github.com/PCRE2Project/pcre2",
-        "copying": "https://raw.githubusercontent.com/PCRE2Project/pcre2/master/LICENCE",
+        "copying": "https://raw.githubusercontent.com/PCRE2Project/pcre2/main/LICENCE.md",
     },
     "libzstd": {
         "home": "https://github.com/facebook/zstd",
@@ -158,10 +241,14 @@ ENTRIES = {
         "home": "https://github.com/ShiftMediaProject/liblzma",
         "copying": "https://raw.githubusercontent.com/ShiftMediaProject/liblzma/master/COPYING",
     },
-    # "libcurl": {
-    #     "home": "https://github.com/curl/curl",
-    #     "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
-    # },
+    "libcurl": {
+        "home": "https://github.com/curl/curl",
+        "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
+    },
+    "libtinyxml2": {
+        "home": "https://github.com/leethomason/tinyxml2",
+        "copying": "https://raw.githubusercontent.com/leethomason/tinyxml2/master/LICENSE.txt",
+    },
 }
 
 PATTERNS = {
@@ -181,7 +268,14 @@ ALIASES = {
     "libpangoft2": "libpango",  # Assumed to be part of libpango
     "libpangocairo": "libpango",  # Assumed to be part of libpango
     "libhdf5_hl": "libhdf5",
-    "libsz": "libszip",
+    # Legacy HDF SZIP license pages were retired; map to libaec.
+    "libsz": "libaec",
+    "libszip": "libaec",
+    # X.Org stack libraries shipped transitively with cairo/pango.
+    "libXrender": "libX11",
+    "libXdmcp": "libX11",
+    "libXau": "libX11",
+    "libXext": "libX11",
 }
 
 if False:
@@ -189,13 +283,13 @@ if False:
         if isinstance(e, dict):
             copying = e["copying"]
             if copying.startswith("http"):
-                requests.head(copying).raise_for_status()
+                urllib.request.urlopen(copying).close()
 
 libs = {}
 missing = []
 seen = set()
 
-for line in open(sys.argv[1], "r"):
+for line in open(sys.argv[1], "r", encoding="utf-8"):
     lib = "-no-regex-"
     lib = line.strip().split("/")[-1]
     lib = lib.split("-")[0].split(".")[0]
@@ -229,20 +323,20 @@ for line in open(sys.argv[1], "r"):
     copying = e["copying"]
 
     filtering = identity
-    if e.get("html"):
+    if e.get("html") and html2text is not None:
         filtering = html2text
 
-    with open(f"ecmwflibs/copying/{lib}.txt", "w") as f:
-        if copying.startswith("http://") or copying.startswith("https://"):
-            r = requests.get(copying)
-            r.raise_for_status()
-            for n in filtering(r.text).split("\n"):
-                print(n, file=f)
-        else:
-            for n in copying.split("\n"):
-                print(n, file=f)
+    if copying.startswith("http://") or copying.startswith("https://"):
+        text = fetch_url_text(copying, lib)
+        output_lines = filtering(text).split("\n")
+    else:
+        output_lines = copying.split("\n")
 
-    with open("ecmwflibs/copying/list.json", "w") as f:
+    with open(f"ecmwflibs/copying/{lib}.txt", "w", encoding="utf-8") as f:
+        for n in output_lines:
+            print(n, file=f)
+
+    with open("ecmwflibs/copying/list.json", "w", encoding="utf-8") as f:
         print(json.dumps(libs), file=f)
 
 

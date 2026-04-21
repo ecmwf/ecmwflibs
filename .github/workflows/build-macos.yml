@@ -6,7 +6,7 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-name: Build MacOS ARM
+name: Build MacOS
 
 on:
   workflow_dispatch: {}
@@ -32,100 +32,97 @@ on:
       - "scripts/wheel-macos.sh"
       - "tools/copy-licences.py"
 
-# We don't use the setup-python action here as it installs a universal python
-# which creates universal wheels. We want to create wheels for the specific
-# architecture we are running on.
-
 jobs:
 
   build:
 
     # if: false
 
-    runs-on: [ self-hosted, macOS, ARM64 ]
-    # runs-on: [self-hosted, platform-builder-macos13-m2-000]
+    runs-on: macos-latest
 
     name: Build
 
     steps:
-
-      - run: sudo mkdir -p /Users/runner
-      - run: sudo chown administrator:staff /Users/runner
-
       - uses: actions/checkout@v6
 
-      - run: ./scripts/select-python.sh "3.10"
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
       - run: ./scripts/build-macos.sh
 
       ################################################################
-      - run: ./scripts/select-python.sh "3.10"
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
       - run: ./scripts/wheel-macos.sh "3.10"
-      - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
         if: ${{ github.event_name != 'pull_request' }}
         name: Upload wheel 3.10
         with:
           name: wheel-macos-3.10
           path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
 
       ################################################################
-      - run: ./scripts/select-python.sh "3.11"
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - run: ./scripts/wheel-macos.sh "3.11"
-      - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
         if: ${{ github.event_name != 'pull_request' }}
         name: Upload wheel 3.11
         with:
           name: wheel-macos-3.11
           path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
 
       ################################################################
-      - run: ./scripts/select-python.sh "3.12"
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - run: ./scripts/wheel-macos.sh "3.12"
-      - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
         if: ${{ github.event_name != 'pull_request' }}
         name: Upload wheel 3.12
         with:
           name: wheel-macos-3.12
           path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
 
       ################################################################
-      - run: ./scripts/select-python.sh "3.13"
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
       - run: ./scripts/wheel-macos.sh "3.13"
-      - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
         if: ${{ github.event_name != 'pull_request' }}
         name: Upload wheel 3.13
         with:
           name: wheel-macos-3.13
           path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
 
       ################################################################
-      - run: ./scripts/select-python.sh "3.14"
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
       - run: ./scripts/wheel-macos.sh "3.14"
-      - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
         if: ${{ github.event_name != 'pull_request' }}
         name: Upload wheel 3.14
         with:
           name: wheel-macos-3.14
           path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
 
   test:
     if: ${{ github.event_name != 'pull_request' }}
     needs: build
-
-    runs-on: [ self-hosted, macOS, ARM64 ]
-
+    runs-on: macos-latest
     strategy:
       fail-fast: true
-      max-parallel: 1
       matrix:
         python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
 
@@ -135,26 +132,27 @@ jobs:
 
       - uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
       - uses: actions/download-artifact@v4
         with:
           name: wheel-macos-${{ matrix.python-version }}
 
-      - run: ls -l
-      - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
-      - run: echo $PATH
-      - run: pip3 install --upgrade pip
-      - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
-      - run: which python3
-      - run: python3 --version
-      - run: pwd
-      - run: ls -l
-      - run: pip3 install *.whl
-      - run: pip3 install -r tests/requirements.txt
-      - run: pip3 freeze
+      # This is needed by numpy on some Python versions
+      - run: pip install numpy
+
+      - run: pip install *.whl
+
+      - run: pip install -r tests/requirements.txt
+
+      - run: pip freeze
 
       - name: Get some data
         run: |
-          curl -L https://get.ecmwf.int/repository/test-data/metview/gallery/2m_temperature.grib  -o data.grib
+          curl -L http://download.ecmwf.int/test-data/magics/2m_temperature.grib -o data.grib
           curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.grib -o climetlab.grib
           curl -L https://github.com/ecmwf/climetlab/raw/main/docs/examples/test.nc -o climetlab.nc
           ls -l
@@ -169,8 +167,6 @@ jobs:
           name: tests-macos-${{ matrix.python-version }}
           path: tests/*.png
 
-      - run: rm -fr *.whl tests
-
   deploy:
 
     if: ${{ github.event_name == 'release' }}
@@ -179,18 +175,20 @@ jobs:
 
     name: Deploy wheel ${{ matrix.python-version }}
 
-    runs-on: [ self-hosted, macOS, ARM64 ]
-
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
-      max-parallel: 1
       matrix:
         python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
 
     steps:
 
-      - run: ./scripts/select-python.sh ${{ matrix.python-version }}
-      - run: pip3 install twine
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pip install twine
 
       - uses: actions/download-artifact@v4
         with:
@@ -198,5 +196,5 @@ jobs:
 
       - run: twine upload *.whl
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

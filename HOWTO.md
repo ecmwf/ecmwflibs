@@ -3,6 +3,8 @@
 ## Compiling on a Mac
 ### Creating the macos version of the package
 
+Supported Python versions: 3.10 to 3.14.
+
 First make sure you have the required packages:
 
 ```bash
@@ -28,15 +30,15 @@ make
 twine upload wheelhouse/*
 ```
 
-### To select an earlier version of Python, use pyenv:
+### To select a specific supported Python version, use pyenv:
 
 ```bash
 brew install pyenv
 brew install pyenv-virtualenv
-pyenv install 3.6.5
-pyenv virtualenv 3.6.5 py36
+pyenv install 3.10.16
+pyenv virtualenv 3.10.16 py310
 
-pyenv activate py36
+pyenv activate py310
 pip3 install ninja delocate wheel
 cd ~/git/ecmwflibs
 make clean

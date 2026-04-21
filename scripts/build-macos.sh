@@ -8,6 +8,7 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
+: > versions
 uname -a
 
 # HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
@@ -43,8 +44,11 @@ $ARCH brew install netcdf
 $ARCH brew install proj
 $ARCH brew install libaec
 
-
-$ARCH brew reinstall --build-from-source --formula cairo.rb
+# Try to build cairo from local formula, fall back to standard cairo if it fails
+if ! $ARCH brew install --build-from-source ./cairo.rb 2>/dev/null
+then
+    $ARCH brew install cairo
+fi
 
 
 for p in  netcdf proj pango cairo

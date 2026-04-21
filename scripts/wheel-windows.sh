@@ -10,7 +10,7 @@
 set -eaux
 
 
-pip install wheel
+python -m pip install --upgrade pip setuptools wheel
 
 rm -fr dist wheelhouse ecmwflibs.egg-info build
 python setup.py bdist_wheel

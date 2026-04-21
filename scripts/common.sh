@@ -8,18 +8,16 @@
 # nor does it submit to any jurisdiction.
 
 set -eaux
-rm -f versions
 
 GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.34.1
+ECCODES_VERSION=2.46.3
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-# MAGICS_VERSION=4.14.2
-MAGICS_VERSION=develop
+MAGICS_VERSION=4.16.1
 
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
@@ -53,9 +51,19 @@ GIT_NETCDF=https://github.com/Unidata/netcdf-c.git
 NETCDF_VERSION=${NETCDF_VERSION:=master}
 
 GIT_HDF5=https://github.com/HDFGroup/hdf5.git
-HDF5_VERSION=${HDF5_VERSION:=hdf5-1_10_5}
+HDF5_VERSION=${HDF5_VERSION:=hdf5_1_14_6}
 
-rm -fr src build build-ecmwf
+GIT_JPEG=https://github.com/libjpeg-turbo/libjpeg-turbo.git
+JPEG_VERSION=3.1.4.1
+
+GIT_JASPER=https://github.com/jasper-software/jasper.git
+JASPER_VERSION=version-4.2.9
+
+mkdir -p src
+rm -fr src/ecbuild src/eccodes src/magics
+mkdir -p build build-ecmwf
+find build -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+find build-ecmwf -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 
 git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
 git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes

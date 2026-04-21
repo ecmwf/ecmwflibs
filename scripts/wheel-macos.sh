@@ -9,10 +9,13 @@
 
 set -eaux
 echo $PATH
-VERSION=$1
+VERSION=${1:-""}
 
-echo $GITHUB_PATH || true
-cat $GITHUB_PATH || true
+echo ${GITHUB_PATH:-""} || true
+if [[ -n "${GITHUB_PATH:-}" && -f "${GITHUB_PATH}" ]]
+then
+	cat "${GITHUB_PATH}" || true
+fi
 python3 --version
 which python3
 which pip3
@@ -23,8 +26,12 @@ which pip3
 
 
 
-pip3 install --upgrade pip
-pip3 install wheel delocate setuptools
+rm -fr tmp/wheel-venv
+python3 -m venv tmp/wheel-venv
+source tmp/wheel-venv/bin/activate
+
+python3 -m pip install --upgrade pip
+python3 -m pip install wheel delocate setuptools
 
 # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#cross-platform-compilation
 # Prevent ext_modules from being built as universal
@@ -35,14 +42,14 @@ which python3
 python3 --version
 which delocate-wheel
 
-rm -fr dist wheelhouse tmp
+rm -fr dist wheelhouse
 python3 setup.py bdist_wheel
 
 # Do it twice to get the list of libraries
 
 delocate-wheel -w wheelhouse dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'dylib' >libs
-pip3 install -r tools/requirements.txt
+python3 -m pip install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse

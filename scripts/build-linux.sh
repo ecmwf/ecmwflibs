@@ -8,6 +8,62 @@
 # nor does it submit to any jurisdiction.
 # (rm -fr build-other/netcdf/; cd src/netcdf/; git checkout -- .; git clean -f .)
 set -eaux
+: > versions
+
+SUDO=""
+if [[ $(id -u) -ne 0 ]]
+then
+    SUDO="sudo"
+fi
+
+PKG_MGR=""
+if command -v yum >/dev/null 2>&1
+then
+    PKG_MGR="yum"
+elif command -v dnf >/dev/null 2>&1
+then
+    PKG_MGR="dnf"
+else
+    echo "Neither yum nor dnf found"
+    exit 1
+fi
+
+PKG_MGR_INSTALL_OPTS=(-y)
+if [[ "$PKG_MGR" == "dnf" ]]
+then
+    repo_files=(/etc/yum.repos.d/*.repo)
+    if grep -Eq '/8\.[0-9]+/' "${repo_files[@]}" 2>/dev/null
+    then
+        $SUDO sed -i -E 's#/8\.[0-9]+/#/8/#g' "${repo_files[@]}" || true
+    fi
+    rhel_major=$(rpm -E '%{rhel}' 2>/dev/null || true)
+    if [[ -n "$rhel_major" ]]
+    then
+        PKG_MGR_INSTALL_OPTS+=(--releasever="$rhel_major")
+    fi
+    PKG_MGR_INSTALL_OPTS+=(--refresh)
+    $SUDO dnf clean all || true
+fi
+
+pkg_install() {
+    local pkg="$1"
+    local max_attempts=3
+    local attempt=1
+
+    while (( attempt <= max_attempts ))
+    do
+        if $SUDO $PKG_MGR install "${PKG_MGR_INSTALL_OPTS[@]}" "$pkg"
+        then
+            return 0
+        fi
+        if (( attempt == max_attempts ))
+        then
+            return 1
+        fi
+        sleep $(( attempt * 5 ))
+        attempt=$(( attempt + 1 ))
+    done
+}
 
 # We want the sqlite3 we just compiled
 PATH=$(pwd)/install/bin:$PATH
@@ -17,32 +73,37 @@ NETCDF_VERSION=v4.6.0
 
 source scripts/common.sh
 
-for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
+for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel
 do
-    sudo yum install -y $p
+    pkg_install "$p"
     # There may be a better way
-    sudo yum install $p 2>&1 > tmp
+    $SUDO $PKG_MGR install "${PKG_MGR_INSTALL_OPTS[@]}" "$p" 2>&1 > tmp
     cat tmp
     v=$(grep 'already installed' < tmp | awk '{print $2;}' | sed 's/\\d://')
     echo "yum $p $v" >> versions
 done
 
 
-sudo yum install -y flex bison
-sudo yum install -y pax-utils # For lddtree
+pkg_install flex
+pkg_install bison
+pkg_install pax-utils # For lddtree
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/python /usr/local/bin/python3
-sudo ln -sf /opt/python/cp36-cp36m/bin/python3-config /usr/local/bin/python3-config
-sudo ln -sf /opt/python/cp36-cp36m/bin/pip /usr/local/bin/pip3
+bootstrap_python=$(ls -1d /opt/python/cp3*/bin/python3 | head -1)
+bootstrap_pip=$(dirname "$bootstrap_python")/pip3
+bootstrap_python_config=$(dirname "$bootstrap_python")/python3-config
 
-sudo pip3 install ninja auditwheel meson
+$SUDO ln -sf "$bootstrap_python" /usr/local/bin/python3
+$SUDO ln -sf "$bootstrap_python_config" /usr/local/bin/python3-config
+$SUDO ln -sf "$bootstrap_pip" /usr/local/bin/pip3
 
-sudo ln -sf /opt/python/cp36-cp36m/bin/meson /usr/local/bin/meson
-sudo ln -sf /opt/python/cp36-cp36m/bin/ninja /usr/local/bin/ninja
+$SUDO pip3 install ninja auditwheel meson
 
-PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
-PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
-LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
+$SUDO ln -sf $(dirname "$bootstrap_python")/meson /usr/local/bin/meson
+$SUDO ln -sf $(dirname "$bootstrap_python")/ninja /usr/local/bin/ninja
+
+export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
+export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
 # Build sqlite
 
@@ -79,10 +140,108 @@ cmake  \
 cd $TOPDIR
 cmake --build build-other/proj --target install
 
+# Build libaec (required by ecCodes for CCSDS/AEC compression)
+[[ -d src/aec ]] || git clone $GIT_AEC src/aec
+cd src/aec
+git checkout $AEC_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/aec
+cd build-other/aec
+
+cmake \
+    $TOPDIR/src/aec -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/aec --target install
+
+libaec_config_file=$(find "$TOPDIR/install" -maxdepth 6 \( -name 'libaec-config.cmake' -o -name 'libaecConfig.cmake' \) -print | head -1 || true)
+
+libaec_cmake_dir=""
+if [[ -n "$libaec_config_file" ]]
+then
+    libaec_cmake_dir=$(dirname "$libaec_config_file")
+fi
+
+if [[ -z "$libaec_cmake_dir" ]]
+then
+    echo "Could not find libaec CMake package under $TOPDIR/install"
+    find "$TOPDIR/install" -maxdepth 5 \( -name 'libaec-config.cmake' -o -name 'libaecConfig.cmake' \) -print || true
+    exit 1
+fi
+
+# Build jasper (provides libjasper.so, required by ecCodes)
+[[ -d src/jasper ]] || git clone $GIT_JASPER src/jasper
+cd src/jasper
+git checkout $JASPER_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/jasper
+cd build-other/jasper
+
+cmake \
+    $TOPDIR/src/jasper -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DJAS_ENABLE_OPENGL=OFF \
+    -DJAS_ENABLE_DOC=OFF \
+    -DJAS_ENABLE_PROGRAMS=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/jasper --target install
+
+# Build libjpeg-turbo (provides libjpeg.so.62, required by ecCodes JPEG support)
+[[ -d src/jpeg ]] || git clone $GIT_JPEG src/jpeg
+cd src/jpeg
+git checkout $JPEG_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/jpeg
+cd build-other/jpeg
+
+cmake \
+    $TOPDIR/src/jpeg -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/jpeg --target install
+
+# Build HDF5 (provides libhdf5.so + libhdf5_hl.so, required by netcdf and ecCodes)
+[[ -d src/hdf5 ]] || git clone $GIT_HDF5 src/hdf5
+cd src/hdf5
+git checkout $HDF5_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/hdf5
+cd build-other/hdf5
+
+cmake \
+    $TOPDIR/src/hdf5 -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DHDF5_BUILD_HL_LIB=ON \
+    -DHDF5_BUILD_TOOLS=OFF \
+    -DHDF5_BUILD_EXAMPLES=OFF \
+    -DHDF5_BUILD_TESTS=OFF \
+    -DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/hdf5 --target install
+
+# Build netcdf
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
 
+rm -fr $TOPDIR/build-other/netcdf
 mkdir -p $TOPDIR/build-other/netcdf
 cd $TOPDIR/build-other/netcdf
 
@@ -91,6 +250,10 @@ cmake -GNinja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_DAP=0 \
     -DENABLE_DISKLESS=0 \
+    -DBUILD_TESTING:BOOL=OFF \
+    -DENABLE_TESTS:BOOL=OFF \
+    -DHDF5_ROOT=$TOPDIR/install \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
@@ -193,6 +356,8 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
+    -DCMAKE_PREFIX_PATH="$TOPDIR/install;$TOPDIR/install/lib/cmake;$TOPDIR/install/lib64/cmake" \
+    -Dlibaec_DIR="$libaec_cmake_dir" \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR
