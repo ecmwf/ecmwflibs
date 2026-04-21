@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 import json
+import os
 import re
+import socket
+import time
 import sys
 
 import urllib.error
 import urllib.request
-from html2text import html2text
+try:
+    from html2text import html2text
+except ImportError:
+    html2text = None
 
 
 def identity(x):
@@ -21,30 +27,60 @@ _HEADERS = {
 }
 
 
-def fetch_url_text(url, lib_name):
-    try:
-        req = urllib.request.Request(url, headers=_HEADERS)
-        with urllib.request.urlopen(req) as response:
-            return response.read().decode("utf-8")
-    except urllib.error.HTTPError as error:
-        body_preview = error.read().decode("utf-8", errors="replace").strip()
-        if len(body_preview) > 500:
-            body_preview = f"{body_preview[:500]}..."
-        details = [
-            f"Failed to download license for {lib_name}",
-            f"URL: {url}",
-            f"HTTP status: {error.code}",
-            f"Reason: {error.reason}",
-        ]
-        if body_preview:
-            details.append(f"Response body (first 500 chars):\n{body_preview}")
-        raise RuntimeError("\n".join(details)) from error
-    except urllib.error.URLError as error:
-        raise RuntimeError(
-            f"Failed to download license for {lib_name}\n"
-            f"URL: {url}\n"
-            f"Network error: {error.reason}"
-        ) from error
+def _local_fallback_path(url):
+    base = os.path.basename(url.rstrip("/"))
+    if not base:
+        return None
+
+    licenses_dir = os.path.join(os.path.dirname(__file__), "licenses")
+    for candidate in (base, base.lower()):
+        path = os.path.join(licenses_dir, candidate)
+        if os.path.exists(path):
+            return path
+    return None
+
+
+def fetch_url_text(url, lib_name, timeout=30, attempts=3):
+    errors = []
+
+    for attempt in range(1, attempts + 1):
+        try:
+            req = urllib.request.Request(url, headers=_HEADERS)
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                return response.read().decode("utf-8")
+        except urllib.error.HTTPError as error:
+            body_preview = error.read().decode("utf-8", errors="replace").strip()
+            if len(body_preview) > 500:
+                body_preview = f"{body_preview[:500]}..."
+            details = [
+                f"URL: {url}",
+                f"Attempt: {attempt}/{attempts}",
+                f"HTTP status: {error.code}",
+                f"Reason: {error.reason}",
+            ]
+            if body_preview:
+                details.append(f"Response body (first 500 chars):\n{body_preview}")
+            errors.append("\n".join(details))
+        except (urllib.error.URLError, TimeoutError, socket.timeout, OSError) as error:
+            reason = getattr(error, "reason", str(error))
+            errors.append(
+                f"URL: {url}\n"
+                f"Attempt: {attempt}/{attempts}\n"
+                f"Network error: {reason}"
+            )
+
+        if attempt < attempts:
+            time.sleep(attempt)
+
+    fallback_path = _local_fallback_path(url)
+    if fallback_path:
+        with open(fallback_path, "r", encoding="utf-8") as fallback_file:
+            return fallback_file.read()
+
+    raise RuntimeError(
+        f"Failed to download license for {lib_name}.\n"
+        + "\n\n---\n\n".join(errors)
+    )
 
 
 ENTRIES = {
@@ -253,7 +289,7 @@ libs = {}
 missing = []
 seen = set()
 
-for line in open(sys.argv[1], "r"):
+for line in open(sys.argv[1], "r", encoding="utf-8"):
     lib = "-no-regex-"
     lib = line.strip().split("/")[-1]
     lib = lib.split("-")[0].split(".")[0]
@@ -287,19 +323,20 @@ for line in open(sys.argv[1], "r"):
     copying = e["copying"]
 
     filtering = identity
-    if e.get("html"):
+    if e.get("html") and html2text is not None:
         filtering = html2text
 
-    with open(f"ecmwflibs/copying/{lib}.txt", "w") as f:
-        if copying.startswith("http://") or copying.startswith("https://"):
-            text = fetch_url_text(copying, lib)
-            for n in filtering(text).split("\n"):
-                print(n, file=f)
-        else:
-            for n in copying.split("\n"):
-                print(n, file=f)
+    if copying.startswith("http://") or copying.startswith("https://"):
+        text = fetch_url_text(copying, lib)
+        output_lines = filtering(text).split("\n")
+    else:
+        output_lines = copying.split("\n")
 
-    with open("ecmwflibs/copying/list.json", "w") as f:
+    with open(f"ecmwflibs/copying/{lib}.txt", "w", encoding="utf-8") as f:
+        for n in output_lines:
+            print(n, file=f)
+
+    with open("ecmwflibs/copying/list.json", "w", encoding="utf-8") as f:
         print(json.dumps(libs), file=f)
 
 
