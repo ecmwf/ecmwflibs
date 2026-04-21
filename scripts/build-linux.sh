@@ -227,6 +227,8 @@ cmake -GNinja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_DAP=0 \
     -DENABLE_DISKLESS=0 \
+    -DBUILD_TESTING=OFF \
+    -DENABLE_TESTS=OFF \
     -DHDF5_ROOT=$TOPDIR/install \
     -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
