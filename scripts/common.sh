@@ -51,7 +51,7 @@ GIT_NETCDF=https://github.com/Unidata/netcdf-c.git
 NETCDF_VERSION=${NETCDF_VERSION:=master}
 
 GIT_HDF5=https://github.com/HDFGroup/hdf5.git
-HDF5_VERSION=${HDF5_VERSION:=hdf5-1_14_6}
+HDF5_VERSION=${HDF5_VERSION:=hdf5_1_14_6}
 
 GIT_JPEG=https://github.com/libjpeg-turbo/libjpeg-turbo.git
 JPEG_VERSION=3.1.4.1
