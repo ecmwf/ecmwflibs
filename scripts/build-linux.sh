@@ -73,7 +73,7 @@ NETCDF_VERSION=v4.6.0
 
 source scripts/common.sh
 
-for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel
+for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel
 do
     pkg_install "$p"
     # There may be a better way
@@ -172,6 +172,28 @@ then
     find "$TOPDIR/install" -maxdepth 5 \( -name 'libaec-config.cmake' -o -name 'libaecConfig.cmake' \) -print || true
     exit 1
 fi
+
+# Build jasper (provides libjasper.so, required by ecCodes)
+[[ -d src/jasper ]] || git clone $GIT_JASPER src/jasper
+cd src/jasper
+git checkout $JASPER_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/jasper
+cd build-other/jasper
+
+cmake \
+    $TOPDIR/src/jasper -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DJAS_ENABLE_OPENGL=OFF \
+    -DJAS_ENABLE_DOC=OFF \
+    -DJAS_ENABLE_PROGRAMS=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/jasper --target install
 
 # Build libjpeg-turbo (provides libjpeg.so.62, required by ecCodes JPEG support)
 [[ -d src/jpeg ]] || git clone $GIT_JPEG src/jpeg

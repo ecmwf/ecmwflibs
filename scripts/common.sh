@@ -56,6 +56,9 @@ HDF5_VERSION=${HDF5_VERSION:=hdf5_1_14_6}
 GIT_JPEG=https://github.com/libjpeg-turbo/libjpeg-turbo.git
 JPEG_VERSION=3.1.4.1
 
+GIT_JASPER=https://github.com/jasper-software/jasper.git
+JASPER_VERSION=version-4.2.9
+
 mkdir -p src
 rm -fr src/ecbuild src/eccodes src/magics
 mkdir -p build build-ecmwf
