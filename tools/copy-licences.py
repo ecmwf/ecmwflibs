@@ -12,9 +12,19 @@ def identity(x):
     return x
 
 
+_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"
+    ),
+    "Accept": "text/html,text/plain,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+}
+
+
 def fetch_url_text(url, lib_name):
     try:
-        with urllib.request.urlopen(url) as response:
+        req = urllib.request.Request(url, headers=_HEADERS)
+        with urllib.request.urlopen(req) as response:
             return response.read().decode("utf-8")
     except urllib.error.HTTPError as error:
         body_preview = error.read().decode("utf-8", errors="replace").strip()
