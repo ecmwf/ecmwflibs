@@ -173,6 +173,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    env:
+      ECCODES_PYTHON_USE_FINDLIBS: "1"
 
     name: Test with Python ${{ matrix.python-version }} ${{ matrix.architecture }}
 
@@ -192,6 +194,22 @@ jobs:
       - run: pip install *.whl
 
       - run: pip install -r tests/requirements.txt
+
+      - name: Configure ecCodes runtime lookup
+        shell: python
+        run: |
+          import os
+          import pathlib
+          import ecmwflibs
+
+          eccodes_path = ecmwflibs.find("eccodes")
+          if not eccodes_path:
+              raise RuntimeError("Cannot resolve bundled ecCodes path from ecmwflibs")
+
+          libs_dir = str(pathlib.Path(eccodes_path).parent)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f:
+              print(f"ECMWFLIBS_ECCODES={eccodes_path}", file=f)
+              print(f"PATH={libs_dir};{os.environ.get('PATH', '')}", file=f)
 
       - run: pip freeze
 
