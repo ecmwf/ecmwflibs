@@ -158,15 +158,13 @@ cmake \
 cd $TOPDIR
 cmake --build build-other/aec --target install
 
+libaec_config_file=$(find "$TOPDIR/install" -maxdepth 6 \( -name 'libaec-config.cmake' -o -name 'libaecConfig.cmake' \) -print | head -1 || true)
+
 libaec_cmake_dir=""
-for d in "$TOPDIR/install/lib/cmake/libaec" "$TOPDIR/install/lib64/cmake/libaec"
-do
-    if [[ -f "$d/libaec-config.cmake" || -f "$d/libaecConfig.cmake" ]]
-    then
-        libaec_cmake_dir="$d"
-        break
-    fi
-done
+if [[ -n "$libaec_config_file" ]]
+then
+    libaec_cmake_dir=$(dirname "$libaec_config_file")
+fi
 
 if [[ -z "$libaec_cmake_dir" ]]
 then
