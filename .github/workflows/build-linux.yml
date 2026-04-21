@@ -153,6 +153,8 @@ jobs:
             wheel-tag: manylinux_2_28
 
     runs-on: ubuntu-latest
+    env:
+      ECCODES_PYTHON_USE_FINDLIBS: "1"
 
     name: Test with ${{ matrix.python-version }}
 

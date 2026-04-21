@@ -24,57 +24,7 @@ fi
 
 TOPDIR=$(/bin/pwd)
 
-SYSTEM_LIB_DIRS=(/lib64 /usr/lib64 /usr/local/lib64 /lib /usr/lib /usr/local/lib)
-
-stage_runtime_library() {
-	local soname="$1"
-	local src=""
-
-	for d in "${SYSTEM_LIB_DIRS[@]}"
-	do
-		if [[ -e "$d/$soname" ]]
-		then
-			src="$d/$soname"
-			break
-		fi
-	done
-
-	if [[ -z "$src" ]]
-	then
-		for d in "${SYSTEM_LIB_DIRS[@]}"
-		do
-			src=$(find "$d" -maxdepth 1 -name "${soname}*" -print | head -1 || true)
-			if [[ -n "$src" ]]
-			then
-				break
-			fi
-		done
-	fi
-
-	if [[ -z "$src" ]]
-	then
-		echo "Could not stage runtime library: $soname"
-		return 0
-	fi
-
-	mkdir -p "$TOPDIR/install/lib"
-	cp -a "$src" "$TOPDIR/install/lib/"
-
-	if [[ -L "$src" ]]
-	then
-		local resolved
-		resolved=$(readlink -f "$src")
-		if [[ -n "$resolved" && -e "$resolved" ]]
-		then
-			cp -a "$resolved" "$TOPDIR/install/lib/"
-		fi
-	fi
-}
-
-stage_runtime_library libhdf5_hl.so.8
-stage_runtime_library libjpeg.so.62
-
-export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:/usr/lib64:/lib64:/usr/lib:/lib:${LD_LIBRARY_PATH:-}
+export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel

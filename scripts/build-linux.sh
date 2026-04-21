@@ -73,7 +73,7 @@ NETCDF_VERSION=v4.6.0
 
 source scripts/common.sh
 
-for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
+for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel
 do
     pkg_install "$p"
     # There may be a better way
@@ -173,6 +173,48 @@ then
     exit 1
 fi
 
+# Build libjpeg-turbo (provides libjpeg.so.62, required by ecCodes JPEG support)
+[[ -d src/jpeg ]] || git clone $GIT_JPEG src/jpeg
+cd src/jpeg
+git checkout $JPEG_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/jpeg
+cd build-other/jpeg
+
+cmake \
+    $TOPDIR/src/jpeg -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/jpeg --target install
+
+# Build HDF5 (provides libhdf5.so + libhdf5_hl.so, required by netcdf and ecCodes)
+[[ -d src/hdf5 ]] || git clone $GIT_HDF5 src/hdf5
+cd src/hdf5
+git checkout $HDF5_VERSION
+cd $TOPDIR
+
+mkdir -p build-other/hdf5
+cd build-other/hdf5
+
+cmake \
+    $TOPDIR/src/hdf5 -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DHDF5_BUILD_HL_LIB=ON \
+    -DHDF5_BUILD_TOOLS=OFF \
+    -DHDF5_BUILD_EXAMPLES=OFF \
+    -DHDF5_BUILD_TESTS=OFF \
+    -DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/hdf5 --target install
+
+# Build netcdf
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
 git checkout $NETCDF_VERSION
@@ -185,6 +227,8 @@ cmake -GNinja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_DAP=0 \
     -DENABLE_DISKLESS=0 \
+    -DHDF5_ROOT=$TOPDIR/install \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR

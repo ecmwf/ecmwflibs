@@ -130,10 +130,10 @@ ENTRIES = {
         "home": "https://github.com/uclouvain/openjpeg",
         "copying": "https://raw.githubusercontent.com/uclouvain/openjpeg/master/LICENSE",
     },
+    # We build libjpeg-turbo from source (drop-in replacement, installs as libjpeg.so.62)
     "libjpeg": {
-        "home": "http://ijg.org",
-        "copying": "https://jpegclub.org/reference/libjpeg-license/",
-        "html": True,
+        "home": "https://github.com/libjpeg-turbo/libjpeg-turbo",
+        "copying": "https://raw.githubusercontent.com/libjpeg-turbo/libjpeg-turbo/main/LICENSE.md",
     },
     "libfreetype": {
         "home": "https://gitlab.freedesktop.org/freetype/freetype/",
