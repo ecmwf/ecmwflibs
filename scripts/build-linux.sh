@@ -28,6 +28,43 @@ else
     exit 1
 fi
 
+PKG_MGR_INSTALL_OPTS=(-y)
+if [[ "$PKG_MGR" == "dnf" ]]
+then
+    repo_files=(/etc/yum.repos.d/*.repo)
+    if grep -Eq '/8\.[0-9]+/' "${repo_files[@]}" 2>/dev/null
+    then
+        $SUDO sed -i -E 's#/8\.[0-9]+/#/8/#g' "${repo_files[@]}" || true
+    fi
+    rhel_major=$(rpm -E '%{rhel}' 2>/dev/null || true)
+    if [[ -n "$rhel_major" ]]
+    then
+        PKG_MGR_INSTALL_OPTS+=(--releasever="$rhel_major")
+    fi
+    PKG_MGR_INSTALL_OPTS+=(--refresh)
+    $SUDO dnf clean all || true
+fi
+
+pkg_install() {
+    local pkg="$1"
+    local max_attempts=3
+    local attempt=1
+
+    while (( attempt <= max_attempts ))
+    do
+        if $SUDO $PKG_MGR install "${PKG_MGR_INSTALL_OPTS[@]}" "$pkg"
+        then
+            return 0
+        fi
+        if (( attempt == max_attempts ))
+        then
+            return 1
+        fi
+        sleep $(( attempt * 5 ))
+        attempt=$(( attempt + 1 ))
+    done
+}
+
 # We want the sqlite3 we just compiled
 PATH=$(pwd)/install/bin:$PATH
 
@@ -38,17 +75,18 @@ source scripts/common.sh
 
 for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel expat-devel cairo-devel libjasper-devel hdf5-devel
 do
-    $SUDO $PKG_MGR install -y $p
+    pkg_install "$p"
     # There may be a better way
-    $SUDO $PKG_MGR install $p 2>&1 > tmp
+    $SUDO $PKG_MGR install "${PKG_MGR_INSTALL_OPTS[@]}" "$p" 2>&1 > tmp
     cat tmp
     v=$(grep 'already installed' < tmp | awk '{print $2;}' | sed 's/\\d://')
     echo "yum $p $v" >> versions
 done
 
 
-$SUDO $PKG_MGR install -y flex bison
-$SUDO $PKG_MGR install -y pax-utils # For lddtree
+pkg_install flex
+pkg_install bison
+pkg_install pax-utils # For lddtree
 
 bootstrap_python=$(ls -1d /opt/python/cp3*/bin/python3 | head -1)
 bootstrap_pip=$(dirname "$bootstrap_python")/pip3
@@ -63,9 +101,9 @@ $SUDO pip3 install ninja auditwheel meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/meson /usr/local/bin/meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/ninja /usr/local/bin/ninja
 
-PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH
-PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
-LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
+export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
 # Build sqlite
 
@@ -119,6 +157,23 @@ cmake \
 
 cd $TOPDIR
 cmake --build build-other/aec --target install
+
+libaec_cmake_dir=""
+for d in "$TOPDIR/install/lib/cmake/libaec" "$TOPDIR/install/lib64/cmake/libaec"
+do
+    if [[ -f "$d/libaec-config.cmake" || -f "$d/libaecConfig.cmake" ]]
+    then
+        libaec_cmake_dir="$d"
+        break
+    fi
+done
+
+if [[ -z "$libaec_cmake_dir" ]]
+then
+    echo "Could not find libaec CMake package under $TOPDIR/install"
+    find "$TOPDIR/install" -maxdepth 5 \( -name 'libaec-config.cmake' -o -name 'libaecConfig.cmake' \) -print || true
+    exit 1
+fi
 
 [[ -d src/netcdf ]] || git clone  $GIT_NETCDF src/netcdf
 cd src/netcdf
@@ -234,8 +289,8 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
-    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
-    -Dlibaec_DIR=$TOPDIR/install/lib/cmake/libaec \
+    -DCMAKE_PREFIX_PATH="$TOPDIR/install;$TOPDIR/install/lib/cmake;$TOPDIR/install/lib64/cmake" \
+    -Dlibaec_DIR="$libaec_cmake_dir" \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install $ECCODES_EXTRA_CMAKE_OPTIONS
 
 cd $TOPDIR

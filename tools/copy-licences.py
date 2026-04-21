@@ -195,10 +195,14 @@ ENTRIES = {
         "home": "https://github.com/ShiftMediaProject/liblzma",
         "copying": "https://raw.githubusercontent.com/ShiftMediaProject/liblzma/master/COPYING",
     },
-    # "libcurl": {
-    #     "home": "https://github.com/curl/curl",
-    #     "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
-    # },
+    "libcurl": {
+        "home": "https://github.com/curl/curl",
+        "copying": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
+    },
+    "libtinyxml2": {
+        "home": "https://github.com/leethomason/tinyxml2",
+        "copying": "https://raw.githubusercontent.com/leethomason/tinyxml2/master/LICENSE.txt",
+    },
 }
 
 PATTERNS = {

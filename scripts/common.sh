@@ -54,7 +54,10 @@ GIT_HDF5=https://github.com/HDFGroup/hdf5.git
 HDF5_VERSION=${HDF5_VERSION:=hdf5-1_14_6}
 
 mkdir -p src
-rm -fr src/ecbuild src/eccodes src/magics build build-ecmwf
+rm -fr src/ecbuild src/eccodes src/magics
+mkdir -p build build-ecmwf
+find build -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+find build-ecmwf -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 
 git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
 git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes
