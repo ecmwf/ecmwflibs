@@ -44,6 +44,9 @@ jobs:
 
     name: Build
 
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "10.9"
+
     steps:
       - uses: actions/checkout@v6
 
