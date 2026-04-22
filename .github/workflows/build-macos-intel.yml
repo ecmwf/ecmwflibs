@@ -197,7 +197,7 @@ jobs:
         with:
           name: wheel-macos-${{ matrix.python-version }}
 
-      - run: twine upload *.whl
+      - run: twine upload --repository pypi *.whl
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}

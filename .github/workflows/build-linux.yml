@@ -228,7 +228,7 @@ jobs:
         with:
           name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
 
-      - run: twine upload *.whl
+      - run: twine upload --repository pypi *.whl
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
