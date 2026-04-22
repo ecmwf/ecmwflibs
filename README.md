@@ -18,7 +18,7 @@ You can  get the versions of libraries:
 ```python
 import ecmwflibs
 print(ecmwflibs.versions())
-{'eccodes': '2.46.3', 'magics': '4.16.1', 'ecmwflibs': '0.7.0'}
+{'eccodes': '2.46.3', 'magics': '4.16.1', 'ecmwflibs': '0.7.1'}
 ```
 
 ## Possible issues
