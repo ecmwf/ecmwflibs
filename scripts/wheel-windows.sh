@@ -13,5 +13,5 @@ set -eaux
 python -m pip install --upgrade pip setuptools wheel
 
 rm -fr dist wheelhouse ecmwflibs.egg-info build
-python setup.py bdist_wheel
+python setup.py bdist_wheel --py-limited-api=cp310
 mv dist wheelhouse

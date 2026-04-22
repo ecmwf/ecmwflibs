@@ -10,7 +10,12 @@ name: Build Linux
 
 on:
 
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      wheelmaker-tag:
+        description: "Wheelmaker image tag from eccr.ecmwf.int/wheelmaker/2_28_x86_64"
+        required: false
+        default: "1.latest"
 
   release:
     types: [ created ]
@@ -36,127 +41,73 @@ on:
       - "tools/copy-licences.py"
 
 jobs:
-  build_manylinux2014:
-
+  build:
     runs-on: ubuntu-latest
-
-    name: Build manylinux2014
+    name: Build abi3 Linux wheel
 
     steps:
       - uses: actions/checkout@v6
 
-      - run: |
+      - name: Login to ECMWF container registry
+        run: |
+          if [[ -n "${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}" && -n "${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}" ]]
+          then
+            echo "${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}" | \
+              docker login eccr.ecmwf.int \
+                --username "${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}" \
+                --password-stdin
+          else
+            echo "ECMWF registry credentials not available, using public fallback image"
+          fi
+
+      - name: Select build image
+        run: |
+          WHEELMAKER_TAG="${{ github.event.inputs.wheelmaker-tag }}"
+          if [[ -z "$WHEELMAKER_TAG" ]]
+          then
+            WHEELMAKER_TAG="1.latest"
+          fi
+
+          IMAGE="dockcross/manylinux_2_28-x64:latest"
+          if [[ -n "${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}" && -n "${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}" ]]
+          then
+            IMAGE="eccr.ecmwf.int/wheelmaker/2_28_x86_64:${WHEELMAKER_TAG}"
+          fi
+          echo "BUILD_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          echo "Using $IMAGE"
+
+      - name: Build binary stack
+        run: |
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            "$BUILD_IMAGE" \
             bash -lc './scripts/build-linux.sh'
 
-      ################################################################
-      - run: |
+      - name: Build abi3 wheel
+        run: |
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            "$BUILD_IMAGE" \
             bash -lc './scripts/wheel-linux.sh 3.10'
+
       - uses: actions/upload-artifact@v4
-        name: Upload wheel 3.10
         with:
-          name: wheel-manylinux2014-3.10
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - run: |
-          docker run --rm \
-            -v "$PWD:/workspace" \
-            -w /workspace \
-            dockcross/manylinux2014-x64:latest \
-            bash -lc './scripts/wheel-linux.sh 3.11'
-      - uses: actions/upload-artifact@v4
-        name: Upload wheel 3.11
-        with:
-          name: wheel-manylinux2014-3.11
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - run: |
-          docker run --rm \
-            -v "$PWD:/workspace" \
-            -w /workspace \
-            dockcross/manylinux2014-x64:latest \
-            bash -lc './scripts/wheel-linux.sh 3.12'
-      - uses: actions/upload-artifact@v4
-        name: Upload wheel 3.12
-        with:
-          name: wheel-manylinux2014-3.12
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - run: |
-          docker run --rm \
-            -v "$PWD:/workspace" \
-            -w /workspace \
-            dockcross/manylinux2014-x64:latest \
-            bash -lc './scripts/wheel-linux.sh 3.13'
-      - uses: actions/upload-artifact@v4
-        name: Upload wheel 3.13
-        with:
-          name: wheel-manylinux2014-3.13
-          path: wheelhouse/*.whl
-
-  build_manylinux_2_28:
-
-    runs-on: ubuntu-latest
-
-    name: Build manylinux_2_28
-
-    steps:
-      - uses: actions/checkout@v6
-
-      - run: |
-          docker run --rm \
-            -v "$PWD:/workspace" \
-            -w /workspace \
-            dockcross/manylinux_2_28-x64:latest \
-            bash -lc './scripts/build-linux.sh'
-
-      ################################################################
-      - run: |
-          docker run --rm \
-            -v "$PWD:/workspace" \
-            -w /workspace \
-            dockcross/manylinux_2_28-x64:latest \
-            bash -lc './scripts/wheel-linux.sh 3.14'
-      - uses: actions/upload-artifact@v4
-        name: Upload wheel 3.14
-        with:
-          name: wheel-manylinux_2_28-3.14
+          name: wheel-linux-x86_64-abi3
           path: wheelhouse/*.whl
 
   test:
-
-    needs: [ build_manylinux2014, build_manylinux_2_28 ]
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - python-version: "3.10"
-            wheel-tag: manylinux2014
-          - python-version: "3.11"
-            wheel-tag: manylinux2014
-          - python-version: "3.12"
-            wheel-tag: manylinux2014
-          - python-version: "3.13"
-            wheel-tag: manylinux2014
-          - python-version: "3.14"
-            wheel-tag: manylinux_2_28
-
+    needs: build
     runs-on: ubuntu-latest
     env:
       ECCODES_PYTHON_USE_FINDLIBS: "1"
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
 
-    name: Test with ${{ matrix.python-version }}
+    name: Test with Python ${{ matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v6
@@ -168,7 +119,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: wheel-linux-x86_64-abi3
 
       - run: pip install *.whl
 
@@ -191,42 +142,26 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tests-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: tests-linux-x86_64-py${{ matrix.python-version }}
           path: tests/*.png
 
   deploy:
-
     if: ${{ github.event_name == 'release' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - python-version: "3.10"
-            wheel-tag: manylinux2014
-          - python-version: "3.11"
-            wheel-tag: manylinux2014
-          - python-version: "3.12"
-            wheel-tag: manylinux2014
-          - python-version: "3.13"
-            wheel-tag: manylinux2014
-          - python-version: "3.14"
-            wheel-tag: manylinux_2_28
-    needs: [ test, build_manylinux2014, build_manylinux_2_28 ]
-    name: Deploy wheel ${{ matrix.python-version }}
+    needs: [ test, build ]
+    name: Deploy Linux abi3 wheel
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
 
       - run: pip install twine
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: wheel-linux-x86_64-abi3
 
       - run: twine upload --repository pypi *.whl
         env:

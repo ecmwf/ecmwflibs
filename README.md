@@ -6,6 +6,15 @@ A Python package that wraps some of ECMWF libraries to be used by Python interfa
 
 - Python 3.10 or newer
 
+## Wheel compatibility
+
+`ecmwflibs` binary wheels are built as `abi3` wheels (limited API, built with `cp310`).
+This allows one wheel per platform/architecture to be reused across newer CPython versions.
+
+In CI, each wheel is tested on Python 3.10 through 3.14.
+
+
+## Test the install
 The snippet of code below should return the path to the *ecCodes* shared library.
 
 ```python

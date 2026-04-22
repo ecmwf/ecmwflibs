@@ -11,9 +11,6 @@ name: Build MacOS
 on:
   workflow_dispatch: {}
 
-  release:
-    types: [ created ]
-
   # repository_dispatch:
   #   types: [eccodes-updated, magics-updated]
 
