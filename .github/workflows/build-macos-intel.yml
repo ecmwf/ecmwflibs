@@ -18,6 +18,8 @@ on:
   #   types: [eccodes-updated, magics-updated]
 
   push:
+    branches:
+      - master
     paths:
       - "scripts/common.sh"
       - "scripts/build-macos.sh"
@@ -59,14 +61,12 @@ jobs:
           python-version: "3.10"
       - run: ./scripts/wheel-macos.sh "3.10"
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
         name: Upload abi3 wheel
         with:
           name: wheel-macos-x86_64-abi3
           path: wheelhouse/*.whl
 
   test:
-    if: ${{ github.event_name != 'pull_request' }}
     needs: build
     runs-on: macos-latest
     env:
@@ -113,10 +113,11 @@ jobs:
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ always() }}
         with:
           name: tests-macos-x86_64-py${{ matrix.python-version }}
           path: tests/*.png
+          if-no-files-found: ignore
 
   deploy:
 

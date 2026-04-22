@@ -18,6 +18,8 @@ on:
   #   types: [eccodes-updated, magics-updated]
 
   push:
+    branches:
+      - master
     paths:
       - "scripts/common.sh"
       - "scripts/build-macos.sh"
@@ -62,7 +64,6 @@ jobs:
       - run: ./scripts/wheel-macos.sh "3.10"
       - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
         name: Upload abi3 wheel
         with:
           name: wheel-macos-arm64-abi3
@@ -70,7 +71,6 @@ jobs:
       - run: rm -fr wheelhouse
 
   test:
-    if: ${{ github.event_name != 'pull_request' }}
     needs: build
 
     runs-on: [ self-hosted, macOS, ARM64 ]
@@ -109,6 +109,10 @@ jobs:
         shell: bash
         run: |
           .venv/bin/python - <<'PY'
+          import sys
+          # Remove '' (cwd) from sys.path so the installed wheel is found,
+          # not the ecmwflibs/ source sub-directory in the repo root.
+          sys.path = [p for p in sys.path if p]
           import os
           import pathlib
           import ecmwflibs
@@ -148,10 +152,11 @@ jobs:
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ always() }}
         with:
           name: tests-macos-arm64-py${{ matrix.python-version }}
           path: tests/*.png
+          if-no-files-found: ignore
 
       - run: rm -fr *.whl tests
 

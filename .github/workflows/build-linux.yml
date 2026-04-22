@@ -141,9 +141,11 @@ jobs:
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
         with:
           name: tests-linux-x86_64-py${{ matrix.python-version }}
           path: tests/*.png
+          if-no-files-found: ignore
 
   deploy:
     if: ${{ github.event_name == 'release' }}
