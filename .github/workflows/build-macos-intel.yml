@@ -143,13 +143,15 @@ jobs:
         with:
           name: wheel-macos-${{ matrix.python-version }}
 
-      - run: python -m pip install --upgrade pip
+      - run: python -m venv .venv
 
-      - run: pip install *.whl
+      - run: .venv/bin/pip install --upgrade pip
 
-      - run: pip install -r tests/requirements.txt
+      - run: .venv/bin/pip install *.whl
 
-      - run: pip freeze
+      - run: .venv/bin/pip install -r tests/requirements.txt
+
+      - run: .venv/bin/pip freeze
 
       - name: Get some data
         run: |
@@ -159,7 +161,7 @@ jobs:
           ls -l
         working-directory: tests
 
-      - run: pytest -v -s
+      - run: ../.venv/bin/pytest -v -s
         working-directory: tests
 
       - uses: actions/upload-artifact@v4

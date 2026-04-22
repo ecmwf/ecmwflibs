@@ -143,15 +143,15 @@ jobs:
 
       - run: ls -l
       - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
-      - run: echo $PATH
-      - run: python3 -m pip install --upgrade pip
+      - run: python3 -m venv .venv
+      - run: .venv/bin/pip install --upgrade pip
       - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
       - run: which python3
       - run: python3 --version
       - run: pwd
       - run: ls -l
-      - run: python3 -m pip install *.whl
-      - run: python3 -m pip install -r tests/requirements.txt
+      - run: .venv/bin/pip install *.whl
+      - run: .venv/bin/pip install -r tests/requirements.txt
 
       - name: Configure ecCodes/Magics runtime lookup
         shell: python
@@ -180,7 +180,7 @@ jobs:
               file=f,
             )
 
-      - run: python3 -m pip freeze
+      - run: .venv/bin/pip freeze
 
       - name: Get some data
         run: |
@@ -190,7 +190,7 @@ jobs:
           ls -l
         working-directory: tests
 
-      - run: python3 -m pytest -v -s
+      - run: ../.venv/bin/pytest -v -s
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
