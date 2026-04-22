@@ -122,6 +122,8 @@ jobs:
     needs: build
 
     runs-on: [ self-hosted, macOS, ARM64 ]
+    env:
+      ECCODES_PYTHON_USE_FINDLIBS: "1"
 
     strategy:
       fail-fast: true
@@ -142,15 +144,43 @@ jobs:
       - run: ls -l
       - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
       - run: echo $PATH
-      - run: pip3 install --upgrade pip
+      - run: python3 -m pip install --upgrade pip
       - run: ls -l /opt/homebrew/opt/python@${{ matrix.python-version }}/libexec/bin
       - run: which python3
       - run: python3 --version
       - run: pwd
       - run: ls -l
-      - run: pip3 install *.whl
-      - run: pip3 install -r tests/requirements.txt
-      - run: pip3 freeze
+      - run: python3 -m pip install *.whl
+      - run: python3 -m pip install -r tests/requirements.txt
+
+      - name: Configure ecCodes/Magics runtime lookup
+        shell: python
+        run: |
+          import os
+          import pathlib
+          import ecmwflibs
+
+          eccodes_path = ecmwflibs.find("eccodes")
+          magplus_path = ecmwflibs.find("magplus")
+
+          if not eccodes_path:
+            raise RuntimeError("Cannot resolve bundled ecCodes path from ecmwflibs")
+          if not magplus_path:
+            raise RuntimeError("Cannot resolve bundled MagPlus path from ecmwflibs")
+
+          package_dir = str(pathlib.Path(ecmwflibs.__file__).resolve().parent)
+          libs_dir = str(pathlib.Path(magplus_path).resolve().parent)
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f:
+            print(f"ECMWFLIBS_ECCODES={eccodes_path}", file=f)
+            print(f"ECMWFLIBS_MAGPLUS={magplus_path}", file=f)
+            print(f"MAGPLUS_HOME={package_dir}", file=f)
+            print(
+              f"DYLD_LIBRARY_PATH={libs_dir}:{os.environ.get('DYLD_LIBRARY_PATH', '')}",
+              file=f,
+            )
+
+      - run: python3 -m pip freeze
 
       - name: Get some data
         run: |
@@ -160,7 +190,7 @@ jobs:
           ls -l
         working-directory: tests
 
-      - run: pytest -v -s
+      - run: python3 -m pytest -v -s
         working-directory: tests
 
       - uses: actions/upload-artifact@v4

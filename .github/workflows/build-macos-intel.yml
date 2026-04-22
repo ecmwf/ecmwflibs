@@ -121,6 +121,8 @@ jobs:
     if: ${{ github.event_name != 'pull_request' }}
     needs: build
     runs-on: macos-latest
+    env:
+      ECCODES_PYTHON_USE_FINDLIBS: "1"
     strategy:
       fail-fast: true
       matrix:

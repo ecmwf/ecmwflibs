@@ -9,7 +9,7 @@
 
 set -eaux
 
-for p in netcdf-c[core,netcdf-4,hdf5]
+for p in netcdf-c[core,netcdf-4]
 do
     echo $p:$WINARCH-windows
     vcpkg install $p:$WINARCH-windows
