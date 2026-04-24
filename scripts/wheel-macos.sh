@@ -43,7 +43,7 @@ python3 --version
 which delocate-wheel
 
 rm -fr dist wheelhouse
-python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel --py-limited-api=cp310
 
 # Do it twice to get the list of libraries
 
@@ -53,5 +53,5 @@ python3 -m pip install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel --py-limited-api=cp310
 delocate-wheel -w wheelhouse dist/*.whl

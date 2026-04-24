@@ -8,29 +8,16 @@
 
 name: Build MacOS
 
+# This workflow is superseded by build-macos-arm.yml and build-macos-intel.yml
+# which build abi3 wheels on self-hosted runners.
+# Kept for manual/historical use only — all automatic triggers are disabled.
 on:
   workflow_dispatch: {}
-
-  release:
-    types: [ created ]
-
   # repository_dispatch:
   #   types: [eccodes-updated, magics-updated]
 
-  push:
-    paths:
-      - "scripts/common.sh"
-      - "scripts/build-macos.sh"
-      - "scripts/wheel-macos.sh"
-      - "tools/copy-licences.py"
-  pull_request:
-    branches:
-      - master
-    paths:
-      - "scripts/common.sh"
-      - "scripts/build-macos.sh"
-      - "scripts/wheel-macos.sh"
-      - "tools/copy-licences.py"
+  # push / pull_request triggers intentionally removed — ARM and Intel
+  # workflows cover all automated builds and PyPI deploys.
 
 jobs:
 
@@ -198,7 +185,7 @@ jobs:
         with:
           name: wheel-macos-${{ matrix.python-version }}
 
-      - run: twine upload *.whl
+      - run: twine upload --repository pypi *.whl
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

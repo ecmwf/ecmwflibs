@@ -39,6 +39,8 @@ ext_modules = [
         "ecmwflibs._ecmwflibs",
         sources=["ecmwflibs/_ecmwflibs.cc"],
         language="c++",
+        define_macros=[("Py_LIMITED_API", "0x030A0000")],
+        py_limited_api=True,
         libraries=libs,
         library_dirs=[libdir],
         include_dirs=[incdir, os.path.join(incdir, "magics")],
@@ -106,5 +108,6 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Operating System :: OS Independent",
     ],
+    options={"bdist_wheel": {"py_limited_api": "cp310"}},
     ext_modules=ext_modules,
 )
