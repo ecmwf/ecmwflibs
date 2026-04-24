@@ -40,7 +40,7 @@ jobs:
 
     # if: false
 
-    runs-on: macos-13
+    runs-on: macos-15-intel
 
     name: Build
 
@@ -83,7 +83,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-13
+    runs-on: macos-15-intel
     env:
       ECCODES_PYTHON_USE_FINDLIBS: "1"
     strategy:
