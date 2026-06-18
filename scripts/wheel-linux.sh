@@ -27,6 +27,8 @@ TOPDIR=$(/bin/pwd)
 
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
+$pybin -m pip install --upgrade setuptools wheel
+
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel --py-limited-api=cp310
 

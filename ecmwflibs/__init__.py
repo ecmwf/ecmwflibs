@@ -149,7 +149,12 @@ def find(name):
     here = os.path.dirname(__file__)
     extension = EXTENSIONS.get(sys.platform, ".so")
 
-    for libdir in [here + ".libs", os.path.join(here, ".dylibs"), here]:
+    for libdir in [
+        os.path.join(here, "dylibs"),
+        here + ".libs",
+        os.path.join(here, ".dylibs"),
+        here,
+    ]:
         if not name.startswith("lib"):
             names = ["lib" + name, name]
         else:

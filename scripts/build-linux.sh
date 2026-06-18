@@ -77,9 +77,9 @@ for p in libpng-devel libtiff-devel fontconfig-devel gobject-introspection-devel
 do
     pkg_install "$p"
     # There may be a better way
-    $SUDO $PKG_MGR install "${PKG_MGR_INSTALL_OPTS[@]}" "$p" 2>&1 > tmp
-    cat tmp
-    v=$(grep 'already installed' < tmp | awk '{print $2;}' | sed 's/\\d://')
+    $SUDO $PKG_MGR install "${PKG_MGR_INSTALL_OPTS[@]}" "$p" 2>&1 > /tmp/pkg_install_out
+    cat /tmp/pkg_install_out
+    v=$(grep 'already installed' < /tmp/pkg_install_out | awk '{print $2;}' | sed 's/\\d://')
     echo "yum $p $v" >> versions
 done
 

@@ -1,0 +1,102 @@
+services:
+  # Mirrors the current CI build: ECMWF wheelmaker image (abi3, cp310)
+  # On Apple Silicon this runs under Rosetta emulation (slow but functional).
+  # Usage: docker compose -f docker/compose.yml run wheelmaker-abi3
+  wheelmaker-abi3:
+    image: eccr.ecmwf.int/wheelmaker/2_28_x86_64:1.latest
+    platform: linux/amd64
+    user: root
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+    command:
+      - bash
+      - -lc
+      - |
+        set -e
+        ./scripts/build-linux.sh
+        ./scripts/wheel-linux.sh 3.10
+
+  linux-manylinux2014:
+    image: dockcross/manylinux2014-x64:latest
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+      - manylinux2014-src:/workspace/src
+      - manylinux2014-build:/workspace/build
+      - manylinux2014-build-ecmwf:/workspace/build-ecmwf
+      - manylinux2014-build-other:/workspace/build-other
+      - manylinux2014-install:/workspace/install
+    command:
+      - bash
+      - -lc
+      - ./scripts/ci-linux-build-test.sh manylinux2014 3.10 3.11 3.12 3.13
+
+  linux-manylinux2014-arm64:
+    image: dockcross/manylinux2014-aarch64:latest
+    platform: linux/arm64
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+      - manylinux2014-arm64-src:/workspace/src
+      - manylinux2014-arm64-build:/workspace/build
+      - manylinux2014-arm64-build-ecmwf:/workspace/build-ecmwf
+      - manylinux2014-arm64-build-other:/workspace/build-other
+      - manylinux2014-arm64-install:/workspace/install
+    command:
+      - bash
+      - -lc
+      - ./scripts/ci-linux-build-test.sh manylinux2014-arm64 3.10 3.11 3.12 3.13
+
+  linux-manylinux-2-28:
+    image: dockcross/manylinux_2_28-x64:latest
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+      - manylinux228-src:/workspace/src
+      - manylinux228-build:/workspace/build
+      - manylinux228-build-ecmwf:/workspace/build-ecmwf
+      - manylinux228-build-other:/workspace/build-other
+      - manylinux228-install:/workspace/install
+    command:
+      - bash
+      - -lc
+      - ./scripts/ci-linux-build-test.sh manylinux_2_28 3.14
+
+  linux-manylinux-2-28-arm64:
+    image: dockcross/manylinux_2_28-aarch64:latest
+    platform: linux/arm64
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+      - manylinux228-arm64-src:/workspace/src
+      - manylinux228-arm64-build:/workspace/build
+      - manylinux228-arm64-build-ecmwf:/workspace/build-ecmwf
+      - manylinux228-arm64-build-other:/workspace/build-other
+      - manylinux228-arm64-install:/workspace/install
+    command:
+      - bash
+      - -lc
+      - ./scripts/ci-linux-build-test.sh manylinux_2_28-arm64 3.14
+
+volumes:
+  manylinux2014-src:
+  manylinux2014-build:
+  manylinux2014-build-ecmwf:
+  manylinux2014-build-other:
+  manylinux2014-install:
+  manylinux2014-arm64-src:
+  manylinux2014-arm64-build:
+  manylinux2014-arm64-build-ecmwf:
+  manylinux2014-arm64-build-other:
+  manylinux2014-arm64-install:
+  manylinux228-src:
+  manylinux228-build:
+  manylinux228-build-ecmwf:
+  manylinux228-build-other:
+  manylinux228-install:
+  manylinux228-arm64-src:
+  manylinux228-arm64-build:
+  manylinux228-arm64-build-ecmwf:
+  manylinux228-arm64-build-other:
+  manylinux228-arm64-install:

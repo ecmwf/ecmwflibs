@@ -29,6 +29,7 @@ for line in read("ecmwflibs/__init__.py").split("\n"):
 assert version
 
 libdir = os.path.realpath("install/lib")
+libdir64 = os.path.realpath("install/lib64")
 incdir = os.path.realpath("install/include")
 libs = ["eccodes", "MagPlus"]
 
@@ -42,7 +43,7 @@ ext_modules = [
         define_macros=[("Py_LIMITED_API", "0x030A0000")],
         py_limited_api=True,
         libraries=libs,
-        library_dirs=[libdir],
+        library_dirs=[libdir, libdir64],
         include_dirs=[incdir, os.path.join(incdir, "magics")],
         extra_link_args=["-Wl,-rpath," + libdir],
     )

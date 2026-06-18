@@ -27,6 +27,8 @@ on:
     branches:
       - master
     paths:
+      - ".github/workflows/build-linux.yml"
+      - "docker/compose.yml"
       - "scripts/common.sh"
       - "scripts/build-linux.sh"
       - "scripts/wheel-linux.sh"
@@ -35,6 +37,8 @@ on:
     branches:
       - master
     paths:
+      - ".github/workflows/build-linux.yml"
+      - "docker/compose.yml"
       - "scripts/common.sh"
       - "scripts/build-linux.sh"
       - "scripts/wheel-linux.sh"
@@ -42,8 +46,20 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    name: Build abi3 Linux wheel
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            default-image: dockcross/manylinux_2_28-x64:latest
+            artifact: wheel-linux-x86_64-abi3
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            default-image: dockcross/manylinux_2_28-aarch64:latest
+            artifact: wheel-linux-aarch64-abi3
+    runs-on: ${{ matrix.runner }}
+    name: Build abi3 Linux wheel (${{ matrix.arch }})
 
     steps:
       - uses: actions/checkout@v6
@@ -68,8 +84,8 @@ jobs:
             WHEELMAKER_TAG="1.latest"
           fi
 
-          IMAGE="dockcross/manylinux_2_28-x64:latest"
-          if [[ -n "${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}" && -n "${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}" ]]
+          IMAGE="${{ matrix.default-image }}"
+          if [[ "${{ matrix.arch }}" == "x86_64" && -n "${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}" && -n "${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}" ]]
           then
             IMAGE="eccr.ecmwf.int/wheelmaker/2_28_x86_64:${WHEELMAKER_TAG}"
           fi
@@ -94,20 +110,22 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: wheel-linux-x86_64-abi3
+          name: ${{ matrix.artifact }}
           path: wheelhouse/*.whl
 
   test:
     needs: build
-    runs-on: ubuntu-latest
     env:
       ECCODES_PYTHON_USE_FINDLIBS: "1"
     strategy:
       fail-fast: false
       matrix:
+        arch: [ x86_64, aarch64 ]
         python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
 
-    name: Test with Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+
+    name: Test ${{ matrix.arch }} with Python ${{ matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v6
@@ -119,7 +137,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-linux-x86_64-abi3
+          name: ${{ matrix.arch == 'aarch64' && 'wheel-linux-aarch64-abi3' || 'wheel-linux-x86_64-abi3' }}
 
       - run: pip install *.whl
 
@@ -143,7 +161,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: tests-linux-x86_64-py${{ matrix.python-version }}
+          name: ${{ matrix.arch == 'aarch64' && 'tests-linux-aarch64' || 'tests-linux-x86_64' }}-py${{ matrix.python-version }}
           path: tests/*.png
           if-no-files-found: ignore
 
@@ -164,6 +182,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: wheel-linux-x86_64-abi3
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-linux-aarch64-abi3
 
       - run: twine upload --repository pypi *.whl
         env:

@@ -80,6 +80,94 @@ twine upload wheelhouse/*
 
 Not tried, but the docker-based solution should work.
 
+## Local CI checks with Docker Compose
+
+From the repository root, you can run Linux build+test flows locally:
+
+```bash
+docker compose -f docker/compose.yml run --rm linux-manylinux2014
+docker compose -f docker/compose.yml run --rm linux-manylinux-2-28
+```
+
+For Linux arm64 variants:
+
+```bash
+docker compose -f docker/compose.yml run --rm linux-manylinux2014-arm64
+docker compose -f docker/compose.yml run --rm linux-manylinux-2-28-arm64
+```
+
+This mirrors the split Linux strategy:
+- manylinux2014 for Python 3.10-3.13 (x86_64 and arm64)
+- manylinux_2_28 for Python 3.14 (x86_64 and arm64)
+
+## Local macOS CI helper
+
+You can run local macOS build/wheel checks with:
+
+```bash
+./scripts/ci-macos-local.sh --arch arm64
+```
+
+To include tests as well:
+
+```bash
+./scripts/ci-macos-local.sh --arch arm64 --run-tests
+```
+
+On Apple Silicon, you can also run an x86_64 pass (requires Rosetta and x86_64 Homebrew):
+
+```bash
+./scripts/ci-macos-local.sh --arch x86_64
+```
+
+If x86_64 brew is not in the default location, set it explicitly:
+
+```bash
+BREW_BIN=/usr/local/bin/brew ./scripts/ci-macos-local.sh --arch x86_64
+```
+
+### Faster local iteration (reuse existing build artifacts)
+
+To avoid cleaning `src/`, `build/`, and `build-ecmwf/` on every run, set:
+
+```bash
+ECMWFLIBS_CLEAN=0
+```
+
+In no-clean mode, source repos are synced to the configured URL/ref by default.
+If you explicitly want to reuse existing source checkouts without syncing, set:
+
+```bash
+ECMWFLIBS_SYNC_SOURCES=0
+```
+
+You can also build against a local Magics checkout (for feature branches):
+
+```bash
+ECMWFLIBS_CLEAN=0 \
+GIT_MAGICS="file:///Users/maer/Repositories/magics" \
+MAGICS_VERSION="feature/netcdf-proj4-matrix-interpreter" \
+./scripts/build-macos.sh
+
+./scripts/wheel-macos.sh 3.10
+```
+
+Note: cloning from `file://` uses committed Git state. Commit local changes in the Magics repo before running if you need them included.
+
+## Windows host helper (optional)
+
+On a Windows machine with the required toolchain (Visual Studio + vcpkg + Git Bash), you can run:
+
+```bash
+WINARCH=x64 ./scripts/ci-windows-host.sh
+```
+
+Or pass explicit Python versions:
+
+```bash
+WINARCH=x64 ./scripts/ci-windows-host.sh 3.10 3.11 3.12 3.13 3.14
+```
+
 # Usefull links
 
 On wheels:
