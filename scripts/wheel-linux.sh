@@ -9,7 +9,8 @@
 
 set -eaux
 
-version=$(echo $1| sed 's/\.//')
+version=${1:-3.10}
+version=$(echo $version | sed 's/\.//')
 
 pybin=$(ls -1d /opt/python/cp${version}-cp${version}*/bin/python3 2>/dev/null | head -1)
 if [[ -z "$pybin" ]]
@@ -26,8 +27,10 @@ TOPDIR=$(/bin/pwd)
 
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
+$pybin -m pip install --upgrade setuptools wheel
+
 rm -fr dist wheelhouse
-$pybin setup.py bdist_wheel
+$pybin setup.py bdist_wheel --py-limited-api=cp310
 
 # Do it twice to get the list of libraries
 
@@ -38,6 +41,6 @@ pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-$pybin setup.py bdist_wheel
+$pybin setup.py bdist_wheel --py-limited-api=cp310
 auditwheel repair dist/*.whl
 rm -fr dist

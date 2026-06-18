@@ -18,6 +18,8 @@ on:
   #   types: [eccodes-updated, magics-updated]
 
   push:
+    branches:
+      - master
     paths:
       - "scripts/common.sh"
       - "scripts/build-macos.sh"
@@ -47,6 +49,9 @@ jobs:
 
     name: Build
 
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "26.0"
+
     steps:
 
       - run: sudo mkdir -p /Users/runner
@@ -62,63 +67,13 @@ jobs:
       - run: ./scripts/wheel-macos.sh "3.10"
       - run: ls -l wheelhouse
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.10
+        name: Upload abi3 wheel
         with:
-          name: wheel-macos-3.10
-          path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
-
-      ################################################################
-      - run: ./scripts/select-python.sh "3.11"
-      - run: ./scripts/wheel-macos.sh "3.11"
-      - run: ls -l wheelhouse
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.11
-        with:
-          name: wheel-macos-3.11
-          path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
-
-      ################################################################
-      - run: ./scripts/select-python.sh "3.12"
-      - run: ./scripts/wheel-macos.sh "3.12"
-      - run: ls -l wheelhouse
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.12
-        with:
-          name: wheel-macos-3.12
-          path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
-
-      ################################################################
-      - run: ./scripts/select-python.sh "3.13"
-      - run: ./scripts/wheel-macos.sh "3.13"
-      - run: ls -l wheelhouse
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.13
-        with:
-          name: wheel-macos-3.13
-          path: wheelhouse/*.whl
-      - run: rm -fr wheelhouse
-
-      ################################################################
-      - run: ./scripts/select-python.sh "3.14"
-      - run: ./scripts/wheel-macos.sh "3.14"
-      - run: ls -l wheelhouse
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.14
-        with:
-          name: wheel-macos-3.14
+          name: wheel-macos-arm64-abi3
           path: wheelhouse/*.whl
       - run: rm -fr wheelhouse
 
   test:
-    if: ${{ github.event_name != 'pull_request' }}
     needs: build
 
     runs-on: [ self-hosted, macOS, ARM64 ]
@@ -139,7 +94,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-macos-${{ matrix.python-version }}
+          name: wheel-macos-arm64-abi3
 
       - run: ls -l
       - run: ./scripts/select-python.sh  ${{ matrix.python-version }}
@@ -154,8 +109,13 @@ jobs:
       - run: .venv/bin/pip install -r tests/requirements.txt
 
       - name: Configure ecCodes/Magics runtime lookup
-        shell: python
+        shell: bash
         run: |
+          .venv/bin/python - <<'PY'
+          import sys
+          # Remove '' (cwd) from sys.path so the installed wheel is found,
+          # not the ecmwflibs/ source sub-directory in the repo root.
+          sys.path = [p for p in sys.path if p]
           import os
           import pathlib
           import ecmwflibs
@@ -179,6 +139,7 @@ jobs:
               f"DYLD_LIBRARY_PATH={libs_dir}:{os.environ.get('DYLD_LIBRARY_PATH', '')}",
               file=f,
             )
+          PY
 
       - run: .venv/bin/pip freeze
 
@@ -194,10 +155,11 @@ jobs:
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ always() }}
         with:
-          name: tests-macos-${{ matrix.python-version }}
+          name: tests-macos-arm64-py${{ matrix.python-version }}
           path: tests/*.png
+          if-no-files-found: ignore
 
       - run: rm -fr *.whl tests
 
@@ -207,26 +169,20 @@ jobs:
 
     needs: [ test, build ]
 
-    name: Deploy wheel ${{ matrix.python-version }}
+    name: Deploy macOS ARM abi3 wheel
 
     runs-on: [ self-hosted, macOS, ARM64 ]
 
-    strategy:
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
-
     steps:
 
-      - run: ./scripts/select-python.sh ${{ matrix.python-version }}
+      - run: ./scripts/select-python.sh "3.10"
       - run: pip3 install twine
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-macos-${{ matrix.python-version }}
+          name: wheel-macos-arm64-abi3
 
-      - run: twine upload *.whl
+      - run: twine upload --repository pypi *.whl
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}

@@ -18,6 +18,8 @@ on:
   #   types: [eccodes-updated, magics-updated]
 
   push:
+    branches:
+      - master
     paths:
       - "scripts/common.sh"
       - "scripts/build-windows.sh"
@@ -94,74 +96,12 @@ jobs:
 
       - run: ./scripts/wheel-windows.sh "3.10"
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.10
+        name: Upload abi3 wheel
         with:
-          name: wheel-windows-3.10-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          architecture: ${{ matrix.architecture }}
-
-      - run: ./scripts/wheel-windows.sh "3.11"
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.11
-        with:
-          name: wheel-windows-3.11-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          architecture: ${{ matrix.architecture }}
-
-      - run: ./scripts/wheel-windows.sh "3.12"
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.12
-        with:
-          name: wheel-windows-3.12-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-          architecture: ${{ matrix.architecture }}
-
-      - run: ./scripts/wheel-windows.sh "3.13"
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.13
-        with:
-          name: wheel-windows-3.13-${{ matrix.architecture }}
-          path: wheelhouse/*.whl
-
-      ################################################################
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.14"
-          architecture: ${{ matrix.architecture }}
-
-      - run: ./scripts/wheel-windows.sh "3.14"
-      - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
-        name: Upload wheel 3.14
-        with:
-          name: wheel-windows-3.14-${{ matrix.architecture }}
+          name: wheel-windows-${{ matrix.architecture }}-abi3
           path: wheelhouse/*.whl
 
   test:
-    if: ${{ github.event_name != 'pull_request' }}
     needs: build
     runs-on: windows-latest
     strategy:
@@ -189,7 +129,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+          name: wheel-windows-${{ matrix.architecture }}-abi3
 
       - run: pip install *.whl
 
@@ -226,38 +166,38 @@ jobs:
         timeout-minutes: 2
 
       - uses: actions/upload-artifact@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ always() }}
         with:
-          name: tests-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+          name: tests-windows-${{ matrix.architecture }}-py${{ matrix.python-version }}
           path: tests/*.png
+          if-no-files-found: ignore
 
   deploy:
     if: ${{ github.event_name == 'release' }}
 
     needs: [ test, build ]
 
-    name: Deploy wheel ${{ matrix.python-version }} ${{ matrix.architecture }}
+    name: Deploy Windows abi3 wheel ${{ matrix.architecture }}
 
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
         architecture: [ "x64" ]
 
     steps:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
 
       - run: pip install twine
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-windows-${{ matrix.python-version }}-${{ matrix.architecture }}
+          name: wheel-windows-${{ matrix.architecture }}-abi3
 
-      - run: twine upload *.whl
+      - run: twine upload --repository pypi *.whl
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}

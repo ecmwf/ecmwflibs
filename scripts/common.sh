@@ -9,15 +9,15 @@
 
 set -eaux
 
-GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
-ECBUILD_VERSION=master
+GIT_ECBUILD=${GIT_ECBUILD:-https://github.com/ecmwf/ecbuild.git}
+ECBUILD_VERSION=${ECBUILD_VERSION:-master}
 
-GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.46.3
-ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
+GIT_ECCODES=${GIT_ECCODES:-https://github.com/ecmwf/eccodes.git}
+ECCODES_VERSION=${ECCODES_VERSION:-2.46.3}
+ECCODES_EXTRA_CMAKE_OPTIONS=${ECCODES_EXTRA_CMAKE_OPTIONS:-"-DENABLE_PNG=ON -DENABLE_JPG=ON"}
 
-GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=4.16.1
+GIT_MAGICS=${GIT_MAGICS:-https://github.com/ecmwf/magics.git}
+MAGICS_VERSION=${MAGICS_VERSION:-4.16.1}
 
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
@@ -60,14 +60,49 @@ GIT_JASPER=https://github.com/jasper-software/jasper.git
 JASPER_VERSION=version-4.2.9
 
 mkdir -p src
-rm -fr src/ecbuild src/eccodes src/magics
-mkdir -p build build-ecmwf
-find build -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-find build-ecmwf -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+mkdir -p build build-ecmwf build-other
+: "${ECMWFLIBS_CLEAN:=1}"
+: "${ECMWFLIBS_SYNC_SOURCES:=1}"
 
-git clone --branch $ECBUILD_VERSION $GIT_ECBUILD src/ecbuild
-git clone --branch $ECCODES_VERSION $GIT_ECCODES src/eccodes
-git clone --branch $MAGICS_VERSION $GIT_MAGICS src/magics
+if [[ "$ECMWFLIBS_CLEAN" == "1" ]]
+then
+	rm -fr src/ecbuild src/eccodes src/magics
+	find build -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+	find build-ecmwf -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+	find build-other -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+fi
+
+sync_or_clone_repo() {
+	local repo_path="$1"
+	local repo_url="$2"
+	local repo_ref="$3"
+
+	if [[ ! -d "$repo_path/.git" ]]
+	then
+		rm -fr "$repo_path"
+		git clone --branch "$repo_ref" "$repo_url" "$repo_path"
+		return
+	fi
+
+	if [[ "$ECMWFLIBS_SYNC_SOURCES" != "1" ]]
+	then
+		return
+	fi
+
+	git -C "$repo_path" remote set-url origin "$repo_url"
+	git -C "$repo_path" fetch --tags --prune origin
+
+	if git -C "$repo_path" show-ref --verify --quiet "refs/remotes/origin/$repo_ref"
+	then
+		git -C "$repo_path" checkout -B "$repo_ref" "origin/$repo_ref"
+	else
+		git -C "$repo_path" checkout "$repo_ref"
+	fi
+}
+
+sync_or_clone_repo src/ecbuild "$GIT_ECBUILD" "$ECBUILD_VERSION"
+sync_or_clone_repo src/eccodes "$GIT_ECCODES" "$ECCODES_VERSION"
+sync_or_clone_repo src/magics "$GIT_MAGICS" "$MAGICS_VERSION"
 
 mkdir -p build-ecmwf/eccodes
 mkdir -p build-ecmwf/magics

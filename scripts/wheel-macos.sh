@@ -43,15 +43,15 @@ python3 --version
 which delocate-wheel
 
 rm -fr dist wheelhouse
-python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel --py-limited-api=cp310
 
 # Do it twice to get the list of libraries
 
-delocate-wheel -w wheelhouse dist/*.whl
+delocate-wheel -L dylibs -w wheelhouse dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'dylib' >libs
 python3 -m pip install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-python3 setup.py bdist_wheel
-delocate-wheel -w wheelhouse dist/*.whl
+python3 setup.py bdist_wheel --py-limited-api=cp310
+delocate-wheel -L dylibs -w wheelhouse dist/*.whl
