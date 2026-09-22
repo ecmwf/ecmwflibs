@@ -432,6 +432,7 @@ meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dxlib=disabled \
     -Dxcb=disabled \
+    -Dglib=disabled \
     $meson_cross_opt \
     $TOPDIR/build-other/cairo
 
