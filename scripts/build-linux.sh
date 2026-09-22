@@ -315,8 +315,12 @@ pkg-config = '${PKG_CONFIG:-pkg-config}'
 # their own Cflags. -idirafter (not -I): it must only be a fallback
 # searched after the sysroot, or it shadows the sysroot's own arch-correct
 # headers (stdint.h, time.h, ...) with the host's x86_64 ones.
-c_args = ['-idirafter', '/usr/include']
-cpp_args = ['-idirafter', '/usr/include']
+# _DEFAULT_SOURCE matches what cairo's own sources define, so meson's
+# has_function() probes (e.g. ctime_r) see the same glibc declarations
+# the real compile does, instead of wrongly concluding they're missing
+# and adding a conflicting fallback definition.
+c_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE']
+cpp_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE']
 
 [host_machine]
 system = 'linux'
