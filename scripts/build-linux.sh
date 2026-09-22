@@ -362,6 +362,68 @@ meson setup --prefix=$TOPDIR/install \
 cd $TOPDIR
 ninja -C build-other/fontconfig install
 
+# Build libffi, pcre2 and glib: pango and harfbuzz's hb-glib bridge both
+# need glib/gobject, and the yum-installed glib2-devel is host-arch only
+# (same reasoning as the libpng/freetype/fontconfig builds above). glib
+# has no CMake/meson-buildable libffi of its own, and needs pcre2 for
+# GRegex, so both are built first.
+glib_host_opt=""
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && glib_host_opt="--host=${CC%-gcc}"
+
+[[ -d src/libffi ]] || git clone --depth 1 --branch $LIBFFI_VERSION $GIT_LIBFFI src/libffi
+cd src/libffi
+[[ -x configure ]] || ./autogen.sh
+cd $TOPDIR
+
+mkdir -p build-other/libffi
+cd build-other/libffi
+$TOPDIR/src/libffi/configure $glib_host_opt \
+    --prefix=$TOPDIR/install \
+    --disable-static \
+    --enable-shared
+make -j$(nproc)
+make install
+cd $TOPDIR
+
+[[ -d src/pcre2 ]] || git clone --depth 1 --branch $PCRE2_VERSION $GIT_PCRE2 src/pcre2
+
+mkdir -p build-other/pcre2
+cd build-other/pcre2
+
+cmake \
+    $TOPDIR/src/pcre2 -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DPCRE2_BUILD_TESTS=OFF \
+    -DPCRE2_SUPPORT_JIT=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/pcre2 --target install
+
+# gvdb is pulled in by glib as a real git submodule (not a meson wrap
+# fetch), so it must be checked out together with glib itself.
+[[ -d src/glib ]] || git clone --depth 1 --recurse-submodules --shallow-submodules --branch $GLIB_VERSION $GIT_GLIB src/glib
+cd src/glib
+meson setup --prefix=$TOPDIR/install \
+    -Dwrap_mode=nofallback \
+    -Dlibmount=disabled \
+    -Dselinux=disabled \
+    -Dnls=disabled \
+    -Dtests=false \
+    -Dinstalled_tests=false \
+    -Dman=false \
+    -Dgtk_doc=false \
+    -Dsysprof=disabled \
+    -Ddtrace=false \
+    -Dsystemtap=false \
+    $meson_cross_opt \
+    $TOPDIR/build-other/glib
+
+cd $TOPDIR
+ninja -C build-other/glib install
+
 # Build HDF5 (provides libhdf5.so + libhdf5_hl.so, required by netcdf and ecCodes)
 [[ -d src/hdf5 ]] || git clone $GIT_HDF5 src/hdf5
 cd src/hdf5
@@ -448,8 +510,6 @@ cd src/harfbuzz
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dtests=disabled \
-    -Dglib=disabled \
-    -Dgobject=disabled \
     $meson_cross_opt \
     $TOPDIR/build-other/harfbuzz
 

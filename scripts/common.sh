@@ -44,6 +44,15 @@ EXPAT_VERSION=R_2_6_4
 GIT_FONTCONFIG=https://gitlab.freedesktop.org/fontconfig/fontconfig.git
 FONTCONFIG_VERSION=2.16.2
 
+GIT_LIBFFI=https://github.com/libffi/libffi.git
+LIBFFI_VERSION=v3.4.6
+
+GIT_PCRE2=https://github.com/PCRE2Project/pcre2.git
+PCRE2_VERSION=pcre2-10.44
+
+GIT_GLIB=https://gitlab.gnome.org/GNOME/glib.git
+GLIB_VERSION=2.78.6
+
 GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
 
