@@ -38,9 +38,20 @@ on:
 jobs:
   build_manylinux2014:
 
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            docker-arch: x64
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            docker-arch: aarch64
 
-    name: Build manylinux2014
+    runs-on: ${{ matrix.runner }}
+
+    name: Build manylinux2014 (${{ matrix.arch }})
 
     steps:
       - uses: actions/checkout@v6
@@ -49,7 +60,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/build-linux.sh'
 
       ################################################################
@@ -57,12 +68,12 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.10'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.10
         with:
-          name: wheel-manylinux2014-3.10
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.10
           path: wheelhouse/*.whl
 
       ################################################################
@@ -70,12 +81,12 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.11'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.11
         with:
-          name: wheel-manylinux2014-3.11
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.11
           path: wheelhouse/*.whl
 
       ################################################################
@@ -83,12 +94,12 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.12'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.12
         with:
-          name: wheel-manylinux2014-3.12
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.12
           path: wheelhouse/*.whl
 
       ################################################################
@@ -96,19 +107,30 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.13'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.13
         with:
-          name: wheel-manylinux2014-3.13
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.13
           path: wheelhouse/*.whl
 
   build_manylinux_2_28:
 
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            docker-arch: x64
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            docker-arch: aarch64
 
-    name: Build manylinux_2_28
+    runs-on: ${{ matrix.runner }}
+
+    name: Build manylinux_2_28 (${{ matrix.arch }})
 
     steps:
       - uses: actions/checkout@v6
@@ -117,7 +139,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux_2_28-x64:latest \
+            dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/build-linux.sh'
 
       ################################################################
@@ -125,12 +147,12 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux_2_28-x64:latest \
+            dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.14'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.14
         with:
-          name: wheel-manylinux_2_28-3.14
+          name: wheel-manylinux_2_28-${{ matrix.arch }}-3.14
           path: wheelhouse/*.whl
 
   test:
@@ -143,20 +165,40 @@ jobs:
         include:
           - python-version: "3.10"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.11"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.12"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.13"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.14"
             wheel-tag: manylinux_2_28
+            arch: x86_64
+          - python-version: "3.10"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.11"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.12"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.13"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.14"
+            wheel-tag: manylinux_2_28
+            arch: aarch64
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     env:
       ECCODES_PYTHON_USE_FINDLIBS: "1"
 
-    name: Test with ${{ matrix.python-version }}
+    name: Test ${{ matrix.arch }} with ${{ matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v6
@@ -168,7 +210,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.arch }}-${{ matrix.python-version }}
 
       - run: pip install *.whl
 
@@ -191,7 +233,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tests-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: tests-${{ matrix.wheel-tag }}-${{ matrix.arch }}-${{ matrix.python-version }}
           path: tests/*.png
 
   deploy:
@@ -203,16 +245,36 @@ jobs:
         include:
           - python-version: "3.10"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.11"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.12"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.13"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.14"
             wheel-tag: manylinux_2_28
+            arch: x86_64
+          - python-version: "3.10"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.11"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.12"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.13"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.14"
+            wheel-tag: manylinux_2_28
+            arch: aarch64
     needs: [ test, build_manylinux2014, build_manylinux_2_28 ]
-    name: Deploy wheel ${{ matrix.python-version }}
+    name: Deploy wheel ${{ matrix.arch }} ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
     steps:
@@ -226,7 +288,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.arch }}-${{ matrix.python-version }}
 
       - run: twine upload *.whl
         env:
