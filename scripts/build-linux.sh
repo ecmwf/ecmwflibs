@@ -105,6 +105,16 @@ export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH
 export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
+# meson/autotools only add -L/-rpath-link for a target's *direct*
+# dependencies. glib's own test/tool binaries (gtester, gobject-query) and
+# harfbuzz's hb-info only declare a direct dependency on libglib/libgobject
+# themselves, not on the from-source libs those pull in transitively
+# (pcre2, libffi) -- so even though e.g. libpcre2-8.so.0 installs correctly
+# into $TOPDIR/install/lib, the linker has no search path telling it where
+# to find it and fails with "not found" / undefined reference. Make every
+# subsequent build's linker invocations aware of our install prefix.
+export LDFLAGS="-L$TOPDIR/install/lib -L$TOPDIR/install/lib64 -Wl,-rpath-link,$TOPDIR/install/lib -Wl,-rpath-link,$TOPDIR/install/lib64 ${LDFLAGS:-}"
+
 # Build sqlite
 
 [[ -d src/sqlite ]] || git clone --depth 1 $GIT_SQLITE src/sqlite
@@ -377,9 +387,14 @@ cd $TOPDIR
 
 mkdir -p build-other/libffi
 cd build-other/libffi
+# libffi's configure probes `$CC -print-multi-os-directory` and, for the
+# aarch64 cross toolchain, that reports "../lib64" -- silently overriding
+# our explicit --libdir back to lib64 unless multi-os-directory support is
+# turned off.
 $TOPDIR/src/libffi/configure $glib_host_opt \
     --prefix=$TOPDIR/install \
     --libdir=$TOPDIR/install/lib \
+    --disable-multi-os-directory \
     --disable-static \
     --enable-shared
 # libffi's doc/Makefile hard-codes a call to `missing makeinfo`, and this
