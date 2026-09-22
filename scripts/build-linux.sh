@@ -135,9 +135,19 @@ cd build-other/proj
 # from the system package manager and force PROJ to use that instead of
 # picking up the cross-compiled one via PATH/CMAKE_PREFIX_PATH.
 pkg_install sqlite
-# Not `command -v sqlite3`: PATH has $TOPDIR/install/bin (our
-# cross-compiled sqlite3) ahead of the system one.
-native_sqlite3=/usr/bin/sqlite3
+
+# The system sqlite3 binary must NOT pick up our freshly built
+# libsqlite3.so via LD_LIBRARY_PATH (exported above, pointing at
+# $TOPDIR/install/lib first) - that library is a different build/version
+# than the system binary was compiled against and triggers sqlite3's own
+# "header and source version mismatch" runtime check. Wrap it so it
+# resolves its own matching system library instead.
+native_sqlite3=$TOPDIR/build-other/native-sqlite3
+cat > "$native_sqlite3" <<'WRAP'
+#!/bin/sh
+exec env -u LD_LIBRARY_PATH /usr/bin/sqlite3 "$@"
+WRAP
+chmod +x "$native_sqlite3"
 
 cmake  \
     $TOPDIR/src/proj -GNinja  \
