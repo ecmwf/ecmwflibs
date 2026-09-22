@@ -315,8 +315,8 @@ cpu = 'aarch64'
 endian = 'little'
 EOF
 fi
-meson_cross_opt=()
-[[ -n "$meson_cross_file" ]] && meson_cross_opt=(--cross-file "$meson_cross_file")
+meson_cross_opt=""
+[[ -n "$meson_cross_file" ]] && meson_cross_opt="--cross-file=$meson_cross_file"
 
 # Pixman is needed by cairo
 
@@ -324,7 +324,8 @@ meson_cross_opt=()
 cd src/pixman
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
-    "${meson_cross_opt[@]}" \
+    -Dtests=disabled \
+    $meson_cross_opt \
     $TOPDIR/build-other/pixman
 
 cd $TOPDIR
@@ -340,7 +341,7 @@ meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dxlib=disabled \
     -Dxcb=disabled \
-    "${meson_cross_opt[@]}" \
+    $meson_cross_opt \
     $TOPDIR/build-other/cairo
 
 cd $TOPDIR
@@ -354,7 +355,7 @@ mkdir -p build-other/harfbuzz
 cd src/harfbuzz
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
-    "${meson_cross_opt[@]}" \
+    $meson_cross_opt \
     $TOPDIR/build-other/harfbuzz
 
 cd $TOPDIR
@@ -370,7 +371,7 @@ cd src/fridibi
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Ddocs=false \
-    "${meson_cross_opt[@]}" \
+    $meson_cross_opt \
     $TOPDIR/build-other/fridibi
 
 cd $TOPDIR
@@ -397,7 +398,7 @@ mkdir -p build-other/pango
 cd src/pango
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
-    "${meson_cross_opt[@]}" \
+    $meson_cross_opt \
     $TOPDIR/build-other/pango
 
 cd $TOPDIR
@@ -449,6 +450,9 @@ rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 rm -fr ecmwflibs/share/magics/efas
 cp install/lib64/*.so install/lib/
-strip --strip-debug install/lib/*.so
+for f in install/lib/*.so
+do
+    strip --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
+done
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
