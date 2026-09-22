@@ -379,10 +379,11 @@ mkdir -p build-other/libffi
 cd build-other/libffi
 $TOPDIR/src/libffi/configure $glib_host_opt \
     --prefix=$TOPDIR/install \
+    --libdir=$TOPDIR/install/lib \
     --disable-static \
     --enable-shared
-make -j$(nproc)
-make install
+make -j$(nproc) MAKEINFO=true
+make install MAKEINFO=true
 cd $TOPDIR
 
 [[ -d src/pcre2 ]] || git clone --depth 1 --branch $PCRE2_VERSION $GIT_PCRE2 src/pcre2
@@ -410,6 +411,7 @@ meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dlibmount=disabled \
     -Dselinux=disabled \
+    -Dlibelf=disabled \
     -Dnls=disabled \
     -Dtests=false \
     -Dinstalled_tests=false \
