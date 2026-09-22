@@ -127,6 +127,18 @@ cd $TOPDIR
 mkdir -p build-other/proj
 cd build-other/proj
 
+# PROJ's build needs to *run* a sqlite3 binary at build time (to generate
+# proj.db), as opposed to the sqlite3 library it links against. When
+# cross-compiling (e.g. aarch64 target on an x86_64 build host), our
+# from-source sqlite3 CLI under $TOPDIR/install/bin is built for the
+# target and cannot execute on the build host, so install a native one
+# from the system package manager and force PROJ to use that instead of
+# picking up the cross-compiled one via PATH/CMAKE_PREFIX_PATH.
+pkg_install sqlite
+# Not `command -v sqlite3`: PATH has $TOPDIR/install/bin (our
+# cross-compiled sqlite3) ahead of the system one.
+native_sqlite3=/usr/bin/sqlite3
+
 cmake  \
     $TOPDIR/src/proj -GNinja  \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -136,6 +148,7 @@ cmake  \
     -DBUILD_PROJSYNC=0 \
     -DBUILD_SHARED_LIBS=1 \
     -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DEXE_SQLITE3=$native_sqlite3 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
