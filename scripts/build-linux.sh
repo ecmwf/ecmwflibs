@@ -382,8 +382,15 @@ $TOPDIR/src/libffi/configure $glib_host_opt \
     --libdir=$TOPDIR/install/lib \
     --disable-static \
     --enable-shared
-make -j$(nproc) MAKEINFO=true
-make install MAKEINFO=true
+# libffi's doc/Makefile hard-codes a call to `missing makeinfo`, and this
+# vintage of the automake `missing` script does NOT no-op gracefully when
+# the real tool is absent (it propagates makeinfo's "command not found"
+# as a build failure) -- so passing MAKEINFO=true on the make command line
+# has no effect. The manylinux images don't ship texinfo, so stub the
+# binary itself instead.
+$SUDO ln -sf /bin/true /usr/local/bin/makeinfo
+make -j$(nproc)
+make install
 cd $TOPDIR
 
 [[ -d src/pcre2 ]] || git clone --depth 1 --branch $PCRE2_VERSION $GIT_PCRE2 src/pcre2
