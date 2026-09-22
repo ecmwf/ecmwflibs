@@ -43,13 +43,15 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: ubuntu-latest
             docker-arch: x64
           - arch: aarch64
-            runner: ubuntu-24.04-arm
             docker-arch: aarch64
 
-    runs-on: ${{ matrix.runner }}
+    # The dockcross manylinux images are amd64-only cross-compilation
+    # toolchains (even the "aarch64" one, which cross-compiles to an
+    # aarch64 target from an x86_64 host) - runs-on stays ubuntu-latest
+    # for both arches.
+    runs-on: ubuntu-latest
 
     name: Build manylinux2014 (${{ matrix.arch }})
 
@@ -122,13 +124,14 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: ubuntu-latest
             docker-arch: x64
           - arch: aarch64
-            runner: ubuntu-24.04-arm
             docker-arch: aarch64
 
-    runs-on: ${{ matrix.runner }}
+    # Same reasoning as build_manylinux2014: these are amd64-only
+    # cross-compilation toolchain images, so both arches build on
+    # ubuntu-latest.
+    runs-on: ubuntu-latest
 
     name: Build manylinux_2_28 (${{ matrix.arch }})
 
