@@ -154,8 +154,8 @@ jobs:
       - run: .venv/bin/pip install -r tests/requirements.txt
 
       - name: Configure ecCodes/Magics runtime lookup
-        shell: .venv/bin/python3 {0}
         run: |
+          cat > "$RUNNER_TEMP/configure_runtime.py" <<'EOF'
           import os
           import pathlib
           import ecmwflibs
@@ -179,6 +179,8 @@ jobs:
               f"DYLD_LIBRARY_PATH={libs_dir}:{os.environ.get('DYLD_LIBRARY_PATH', '')}",
               file=f,
             )
+          EOF
+          .venv/bin/python3 "$RUNNER_TEMP/configure_runtime.py"
 
       - run: .venv/bin/pip freeze
 
