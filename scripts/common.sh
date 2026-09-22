@@ -27,7 +27,7 @@ GIT_PROJ=https://github.com/OSGeo/PROJ.git
 PROJ_VERSION=master
 
 GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
-AEC_VERSION=v1.1.3
+AEC_VERSION=v1.1.7
 
 GIT_ZLIB=https://github.com/madler/zlib.git
 ZLIB_VERSION=v1.3.1
