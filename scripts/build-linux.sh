@@ -102,7 +102,7 @@ $SUDO ln -sf $(dirname "$bootstrap_python")/meson /usr/local/bin/meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/ninja /usr/local/bin/ninja
 
 export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
-export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
 # Build sqlite
