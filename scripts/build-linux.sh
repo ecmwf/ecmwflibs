@@ -315,12 +315,15 @@ pkg-config = '${PKG_CONFIG:-pkg-config}'
 # their own Cflags. -idirafter (not -I): it must only be a fallback
 # searched after the sysroot, or it shadows the sysroot's own arch-correct
 # headers (stdint.h, time.h, ...) with the host's x86_64 ones.
-# _DEFAULT_SOURCE matches what cairo's own sources define, so meson's
-# has_function() probes (e.g. ctime_r) see the same glibc declarations
-# the real compile does, instead of wrongly concluding they're missing
-# and adding a conflicting fallback definition.
-c_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE']
-cpp_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE']
+# cairo's has_function('ctime_r') probe (called with extra `dependencies:`)
+# misdetects it as absent, so cairo defines its own fallback ctime_r --
+# which then conflicts with glibc's real (non-static) declaration. Defining
+# HAVE_CTIME_R here closes cairo's `#ifndef HAVE_CTIME_R` guard directly:
+# a command-line -D takes effect before config.h is even included, and
+# meson's #mesondefine for an unset value is a commented-out /* #undef */,
+# not a live directive, so it can't clear this.
+c_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
+cpp_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
 
 [host_machine]
 system = 'linux'
@@ -369,6 +372,7 @@ mkdir -p build-other/harfbuzz
 cd src/harfbuzz
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    -Dtests=disabled \
     $meson_cross_opt \
     $TOPDIR/build-other/harfbuzz
 
@@ -385,6 +389,7 @@ cd src/fridibi
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Ddocs=false \
+    -Dtests=false \
     $meson_cross_opt \
     $TOPDIR/build-other/fridibi
 
