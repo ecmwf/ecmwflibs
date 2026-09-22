@@ -127,27 +127,20 @@ cd $TOPDIR
 mkdir -p build-other/proj
 cd build-other/proj
 
-# PROJ's build needs to *run* a sqlite3 binary at build time (to generate
-# proj.db), as opposed to the sqlite3 library it links against. When
-# cross-compiling (e.g. aarch64 target on an x86_64 build host), our
-# from-source sqlite3 CLI under $TOPDIR/install/bin is built for the
-# target and cannot execute on the build host, so install a native one
-# from the system package manager and force PROJ to use that instead of
-# picking up the cross-compiled one via PATH/CMAKE_PREFIX_PATH.
-pkg_install sqlite
-
-# The system sqlite3 binary must NOT pick up our freshly built
-# libsqlite3.so via LD_LIBRARY_PATH (exported above, pointing at
-# $TOPDIR/install/lib first) - that library is a different build/version
-# than the system binary was compiled against and triggers sqlite3's own
-# "header and source version mismatch" runtime check. Wrap it so it
-# resolves its own matching system library instead.
-native_sqlite3=$TOPDIR/build-other/native-sqlite3
-cat > "$native_sqlite3" <<'WRAP'
-#!/bin/sh
-exec env -u LD_LIBRARY_PATH /usr/bin/sqlite3 "$@"
-WRAP
-chmod +x "$native_sqlite3"
+# PROJ needs to run sqlite3 at build time to generate proj.db, but our
+# target sqlite3 CLI can't execute on the build host when cross-compiling,
+# and the distro's own sqlite3 links against a mismatched system library.
+# Build a native, statically linked one just for this.
+[[ -d $TOPDIR/build-other/native-sqlite-src ]] || git clone --depth 1 $GIT_SQLITE $TOPDIR/build-other/native-sqlite-src
+(
+    cd $TOPDIR/build-other/native-sqlite-src
+    CC=/usr/bin/gcc ./configure \
+        --disable-tcl \
+        --disable-shared \
+        --prefix=$TOPDIR/build-other/native-sqlite-install
+    make install
+)
+native_sqlite3=$TOPDIR/build-other/native-sqlite-install/bin/sqlite3
 
 cmake  \
     $TOPDIR/src/proj -GNinja  \
@@ -214,6 +207,7 @@ cmake \
     -DJAS_ENABLE_DOC=OFF \
     -DJAS_ENABLE_PROGRAMS=OFF \
     -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DJAS_STDC_VERSION=201710L \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
