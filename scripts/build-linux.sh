@@ -312,9 +312,11 @@ pkg-config = '${PKG_CONFIG:-pkg-config}'
 # The cross-compiler doesn't search the container's own /usr/include by
 # default (it has its own sysroot), but some pkg-config'd deps (e.g.
 # fontconfig) assume it's already on the default path and omit it from
-# their own Cflags.
-c_args = ['-I/usr/include']
-cpp_args = ['-I/usr/include']
+# their own Cflags. -idirafter (not -I): it must only be a fallback
+# searched after the sysroot, or it shadows the sysroot's own arch-correct
+# headers (stdint.h, time.h, ...) with the host's x86_64 ones.
+c_args = ['-idirafter', '/usr/include']
+cpp_args = ['-idirafter', '/usr/include']
 
 [host_machine]
 system = 'linux'
