@@ -448,6 +448,8 @@ cd src/harfbuzz
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dtests=disabled \
+    -Dglib=disabled \
+    -Dgobject=disabled \
     $meson_cross_opt \
     $TOPDIR/build-other/harfbuzz
 
