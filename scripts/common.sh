@@ -13,11 +13,11 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.46.3
+ECCODES_VERSION=2.48.0
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=4.16.1
+MAGICS_VERSION=4.16.3
 
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
@@ -31,6 +31,18 @@ AEC_VERSION=v1.1.3
 
 GIT_ZLIB=https://github.com/madler/zlib.git
 ZLIB_VERSION=v1.3.1
+
+GIT_PNG=https://github.com/pnggroup/libpng.git
+PNG_VERSION=v1.6.45
+
+GIT_FREETYPE=https://gitlab.freedesktop.org/freetype/freetype.git
+FREETYPE_VERSION=VER-2-13-3
+
+GIT_EXPAT=https://github.com/libexpat/libexpat.git
+EXPAT_VERSION=R_2_6_4
+
+GIT_FONTCONFIG=https://gitlab.freedesktop.org/fontconfig/fontconfig.git
+FONTCONFIG_VERSION=2.16.2
 
 GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master

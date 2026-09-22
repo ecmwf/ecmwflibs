@@ -246,6 +246,122 @@ cmake \
 cd $TOPDIR
 cmake --build build-other/zlib --target install
 
+# Without a cross-file, meson doesn't know it's cross-compiling and its
+# sanity check tries to run the freshly built (target-arch) test binary.
+meson_cross_file=""
+if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+then
+    meson_cross_file=$TOPDIR/build-other/meson-cross.ini
+    cat > "$meson_cross_file" <<EOF
+[binaries]
+c = '$CC'
+cpp = '$CXX'
+ar = '${AR:-ar}'
+strip = '${STRIP:-strip}'
+pkg-config = '${PKG_CONFIG:-pkg-config}'
+
+[built-in options]
+# The cross-compiler doesn't search the container's own /usr/include by
+# default (it has its own sysroot), but some pkg-config'd deps (e.g.
+# fontconfig) assume it's already on the default path and omit it from
+# their own Cflags. -idirafter (not -I): it must only be a fallback
+# searched after the sysroot, or it shadows the sysroot's own arch-correct
+# headers (stdint.h, time.h, ...) with the host's x86_64 ones.
+# cairo's has_function('ctime_r') probe (called with extra dependencies)
+# misdetects it as absent, so cairo defines its own fallback ctime_r --
+# which then conflicts with glibc's real (non-static) declaration. Defining
+# HAVE_CTIME_R here closes cairo's #ifndef HAVE_CTIME_R guard directly:
+# a command-line -D takes effect before config.h is even included, and
+# meson's #mesondefine for an unset value is a commented-out /* #undef */,
+# not a live directive, so it can't clear this.
+c_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
+cpp_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
+
+[host_machine]
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+EOF
+fi
+meson_cross_opt=""
+[[ -n "$meson_cross_file" ]] && meson_cross_opt="--cross-file=$meson_cross_file"
+
+# Build libpng, freetype, expat and fontconfig from source: cairo and pango
+# link against them, and (like zlib/HDF5 above) the yum-installed *-devel
+# packages only provide host-arch (x86_64) .so files, which fail to link
+# when cross-compiling for aarch64.
+
+[[ -d src/libpng ]] || git clone --depth 1 --branch $PNG_VERSION $GIT_PNG src/libpng
+
+mkdir -p build-other/libpng
+cd build-other/libpng
+
+cmake \
+    $TOPDIR/src/libpng -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DPNG_TESTS=OFF \
+    -DPNG_TOOLS=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/libpng --target install
+
+[[ -d src/freetype ]] || git clone --depth 1 --branch $FREETYPE_VERSION $GIT_FREETYPE src/freetype
+
+mkdir -p build-other/freetype
+cd build-other/freetype
+
+cmake \
+    $TOPDIR/src/freetype -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DFT_DISABLE_HARFBUZZ=TRUE \
+    -DFT_DISABLE_BROTLI=TRUE \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/freetype --target install
+
+[[ -d src/expat ]] || git clone --depth 1 --branch $EXPAT_VERSION $GIT_EXPAT src/expat
+
+mkdir -p build-other/expat
+cd build-other/expat
+
+cmake \
+    $TOPDIR/src/expat/expat -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DEXPAT_BUILD_TESTS=OFF \
+    -DEXPAT_BUILD_EXAMPLES=OFF \
+    -DEXPAT_BUILD_TOOLS=OFF \
+    -DEXPAT_BUILD_DOCS=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/expat --target install
+
+# fontconfig needs gperf, a host-side code generator (runs on the build
+# machine, not the target, so it's unaffected by cross-compiling).
+[[ -d src/fontconfig ]] || git clone --depth 1 --branch $FONTCONFIG_VERSION $GIT_FONTCONFIG src/fontconfig
+cd src/fontconfig
+meson setup --prefix=$TOPDIR/install \
+    -Dwrap_mode=nofallback \
+    -Ddoc=disabled \
+    -Dnls=disabled \
+    -Dtests=disabled \
+    -Dtools=disabled \
+    -Dcache-build=disabled \
+    $meson_cross_opt \
+    $TOPDIR/build-other/fontconfig
+
+cd $TOPDIR
+ninja -C build-other/fontconfig install
+
 # Build HDF5 (provides libhdf5.so + libhdf5_hl.so, required by netcdf and ecCodes)
 [[ -d src/hdf5 ]] || git clone $GIT_HDF5 src/hdf5
 cd src/hdf5
@@ -292,48 +408,6 @@ cmake -GNinja \
 
 cd $TOPDIR
 cmake --build build-other/netcdf --target install
-
-
-# Without a cross-file, meson doesn't know it's cross-compiling and its
-# sanity check tries to run the freshly built (target-arch) test binary.
-meson_cross_file=""
-if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
-then
-    meson_cross_file=$TOPDIR/build-other/meson-cross.ini
-    cat > "$meson_cross_file" <<EOF
-[binaries]
-c = '$CC'
-cpp = '$CXX'
-ar = '${AR:-ar}'
-strip = '${STRIP:-strip}'
-pkg-config = '${PKG_CONFIG:-pkg-config}'
-
-[built-in options]
-# The cross-compiler doesn't search the container's own /usr/include by
-# default (it has its own sysroot), but some pkg-config'd deps (e.g.
-# fontconfig) assume it's already on the default path and omit it from
-# their own Cflags. -idirafter (not -I): it must only be a fallback
-# searched after the sysroot, or it shadows the sysroot's own arch-correct
-# headers (stdint.h, time.h, ...) with the host's x86_64 ones.
-# cairo's has_function('ctime_r') probe (called with extra `dependencies:`)
-# misdetects it as absent, so cairo defines its own fallback ctime_r --
-# which then conflicts with glibc's real (non-static) declaration. Defining
-# HAVE_CTIME_R here closes cairo's `#ifndef HAVE_CTIME_R` guard directly:
-# a command-line -D takes effect before config.h is even included, and
-# meson's #mesondefine for an unset value is a commented-out /* #undef */,
-# not a live directive, so it can't clear this.
-c_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
-cpp_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
-
-[host_machine]
-system = 'linux'
-cpu_family = 'aarch64'
-cpu = 'aarch64'
-endian = 'little'
-EOF
-fi
-meson_cross_opt=""
-[[ -n "$meson_cross_file" ]] && meson_cross_opt="--cross-file=$meson_cross_file"
 
 # Pixman is needed by cairo
 
