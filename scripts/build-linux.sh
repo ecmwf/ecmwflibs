@@ -231,6 +231,21 @@ cmake \
 cd $TOPDIR
 cmake --build build-other/jpeg --target install
 
+# Build zlib (system zlib-devel is host-arch only, no use when cross-compiling)
+[[ -d src/zlib ]] || git clone --depth 1 --branch $ZLIB_VERSION $GIT_ZLIB src/zlib
+
+mkdir -p build-other/zlib
+cd build-other/zlib
+
+cmake \
+    $TOPDIR/src/zlib -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/zlib --target install
+
 # Build HDF5 (provides libhdf5.so + libhdf5_hl.so, required by netcdf and ecCodes)
 [[ -d src/hdf5 ]] || git clone $GIT_HDF5 src/hdf5
 cd src/hdf5
@@ -249,6 +264,7 @@ cmake \
     -DHDF5_BUILD_EXAMPLES=OFF \
     -DHDF5_BUILD_TESTS=OFF \
     -DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
@@ -278,12 +294,37 @@ cd $TOPDIR
 cmake --build build-other/netcdf --target install
 
 
+# Without a cross-file, meson doesn't know it's cross-compiling and its
+# sanity check tries to run the freshly built (target-arch) test binary.
+meson_cross_file=""
+if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+then
+    meson_cross_file=$TOPDIR/build-other/meson-cross.ini
+    cat > "$meson_cross_file" <<EOF
+[binaries]
+c = '$CC'
+cpp = '$CXX'
+ar = '${AR:-ar}'
+strip = '${STRIP:-strip}'
+pkg-config = '${PKG_CONFIG:-pkg-config}'
+
+[host_machine]
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+EOF
+fi
+meson_cross_opt=()
+[[ -n "$meson_cross_file" ]] && meson_cross_opt=(--cross-file "$meson_cross_file")
+
 # Pixman is needed by cairo
 
 [[ -d src/pixman ]] || git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    "${meson_cross_opt[@]}" \
     $TOPDIR/build-other/pixman
 
 cd $TOPDIR
@@ -299,6 +340,7 @@ meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dxlib=disabled \
     -Dxcb=disabled \
+    "${meson_cross_opt[@]}" \
     $TOPDIR/build-other/cairo
 
 cd $TOPDIR
@@ -312,6 +354,7 @@ mkdir -p build-other/harfbuzz
 cd src/harfbuzz
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    "${meson_cross_opt[@]}" \
     $TOPDIR/build-other/harfbuzz
 
 cd $TOPDIR
@@ -327,6 +370,7 @@ cd src/fridibi
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Ddocs=false \
+    "${meson_cross_opt[@]}" \
     $TOPDIR/build-other/fridibi
 
 cd $TOPDIR
@@ -353,6 +397,7 @@ mkdir -p build-other/pango
 cd src/pango
 meson setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    "${meson_cross_opt[@]}" \
     $TOPDIR/build-other/pango
 
 cd $TOPDIR

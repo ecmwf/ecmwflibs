@@ -29,6 +29,9 @@ PROJ_VERSION=master
 GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
 AEC_VERSION=v1.1.3
 
+GIT_ZLIB=https://github.com/madler/zlib.git
+ZLIB_VERSION=v1.3.1
+
 GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
 
