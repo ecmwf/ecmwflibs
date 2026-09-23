@@ -221,6 +221,8 @@ jobs:
 
     steps:
 
+      - uses: actions/checkout@v6
+
       - run: ./scripts/select-python.sh ${{ matrix.python-version }}
       - run: pip3 install twine
 
