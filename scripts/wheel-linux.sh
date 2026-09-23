@@ -62,8 +62,33 @@ then
     export AUDITWHEEL_PLAT=auto
 fi
 
+# distutils names a compiled extension module after $pybin's *own*
+# sysconfig (EXT_SUFFIX), e.g. "_ecmwflibs.cpython-310-x86_64-linux-gnu.so"
+# -- even when $CC (honored via the CC/CXX env vars) is the aarch64 cross
+# compiler and the object code inside is genuinely aarch64. A real aarch64
+# CPython's import system looks for a file matching *its own* EXT_SUFFIX
+# (...-aarch64-linux-gnu.so), doesn't find it, and reports the submodule as
+# entirely missing (ModuleNotFoundError, not an ELF-format error). The
+# compiled code itself is already correct for aarch64 -- only the filename
+# is wrong -- so build first, patch the filename in place, then package
+# with --skip-build so setup.py doesn't rebuild (and re-mis-name) it.
+build_wheel() {
+    if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+    then
+        $pybin setup.py build
+        find build -name '*-x86_64-linux-gnu.so' -print0 |
+            while IFS= read -r -d '' f
+            do
+                mv "$f" "${f/x86_64-linux-gnu/aarch64-linux-gnu}"
+            done
+        $pybin setup.py bdist_wheel --skip-build $plat_name_opt
+    else
+        $pybin setup.py bdist_wheel
+    fi
+}
+
 rm -fr dist wheelhouse
-$pybin setup.py bdist_wheel $plat_name_opt
+build_wheel
 
 # Do it twice to get the list of libraries
 
@@ -74,6 +99,6 @@ pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-$pybin setup.py bdist_wheel $plat_name_opt
+build_wheel
 $pybin -m auditwheel repair dist/*.whl
 rm -fr dist
