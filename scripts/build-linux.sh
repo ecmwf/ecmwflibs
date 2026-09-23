@@ -684,25 +684,26 @@ rm -fr ecmwflibs/share/magics/efas
 # resolves to plain "lib" (it can't detect a lib64-using system while cross-
 # compiling), so install/lib64 never gets created -- nothing to consolidate.
 #
-# Use `cat` (plain read/write) instead of `cp` here. `cp` -- both the bulk
-# multi-arg form and a one-file-at-a-time loop -- has been observed to
-# segfault (exit 139) reproducibly and specifically in the manylinux_2_28
-# (x86_64) job across separate runs, on a plain copy of a regular file, while
-# the identical files copy fine on manylinux2014 (x86_64). Since it crashes
-# even one file at a time, it isn't about argument count; it looks like
-# coreutils' cp hitting a bad code path (e.g. its copy_file_range/sendfile
-# fast path) specific to that image/runner/filesystem combination. `cat`
-# doesn't use that acceleration, so it sidesteps whatever this is.
+# Found the actual root cause after chasing this crash through several
+# disguises (segfault on bulk `cp *.so`, segfault on a single-file `cp`, then
+# "file too short" on a single-file `cat`): LD_LIBRARY_PATH (exported above)
+# puts install/lib first in the dynamic loader's search path. On
+# manylinux_2_28 (x86_64), the system's own cp/cat/strip (a combined
+# `coreutils` binary) is itself dynamically linked against libpcre2-8.so.0 --
+# a library we *also* build from source, with the same SONAME. While this
+# loop is busy writing our freshly-copied libpcre2-8.so.0 into install/lib,
+# any other process that needs that name resolves it via LD_LIBRARY_PATH to
+# our own copy -- mid-write and truncated -- instead of the system's,
+# producing "file too short" or a segfault depending on exact timing. Clear
+# LD_LIBRARY_PATH for these plain file operations so they use the system's
+# own libraries instead of racing ours.
 if compgen -G "install/lib64/*.so" > /dev/null
 then
-    for f in install/lib64/*.so
-    do
-        cat "$f" > "install/lib/$(basename "$f")"
-    done
+    LD_LIBRARY_PATH= cp install/lib64/*.so install/lib/
 fi
 for f in install/lib/*.so
 do
-    strip --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
+    LD_LIBRARY_PATH= strip --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
 done
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
