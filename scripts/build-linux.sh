@@ -111,7 +111,12 @@ then
     # option to turn it off) and then fails to link against on the
     # aarch64 target ("File in wrong format"). We don't need X11 support
     # in the wheel, so just don't let pkg-config see those .pc files.
+    # PKG_CONFIG_PATH alone doesn't do this -- pkg-config always additionally
+    # searches its compiled-in default directories (which is exactly
+    # /usr/lib64/pkgconfig etc.) unless PKG_CONFIG_LIBDIR (which *replaces*
+    # rather than prepends to that default list) is also set.
     export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig
+    export PKG_CONFIG_LIBDIR=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig
 else
     export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
     export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig:$PKG_CONFIG_PATH
