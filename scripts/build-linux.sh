@@ -623,6 +623,13 @@ ninja -C build-other/pango install
 
 cd $TOPDIR/build-ecmwf/eccodes
 
+# ecbuild's ENABLE_TESTS defaults to ON, so without -DENABLE_TESTS=0 the
+# "install" target also pulls in eccodes' own ~150 test executables (none of
+# which ecmwflibs needs -- only libeccodes.so itself is used). Building them
+# is pure overhead, and on manylinux_2_28 (aarch64) one of them failed to
+# link ("undefined reference to grib_ieee_decode_array<double>" and related
+# IEEE-encoding symbols), failing the whole job even though libeccodes.so
+# itself built fine.
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/eccodes \
     -GNinja \
@@ -633,6 +640,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
+    -DENABLE_TESTS=0 \
     -DCMAKE_PREFIX_PATH="$TOPDIR/install;$TOPDIR/install/lib/cmake;$TOPDIR/install/lib64/cmake" \
     -Dlibaec_DIR="$libaec_cmake_dir" \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install $ECCODES_EXTRA_CMAKE_OPTIONS
@@ -675,9 +683,20 @@ rm -fr ecmwflibs/share/magics/efas
 # On the aarch64 cross build, GNUInstallDirs' lib64-vs-lib heuristic
 # resolves to plain "lib" (it can't detect a lib64-using system while cross-
 # compiling), so install/lib64 never gets created -- nothing to consolidate.
+#
+# Copy one file at a time rather than a single `cp install/lib64/*.so
+# install/lib/` -- the bulk multi-arg form has been observed to segfault
+# (exit 139) specifically in the manylinux_2_28 (x86_64) job, reproducibly
+# across separate runs, while the identical file list copies fine one at a
+# time. Root cause not identified (looks like a coreutils/image-specific
+# issue triggered by that many source args in one invocation), but the
+# per-file loop sidesteps it.
 if compgen -G "install/lib64/*.so" > /dev/null
 then
-    cp install/lib64/*.so install/lib/
+    for f in install/lib64/*.so
+    do
+        cp "$f" install/lib/
+    done
 fi
 for f in install/lib/*.so
 do
