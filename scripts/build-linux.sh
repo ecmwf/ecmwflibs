@@ -635,6 +635,15 @@ cmake --build build-ecmwf/eccodes --target install
 # Build magics
 
 cd $TOPDIR/build-ecmwf/magics
+# Unlike every other CMake-based dependency build in this script, this call
+# was missing -DCMAKE_PREFIX_PATH. On a native (x86_64) build CMake's
+# find_library/find_path still turn up our from-source libs some other way,
+# but when cross-compiling, CMAKE_FIND_ROOT_PATH restricts those commands to
+# the toolchain sysroot unless CMAKE_PREFIX_PATH explicitly adds our from-
+# source install prefix -- so e.g. FindPROJ.cmake's plain find_library/
+# find_path fallback (after its pkg-config lookup, which itself fails because
+# it searches for a "PROJ" module but our from-source proj.pc is lowercase)
+# comes up empty on aarch64.
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
     -GNinja \
@@ -643,6 +652,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
