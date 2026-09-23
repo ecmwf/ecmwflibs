@@ -13,11 +13,11 @@ GIT_ECBUILD=https://github.com/ecmwf/ecbuild.git
 ECBUILD_VERSION=master
 
 GIT_ECCODES=https://github.com/ecmwf/eccodes.git
-ECCODES_VERSION=2.48.0
+ECCODES_VERSION=2.46.3
 ECCODES_EXTRA_CMAKE_OPTIONS="-DENABLE_PNG=ON -DENABLE_JPG=ON"
 
 GIT_MAGICS=https://github.com/ecmwf/magics.git
-MAGICS_VERSION=4.16.3
+MAGICS_VERSION=4.16.1
 
 
 GIT_SQLITE=https://github.com/sqlite/sqlite.git
