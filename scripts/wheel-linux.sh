@@ -100,9 +100,12 @@ build_wheel
 
 $pybin -m auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
-pip3 install -r tools/requirements.txt
+# Bare pip3/python3 aren't on PATH in the real manylinux images (unlike
+# dockcross's, which exposed a distro-level default) -- use $pybin, same
+# as everywhere else in this script.
+$pybin -m pip install --quiet -r tools/requirements.txt
 
-python3 ./tools/copy-licences.py libs
+$pybin ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 build_wheel
