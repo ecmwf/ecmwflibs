@@ -684,18 +684,20 @@ rm -fr ecmwflibs/share/magics/efas
 # resolves to plain "lib" (it can't detect a lib64-using system while cross-
 # compiling), so install/lib64 never gets created -- nothing to consolidate.
 #
-# Copy one file at a time rather than a single `cp install/lib64/*.so
-# install/lib/` -- the bulk multi-arg form has been observed to segfault
-# (exit 139) specifically in the manylinux_2_28 (x86_64) job, reproducibly
-# across separate runs, while the identical file list copies fine one at a
-# time. Root cause not identified (looks like a coreutils/image-specific
-# issue triggered by that many source args in one invocation), but the
-# per-file loop sidesteps it.
+# Use `cat` (plain read/write) instead of `cp` here. `cp` -- both the bulk
+# multi-arg form and a one-file-at-a-time loop -- has been observed to
+# segfault (exit 139) reproducibly and specifically in the manylinux_2_28
+# (x86_64) job across separate runs, on a plain copy of a regular file, while
+# the identical files copy fine on manylinux2014 (x86_64). Since it crashes
+# even one file at a time, it isn't about argument count; it looks like
+# coreutils' cp hitting a bad code path (e.g. its copy_file_range/sendfile
+# fast path) specific to that image/runner/filesystem combination. `cat`
+# doesn't use that acceleration, so it sidesteps whatever this is.
 if compgen -G "install/lib64/*.so" > /dev/null
 then
     for f in install/lib64/*.so
     do
-        cp "$f" install/lib/
+        cat "$f" > "install/lib/$(basename "$f")"
     done
 fi
 for f in install/lib/*.so
