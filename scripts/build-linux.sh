@@ -594,9 +594,16 @@ cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
 
 mkdir -p build-other/pango
 cd src/pango
+# gobject-introspection's g-ir-scanner needs to run target-arch binaries it
+# just built, which isn't possible when cross-compiling (no qemu here) --
+# and PKG_CONFIG_LIBDIR is scoped away from the host's gobject-introspection-1.0
+# on the aarch64 cross build anyway (see above), so pango can't find it either.
+pango_gir_opt=""
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && pango_gir_opt="-Dgir=false"
 meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     $meson_cross_opt \
+    $pango_gir_opt \
     $TOPDIR/build-other/pango
 
 cd $TOPDIR
