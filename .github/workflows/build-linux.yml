@@ -79,6 +79,16 @@ jobs:
             dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/build-linux.sh'
 
+      # The docker container runs as root, so files it creates under
+      # src/install/build-other land on the runner's filesystem owned by
+      # root with whatever (sometimes restrictive) permissions the build
+      # left them with. actions/cache's post-job save step runs as the
+      # unprivileged runner user and silently fails to tar them up
+      # ("Permission denied", visible only as a ##[warning], not a job
+      # failure) otherwise -- so the cache never actually got populated.
+      - name: Fix permissions for caching
+        run: sudo chmod -R a+rX src install build-other
+
       ################################################################
       - run: |
           docker run --rm \
@@ -167,6 +177,10 @@ jobs:
             -w /workspace \
             dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/build-linux.sh'
+
+      # See build_manylinux2014's "Fix permissions for caching" step for why.
+      - name: Fix permissions for caching
+        run: sudo chmod -R a+rX src install build-other
 
       ################################################################
       - run: |
