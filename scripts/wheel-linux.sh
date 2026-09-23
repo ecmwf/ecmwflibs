@@ -26,8 +26,18 @@ TOPDIR=$(/bin/pwd)
 
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
+# $pybin is a host-arch (x86_64) interpreter even when cross-compiling for
+# aarch64 -- the /opt/python pythons here are only used to run setup.py, not
+# to execute the target binaries -- so distutils' own platform detection
+# tags the wheel "linux_x86_64" regardless of what the .so's were actually
+# built for. Override it explicitly so auditwheel repair (which reads the
+# untagged wheel's platform to check it against $AUDITWHEEL_PLAT) has the
+# right starting tag to convert into e.g. manylinux2014_aarch64.
+plat_name_opt=""
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && plat_name_opt="--plat-name=linux_aarch64"
+
 rm -fr dist wheelhouse
-$pybin setup.py bdist_wheel
+$pybin setup.py bdist_wheel $plat_name_opt
 
 # Do it twice to get the list of libraries
 
@@ -38,6 +48,6 @@ pip3 install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-$pybin setup.py bdist_wheel
+$pybin setup.py bdist_wheel $plat_name_opt
 auditwheel repair dist/*.whl
 rm -fr dist
