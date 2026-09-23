@@ -37,18 +37,31 @@ plat_name_opt=""
 [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && plat_name_opt="--plat-name=linux_aarch64"
 
 # The manylinux images ship their own auditwheel preinstalled under
-# /usr/local/bin (an internal pipx install, apparently predating aarch64
-# support in its bundled policy -- it lists only x86_64 platform tags). A
-# bare `auditwheel` on PATH resolves to that one, so install our own into
-# $pybin's own site-packages and invoke it explicitly via -m instead.
+# /usr/local/bin (an internal pipx install). A bare `auditwheel` on PATH
+# resolves to that one, so install our own into $pybin's own site-packages
+# and invoke it explicitly via -m instead.
 $pybin -m pip install --quiet --upgrade auditwheel
+
+# auditwheel's --plat/$AUDITWHEEL_PLAT choices are always restricted to
+# policies for auditwheel's *own* auto-detected host architecture
+# (auditwheel.architecture.Architecture.detect(), which just reads
+# platform.machine(), i.e. this container's kernel/uname -- x86_64, even
+# though we're cross-compiling) -- so the dockcross image's baked-in
+# AUDITWHEEL_PLAT=manylinux*_aarch64 always gets rejected as an "invalid
+# choice" here, no matter which auditwheel is installed. But when repairing,
+# auditwheel separately determines the *wheel's own* architecture straight
+# from the ELF machine type of the .so's inside it -- so "auto" mode (which
+# every auditwheel version accepts, unlike a specific aarch64 policy name)
+# still repairs the wheel correctly for its actual (aarch64) contents.
+audit_plat_opt=""
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && audit_plat_opt="--plat=auto"
 
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel $plat_name_opt
 
 # Do it twice to get the list of libraries
 
-$pybin -m auditwheel repair dist/*.whl
+$pybin -m auditwheel repair $audit_plat_opt dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
 
@@ -56,5 +69,5 @@ python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel $plat_name_opt
-$pybin -m auditwheel repair dist/*.whl
+$pybin -m auditwheel repair $audit_plat_opt dist/*.whl
 rm -fr dist
