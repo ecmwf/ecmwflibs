@@ -94,7 +94,11 @@ done
 
 pkg_install flex
 pkg_install bison
-pkg_install pax-utils # For lddtree
+# For lddtree (a diagnostic-only call below, its output isn't used by the
+# build) -- unlike dockcross's image, the real manylinux2014_aarch64 image
+# doesn't have this package in its default repos, so don't let its absence
+# abort the whole build.
+pkg_install pax-utils || echo "warning: pax-utils unavailable, skipping lddtree diagnostics"
 
 bootstrap_python=$(ls -1d /opt/python/cp3*/bin/python3 | head -1)
 bootstrap_pip=$(dirname "$bootstrap_python")/pip3
@@ -676,7 +680,7 @@ cmake --build build-ecmwf/magics --target install
 
 # Create wheel
 
-lddtree install/lib*/libMagPlus.so
+command -v lddtree >/dev/null 2>&1 && lddtree install/lib*/libMagPlus.so || echo "lddtree not available, skipping"
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 rm -fr ecmwflibs/share/magics/efas
