@@ -83,6 +83,22 @@ JPEG_VERSION=3.1.4.1
 GIT_JASPER=https://github.com/jasper-software/jasper.git
 JASPER_VERSION=version-4.2.9
 
+# CI caches install/, build-other/ and src/ across runs so an unrelated
+# script edit doesn't force a ~20min rebuild of every already-working
+# dependency. A restored build-other/X is already `meson setup` and needs
+# --reconfigure (plain `meson setup` errors out on an existing build dir);
+# --reconfigure also makes sure a cache hit still picks up new flags (e.g.
+# a changed LDFLAGS/meson option), rather than silently keeping stale ones.
+meson_setup() {
+    local builddir="${!#}"
+    if [[ -f "$builddir/build.ninja" ]]
+    then
+        meson setup --reconfigure "$@"
+    else
+        meson setup "$@"
+    fi
+}
+
 mkdir -p src
 rm -fr src/ecbuild src/eccodes src/magics
 mkdir -p build build-ecmwf

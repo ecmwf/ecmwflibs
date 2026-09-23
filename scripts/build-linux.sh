@@ -359,7 +359,7 @@ cmake --build build-other/expat --target install
 # machine, not the target, so it's unaffected by cross-compiling).
 [[ -d src/fontconfig ]] || git clone --depth 1 --branch $FONTCONFIG_VERSION $GIT_FONTCONFIG src/fontconfig
 cd src/fontconfig
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Ddoc=disabled \
     -Dnls=disabled \
@@ -429,7 +429,7 @@ cmake --build build-other/pcre2 --target install
 # fetch), so it must be checked out together with glib itself.
 [[ -d src/glib ]] || git clone --depth 1 --recurse-submodules --shallow-submodules --branch $GLIB_VERSION $GIT_GLIB src/glib
 cd src/glib
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dlibmount=disabled \
     -Dselinux=disabled \
@@ -499,7 +499,7 @@ cmake --build build-other/netcdf --target install
 
 [[ -d src/pixman ]] || git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dtests=disabled \
     $meson_cross_opt \
@@ -514,7 +514,7 @@ ninja -C build-other/pixman install
 [[ -d src/cairo ]] || git clone $GIT_CAIRO src/cairo
 cd src/cairo
 git checkout $CAIRO_VERSION
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dxlib=disabled \
     -Dxcb=disabled \
@@ -531,7 +531,7 @@ ninja -C build-other/cairo install
 
 mkdir -p build-other/harfbuzz
 cd src/harfbuzz
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dtests=disabled \
     $meson_cross_opt \
@@ -547,7 +547,7 @@ ninja -C build-other/harfbuzz install
 mkdir -p build-other/fridibi
 cd src/fridibi
 
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Ddocs=false \
     -Dtests=false \
@@ -576,7 +576,7 @@ cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
 
 mkdir -p build-other/pango
 cd src/pango
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     $meson_cross_opt \
     $TOPDIR/build-other/pango

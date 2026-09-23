@@ -55,6 +55,23 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # Reuses already-built dependencies across runs so an edit to
+      # build-linux.sh doesn't force a full ~20min rebuild of every
+      # unrelated (already-working) step -- only what the edit actually
+      # touches, plus whatever comes after it in the script, re-runs.
+      # Falls back to the most recent same-arch cache when the exact
+      # hash doesn't match (restore-keys), and build-linux.sh's meson_setup
+      # helper (in common.sh) handles reconfiguring an already-built dir.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            src
+            install
+            build-other
+          key: build-linux2014-${{ matrix.arch }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
+          restore-keys: |
+            build-linux2014-${{ matrix.arch }}-
+
       - run: |
           docker run --rm \
             -v "$PWD:/workspace" \
@@ -132,6 +149,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+
+      # See build_manylinux2014's cache step for why this is here.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            src
+            install
+            build-other
+          key: build-linux228-${{ matrix.arch }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
+          restore-keys: |
+            build-linux228-${{ matrix.arch }}-
 
       - run: |
           docker run --rm \
