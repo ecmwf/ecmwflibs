@@ -1,11 +1,3 @@
 magics
-# Pinned to match ECCODES_VERSION in scripts/common.sh: the eccodes wheel
-# loads its own libeccodes (via eccodeslib) into the same process as
-# ecmwflibs's bundled libeccodes. eccodes' own eccodeslib dependency is
-# unconstrained, so eccodeslib must be pinned explicitly too, or pip just
-# grabs the latest eccodeslib regardless of the eccodes pin -- reintroducing
-# the version skew between the two in-process copies that causes eccodes
-# errors like "No creator for type transient".
-eccodes==2.48.0
-eccodeslib==2.48.0.26
+eccodes
 pytest
