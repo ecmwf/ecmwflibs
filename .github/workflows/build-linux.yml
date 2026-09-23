@@ -75,9 +75,9 @@ jobs:
             src
             install
             build-other
-          key: build-linux2014-${{ matrix.arch }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
+          key: build-linux2014-${{ matrix.arch }}-${{ matrix.runner }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
           restore-keys: |
-            build-linux2014-${{ matrix.arch }}-
+            build-linux2014-${{ matrix.arch }}-${{ matrix.runner }}-
 
       - run: |
           docker run --rm \
@@ -176,9 +176,9 @@ jobs:
             src
             install
             build-other
-          key: build-linux228-${{ matrix.arch }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
+          key: build-linux228-${{ matrix.arch }}-${{ matrix.runner }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
           restore-keys: |
-            build-linux228-${{ matrix.arch }}-
+            build-linux228-${{ matrix.arch }}-${{ matrix.runner }}-
 
       - run: |
           docker run --rm \
