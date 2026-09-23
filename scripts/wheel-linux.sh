@@ -36,12 +36,19 @@ export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PA
 plat_name_opt=""
 [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && plat_name_opt="--plat-name=linux_aarch64"
 
+# The manylinux images ship their own auditwheel preinstalled under
+# /usr/local/bin (an internal pipx install, apparently predating aarch64
+# support in its bundled policy -- it lists only x86_64 platform tags). A
+# bare `auditwheel` on PATH resolves to that one, so install our own into
+# $pybin's own site-packages and invoke it explicitly via -m instead.
+$pybin -m pip install --quiet --upgrade auditwheel
+
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel $plat_name_opt
 
 # Do it twice to get the list of libraries
 
-auditwheel repair dist/*.whl
+$pybin -m auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
 
@@ -49,5 +56,5 @@ python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel $plat_name_opt
-auditwheel repair dist/*.whl
+$pybin -m auditwheel repair dist/*.whl
 rm -fr dist
