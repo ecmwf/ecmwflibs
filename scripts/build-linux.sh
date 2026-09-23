@@ -701,9 +701,16 @@ if compgen -G "install/lib64/*.so" > /dev/null
 then
     LD_LIBRARY_PATH= cp install/lib64/*.so install/lib/
 fi
+# On the aarch64 cross build, plain `strip` is the host's native x86_64
+# binary and can't parse aarch64 ELF files ("Unable to recognise the format
+# of the input file"), so every .so silently keeps its debug info -- same
+# cross-toolchain-prefix derivation as the --host= triple below.
+strip_bin=strip
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && strip_bin="${CC%-gcc}-strip"
+
 for f in install/lib/*.so
 do
-    LD_LIBRARY_PATH= strip --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
+    LD_LIBRARY_PATH= "$strip_bin" --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
 done
 
 ./scripts/versions.sh > ecmwflibs/versions.txt
