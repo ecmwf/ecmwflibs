@@ -8,6 +8,13 @@
 # nor does it submit to any jurisdiction.
 # (rm -fr build-other/netcdf/; cd src/netcdf/; git checkout -- .; git clean -f .)
 set -eaux
+
+# dockcross's cross-compiling images always export CC (to the cross
+# compiler); the real, native manylinux images don't export it at all, and
+# under set -u every "$CC" == aarch64* cross-compile check below would
+# otherwise abort with "CC: unbound variable" on a native build.
+CC="${CC:-}"
+
 : > versions
 
 # CI caching restores src/install/build-other via actions/cache, which runs

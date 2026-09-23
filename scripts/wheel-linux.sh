@@ -9,6 +9,9 @@
 
 set -eaux
 
+# See build-linux.sh for why this is needed on a native (non-dockcross) build.
+CC="${CC:-}"
+
 version=$(echo $1| sed 's/\.//')
 
 pybin=$(ls -1d /opt/python/cp${version}-cp${version}*/bin/python3 2>/dev/null | head -1)
