@@ -10,6 +10,14 @@
 set -eaux
 : > versions
 
+# CI caching restores src/install/build-other via actions/cache, which runs
+# on the *host* as the unprivileged runner user -- so cached files end up
+# owned by that user, not root. This container runs as root, and git
+# refuses to operate inside a repo whose owning UID doesn't match the
+# current user ("dubious ownership", CVE-2022-24765 mitigation) -- which
+# every git checkout under src/ hits as soon as a cache actually restores.
+git config --global --add safe.directory '*'
+
 SUDO=""
 if [[ $(id -u) -ne 0 ]]
 then
