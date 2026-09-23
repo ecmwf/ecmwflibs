@@ -664,7 +664,13 @@ lddtree install/lib*/libMagPlus.so
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 rm -fr ecmwflibs/share/magics/efas
-cp install/lib64/*.so install/lib/
+# On the aarch64 cross build, GNUInstallDirs' lib64-vs-lib heuristic
+# resolves to plain "lib" (it can't detect a lib64-using system while cross-
+# compiling), so install/lib64 never gets created -- nothing to consolidate.
+if compgen -G "install/lib64/*.so" > /dev/null
+then
+    cp install/lib64/*.so install/lib/
+fi
 for f in install/lib/*.so
 do
     strip --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
