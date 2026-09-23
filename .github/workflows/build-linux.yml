@@ -43,12 +43,19 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            docker-arch: x64
+            runner: ubuntu-latest
+            image: dockcross/manylinux2014-x64:latest
+          # dockcross's aarch64 image cross-compiles from x86_64, but its
+          # bundled crosstool-ng toolchain doesn't actually honor the
+          # manylinux2014 glibc baseline (glibc 2.31+ instead of 2.17 --
+          # a known, unresolved upstream issue: dockcross/dockcross#443).
+          # Building natively on a real arm64 runner against the real PyPA
+          # image sidesteps the cross-toolchain entirely.
           - arch: aarch64
-            docker-arch: aarch64
+            runner: ubuntu-24.04-arm
+            image: quay.io/pypa/manylinux2014_aarch64:latest
 
-    # dockcross's "aarch64" images are amd64-only cross-compilers, so both arches build here.
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
 
     name: Build manylinux2014 (${{ matrix.arch }})
 
@@ -76,7 +83,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/build-linux.sh'
 
       # The docker container runs as root, so files it creates under
@@ -94,7 +101,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/wheel-linux.sh 3.10'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.10
@@ -107,7 +114,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/wheel-linux.sh 3.11'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.11
@@ -120,7 +127,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/wheel-linux.sh 3.12'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.12
@@ -133,7 +140,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/wheel-linux.sh 3.13'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.13
@@ -148,12 +155,14 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            docker-arch: x64
+            runner: ubuntu-latest
+            image: dockcross/manylinux_2_28-x64:latest
+          # See build_manylinux2014's aarch64 entry for why this is native.
           - arch: aarch64
-            docker-arch: aarch64
+            runner: ubuntu-24.04-arm
+            image: quay.io/pypa/manylinux_2_28_aarch64:latest
 
-    # Same reasoning as build_manylinux2014.
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
 
     name: Build manylinux_2_28 (${{ matrix.arch }})
 
@@ -175,7 +184,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/build-linux.sh'
 
       # See build_manylinux2014's "Fix permissions for caching" step for why.
@@ -187,7 +196,7 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
+            ${{ matrix.image }} \
             bash -lc './scripts/wheel-linux.sh 3.14'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.14
