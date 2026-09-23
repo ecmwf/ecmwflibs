@@ -10,6 +10,14 @@
 set -eaux
 : > versions
 
+# CI caching restores src/install/build-other via actions/cache, which runs
+# on the *host* as the unprivileged runner user -- so cached files end up
+# owned by that user, not root. This container runs as root, and git
+# refuses to operate inside a repo whose owning UID doesn't match the
+# current user ("dubious ownership", CVE-2022-24765 mitigation) -- which
+# every git checkout under src/ hits as soon as a cache actually restores.
+git config --global --add safe.directory '*'
+
 SUDO=""
 if [[ $(id -u) -ne 0 ]]
 then
@@ -101,9 +109,37 @@ $SUDO pip3 install ninja auditwheel meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/meson /usr/local/bin/meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/ninja /usr/local/bin/ninja
 
-export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
-export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$PKG_CONFIG_PATH
+if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+then
+    # Cross-compiling: keep pkg-config scoped to our own from-source
+    # install prefix only. The host's system pkgconfig dirs (/usr/lib64,
+    # /usr/lib) only contain host-arch (x86_64) .pc files -- notably
+    # Xft/Xrender/X11, pulled in transitively by cairo-devel -- which
+    # pango auto-detects (dependency('xft', required: false), no meson
+    # option to turn it off) and then fails to link against on the
+    # aarch64 target ("File in wrong format"). We don't need X11 support
+    # in the wheel, so just don't let pkg-config see those .pc files.
+    # PKG_CONFIG_PATH alone doesn't do this -- pkg-config always additionally
+    # searches its compiled-in default directories (which is exactly
+    # /usr/lib64/pkgconfig etc.) unless PKG_CONFIG_LIBDIR (which *replaces*
+    # rather than prepends to that default list) is also set.
+    export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig
+    export PKG_CONFIG_LIBDIR=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig
+else
+    export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
+    export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig:$PKG_CONFIG_PATH
+fi
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
+
+# meson/autotools only add -L/-rpath-link for a target's *direct*
+# dependencies. glib's own test/tool binaries (gtester, gobject-query) and
+# harfbuzz's hb-info only declare a direct dependency on libglib/libgobject
+# themselves, not on the from-source libs those pull in transitively
+# (pcre2, libffi) -- so even though e.g. libpcre2-8.so.0 installs correctly
+# into $TOPDIR/install/lib, the linker has no search path telling it where
+# to find it and fails with "not found" / undefined reference. Make every
+# subsequent build's linker invocations aware of our install prefix.
+export LDFLAGS="-L$TOPDIR/install/lib -L$TOPDIR/install/lib64 -Wl,-rpath-link,$TOPDIR/install/lib -Wl,-rpath-link,$TOPDIR/install/lib64 ${LDFLAGS:-}"
 
 # Build sqlite
 
@@ -127,6 +163,21 @@ cd $TOPDIR
 mkdir -p build-other/proj
 cd build-other/proj
 
+# PROJ needs to run sqlite3 at build time to generate proj.db, but our
+# target sqlite3 CLI can't execute on the build host when cross-compiling,
+# and the distro's own sqlite3 links against a mismatched system library.
+# Build a native, statically linked one just for this.
+[[ -d $TOPDIR/build-other/native-sqlite-src ]] || git clone --depth 1 $GIT_SQLITE $TOPDIR/build-other/native-sqlite-src
+(
+    cd $TOPDIR/build-other/native-sqlite-src
+    CC=/usr/bin/gcc ./configure \
+        --disable-tcl \
+        --disable-shared \
+        --prefix=$TOPDIR/build-other/native-sqlite-install
+    make install
+)
+native_sqlite3=$TOPDIR/build-other/native-sqlite-install/bin/sqlite3
+
 cmake  \
     $TOPDIR/src/proj -GNinja  \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -135,6 +186,8 @@ cmake  \
     -DBUILD_TESTING=0 \
     -DBUILD_PROJSYNC=0 \
     -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DEXE_SQLITE3=$native_sqlite3 \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
@@ -190,6 +243,7 @@ cmake \
     -DJAS_ENABLE_DOC=OFF \
     -DJAS_ENABLE_PROGRAMS=OFF \
     -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DJAS_STDC_VERSION=201710L \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
@@ -213,6 +267,213 @@ cmake \
 cd $TOPDIR
 cmake --build build-other/jpeg --target install
 
+# Build zlib (system zlib-devel is host-arch only, no use when cross-compiling)
+[[ -d src/zlib ]] || git clone --depth 1 --branch $ZLIB_VERSION $GIT_ZLIB src/zlib
+
+mkdir -p build-other/zlib
+cd build-other/zlib
+
+cmake \
+    $TOPDIR/src/zlib -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/zlib --target install
+
+# Without a cross-file, meson doesn't know it's cross-compiling and its
+# sanity check tries to run the freshly built (target-arch) test binary.
+meson_cross_file=""
+if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+then
+    meson_cross_file=$TOPDIR/build-other/meson-cross.ini
+    cat > "$meson_cross_file" <<EOF
+[binaries]
+c = '$CC'
+cpp = '$CXX'
+ar = '${AR:-ar}'
+strip = '${STRIP:-strip}'
+pkg-config = '${PKG_CONFIG:-pkg-config}'
+
+[built-in options]
+# The cross-compiler doesn't search the container's own /usr/include by
+# default (it has its own sysroot), but some pkg-config'd deps (e.g.
+# fontconfig) assume it's already on the default path and omit it from
+# their own Cflags. -idirafter (not -I): it must only be a fallback
+# searched after the sysroot, or it shadows the sysroot's own arch-correct
+# headers (stdint.h, time.h, ...) with the host's x86_64 ones.
+# cairo's has_function('ctime_r') probe (called with extra dependencies)
+# misdetects it as absent, so cairo defines its own fallback ctime_r --
+# which then conflicts with glibc's real (non-static) declaration. Defining
+# HAVE_CTIME_R here closes cairo's #ifndef HAVE_CTIME_R guard directly:
+# a command-line -D takes effect before config.h is even included, and
+# meson's #mesondefine for an unset value is a commented-out /* #undef */,
+# not a live directive, so it can't clear this.
+c_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
+cpp_args = ['-idirafter', '/usr/include', '-D_DEFAULT_SOURCE', '-DHAVE_CTIME_R=1']
+
+[host_machine]
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+EOF
+fi
+meson_cross_opt=""
+[[ -n "$meson_cross_file" ]] && meson_cross_opt="--cross-file=$meson_cross_file"
+
+# Build libpng, freetype, expat and fontconfig from source: cairo and pango
+# link against them, and (like zlib/HDF5 above) the yum-installed *-devel
+# packages only provide host-arch (x86_64) .so files, which fail to link
+# when cross-compiling for aarch64.
+
+[[ -d src/libpng ]] || git clone --depth 1 --branch $PNG_VERSION $GIT_PNG src/libpng
+
+mkdir -p build-other/libpng
+cd build-other/libpng
+
+cmake \
+    $TOPDIR/src/libpng -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DPNG_TESTS=OFF \
+    -DPNG_TOOLS=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/libpng --target install
+
+[[ -d src/freetype ]] || git clone --depth 1 --branch $FREETYPE_VERSION $GIT_FREETYPE src/freetype
+
+mkdir -p build-other/freetype
+cd build-other/freetype
+
+cmake \
+    $TOPDIR/src/freetype -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DFT_DISABLE_HARFBUZZ=TRUE \
+    -DFT_DISABLE_BROTLI=TRUE \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/freetype --target install
+
+[[ -d src/expat ]] || git clone --depth 1 --branch $EXPAT_VERSION $GIT_EXPAT src/expat
+
+mkdir -p build-other/expat
+cd build-other/expat
+
+cmake \
+    $TOPDIR/src/expat/expat -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DEXPAT_BUILD_TESTS=OFF \
+    -DEXPAT_BUILD_EXAMPLES=OFF \
+    -DEXPAT_BUILD_TOOLS=OFF \
+    -DEXPAT_BUILD_DOCS=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/expat --target install
+
+# fontconfig needs gperf, a host-side code generator (runs on the build
+# machine, not the target, so it's unaffected by cross-compiling).
+[[ -d src/fontconfig ]] || git clone --depth 1 --branch $FONTCONFIG_VERSION $GIT_FONTCONFIG src/fontconfig
+cd src/fontconfig
+meson_setup --prefix=$TOPDIR/install \
+    -Dwrap_mode=nofallback \
+    -Ddoc=disabled \
+    -Dnls=disabled \
+    -Dtests=disabled \
+    -Dtools=disabled \
+    -Dcache-build=disabled \
+    $meson_cross_opt \
+    $TOPDIR/build-other/fontconfig
+
+cd $TOPDIR
+ninja -C build-other/fontconfig install
+
+# Build libffi, pcre2 and glib: pango and harfbuzz's hb-glib bridge both
+# need glib/gobject, and the yum-installed glib2-devel is host-arch only
+# (same reasoning as the libpng/freetype/fontconfig builds above). glib
+# has no CMake/meson-buildable libffi of its own, and needs pcre2 for
+# GRegex, so both are built first.
+glib_host_opt=""
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && glib_host_opt="--host=${CC%-gcc}"
+
+[[ -d src/libffi ]] || git clone --depth 1 --branch $LIBFFI_VERSION $GIT_LIBFFI src/libffi
+cd src/libffi
+[[ -x configure ]] || ./autogen.sh
+cd $TOPDIR
+
+mkdir -p build-other/libffi
+cd build-other/libffi
+# libffi's configure probes `$CC -print-multi-os-directory` and, for the
+# aarch64 cross toolchain, that reports "../lib64" -- silently overriding
+# our explicit --libdir back to lib64 unless multi-os-directory support is
+# turned off.
+$TOPDIR/src/libffi/configure $glib_host_opt \
+    --prefix=$TOPDIR/install \
+    --libdir=$TOPDIR/install/lib \
+    --disable-multi-os-directory \
+    --disable-static \
+    --enable-shared
+# libffi's doc/Makefile hard-codes a call to `missing makeinfo`, and this
+# vintage of the automake `missing` script does NOT no-op gracefully when
+# the real tool is absent (it propagates makeinfo's "command not found"
+# as a build failure) -- so passing MAKEINFO=true on the make command line
+# has no effect. The manylinux images don't ship texinfo, so stub the
+# binary itself instead.
+$SUDO ln -sf /bin/true /usr/local/bin/makeinfo
+make -j$(nproc)
+make install
+cd $TOPDIR
+
+[[ -d src/pcre2 ]] || git clone --depth 1 --branch $PCRE2_VERSION $GIT_PCRE2 src/pcre2
+
+mkdir -p build-other/pcre2
+cd build-other/pcre2
+
+cmake \
+    $TOPDIR/src/pcre2 -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DBUILD_SHARED_LIBS=1 \
+    -DPCRE2_BUILD_TESTS=OFF \
+    -DPCRE2_SUPPORT_JIT=OFF \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
+    -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
+
+cd $TOPDIR
+cmake --build build-other/pcre2 --target install
+
+# gvdb is pulled in by glib as a real git submodule (not a meson wrap
+# fetch), so it must be checked out together with glib itself.
+[[ -d src/glib ]] || git clone --depth 1 --recurse-submodules --shallow-submodules --branch $GLIB_VERSION $GIT_GLIB src/glib
+cd src/glib
+meson_setup --prefix=$TOPDIR/install \
+    -Dwrap_mode=nofallback \
+    -Dlibmount=disabled \
+    -Dselinux=disabled \
+    -Dlibelf=disabled \
+    -Dnls=disabled \
+    -Dtests=false \
+    -Dinstalled_tests=false \
+    -Dman=false \
+    -Dgtk_doc=false \
+    -Dsysprof=disabled \
+    -Ddtrace=false \
+    -Dsystemtap=false \
+    $meson_cross_opt \
+    $TOPDIR/build-other/glib
+
+cd $TOPDIR
+ninja -C build-other/glib install
+
 # Build HDF5 (provides libhdf5.so + libhdf5_hl.so, required by netcdf and ecCodes)
 [[ -d src/hdf5 ]] || git clone $GIT_HDF5 src/hdf5
 cd src/hdf5
@@ -231,6 +492,7 @@ cmake \
     -DHDF5_BUILD_EXAMPLES=OFF \
     -DHDF5_BUILD_TESTS=OFF \
     -DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
@@ -259,13 +521,14 @@ cmake -GNinja \
 cd $TOPDIR
 cmake --build build-other/netcdf --target install
 
-
 # Pixman is needed by cairo
 
 [[ -d src/pixman ]] || git clone --depth 1 $GIT_PIXMAN src/pixman
 cd src/pixman
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    -Dtests=disabled \
+    $meson_cross_opt \
     $TOPDIR/build-other/pixman
 
 cd $TOPDIR
@@ -277,10 +540,12 @@ ninja -C build-other/pixman install
 [[ -d src/cairo ]] || git clone $GIT_CAIRO src/cairo
 cd src/cairo
 git checkout $CAIRO_VERSION
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Dxlib=disabled \
     -Dxcb=disabled \
+    -Dglib=disabled \
+    $meson_cross_opt \
     $TOPDIR/build-other/cairo
 
 cd $TOPDIR
@@ -292,8 +557,10 @@ ninja -C build-other/cairo install
 
 mkdir -p build-other/harfbuzz
 cd src/harfbuzz
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    -Dtests=disabled \
+    $meson_cross_opt \
     $TOPDIR/build-other/harfbuzz
 
 cd $TOPDIR
@@ -306,9 +573,11 @@ ninja -C build-other/harfbuzz install
 mkdir -p build-other/fridibi
 cd src/fridibi
 
-meson setup --prefix=$TOPDIR/install \
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
     -Ddocs=false \
+    -Dtests=false \
+    $meson_cross_opt \
     $TOPDIR/build-other/fridibi
 
 cd $TOPDIR
@@ -333,8 +602,16 @@ cp src/pango/pango/meson.build.patched src/pango/pango/meson.build
 
 mkdir -p build-other/pango
 cd src/pango
-meson setup --prefix=$TOPDIR/install \
+# gobject-introspection's g-ir-scanner needs to run target-arch binaries it
+# just built, which isn't possible when cross-compiling (no qemu here) --
+# and PKG_CONFIG_LIBDIR is scoped away from the host's gobject-introspection-1.0
+# on the aarch64 cross build anyway (see above), so pango can't find it either.
+pango_gir_opt=""
+[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && pango_gir_opt="-Dgir=false"
+meson_setup --prefix=$TOPDIR/install \
     -Dwrap_mode=nofallback \
+    $meson_cross_opt \
+    $pango_gir_opt \
     $TOPDIR/build-other/pango
 
 cd $TOPDIR
@@ -346,6 +623,13 @@ ninja -C build-other/pango install
 
 cd $TOPDIR/build-ecmwf/eccodes
 
+# ecbuild's ENABLE_TESTS defaults to ON, so without -DENABLE_TESTS=0 the
+# "install" target also pulls in eccodes' own ~150 test executables (none of
+# which ecmwflibs needs -- only libeccodes.so itself is used). Building them
+# is pure overhead, and on manylinux_2_28 (aarch64) one of them failed to
+# link ("undefined reference to grib_ieee_decode_array<double>" and related
+# IEEE-encoding symbols), failing the whole job even though libeccodes.so
+# itself built fine.
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/eccodes \
     -GNinja \
@@ -356,6 +640,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_MEMFS=1 \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=0 \
     -DENABLE_INSTALL_ECCODES_SAMPLES=0 \
+    -DENABLE_TESTS=0 \
     -DCMAKE_PREFIX_PATH="$TOPDIR/install;$TOPDIR/install/lib/cmake;$TOPDIR/install/lib64/cmake" \
     -Dlibaec_DIR="$libaec_cmake_dir" \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install $ECCODES_EXTRA_CMAKE_OPTIONS
@@ -366,6 +651,15 @@ cmake --build build-ecmwf/eccodes --target install
 # Build magics
 
 cd $TOPDIR/build-ecmwf/magics
+# Unlike every other CMake-based dependency build in this script, this call
+# was missing -DCMAKE_PREFIX_PATH. On a native (x86_64) build CMake's
+# find_library/find_path still turn up our from-source libs some other way,
+# but when cross-compiling, CMAKE_FIND_ROOT_PATH restricts those commands to
+# the toolchain sysroot unless CMAKE_PREFIX_PATH explicitly adds our from-
+# source install prefix -- so e.g. FindPROJ.cmake's plain find_library/
+# find_path fallback (after its pkg-config lookup, which itself fails because
+# it searches for a "PROJ" module but our from-source proj.pc is lowercase)
+# comes up empty on aarch64.
 $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
     -GNinja \
@@ -374,6 +668,7 @@ $TOPDIR/src/ecbuild/bin/ecbuild \
     -DENABLE_FORTRAN=0 \
     -DENABLE_BUILD_TOOLS=0 \
     -Deccodes_DIR=$TOPDIR/install/lib/cmake/eccodes \
+    -DCMAKE_PREFIX_PATH=$TOPDIR/install \
     -DCMAKE_INSTALL_PREFIX=$TOPDIR/install
 
 cd $TOPDIR
@@ -385,7 +680,30 @@ lddtree install/lib*/libMagPlus.so
 rm -fr dist wheelhouse ecmwflibs/share
 cp -r install/share ecmwflibs/
 rm -fr ecmwflibs/share/magics/efas
-cp install/lib64/*.so install/lib/
-strip --strip-debug install/lib/*.so
+# On the aarch64 cross build, GNUInstallDirs' lib64-vs-lib heuristic
+# resolves to plain "lib" (it can't detect a lib64-using system while cross-
+# compiling), so install/lib64 never gets created -- nothing to consolidate.
+#
+# Found the actual root cause after chasing this crash through several
+# disguises (segfault on bulk `cp *.so`, segfault on a single-file `cp`, then
+# "file too short" on a single-file `cat`): LD_LIBRARY_PATH (exported above)
+# puts install/lib first in the dynamic loader's search path. On
+# manylinux_2_28 (x86_64), the system's own cp/cat/strip (a combined
+# `coreutils` binary) is itself dynamically linked against libpcre2-8.so.0 --
+# a library we *also* build from source, with the same SONAME. While this
+# loop is busy writing our freshly-copied libpcre2-8.so.0 into install/lib,
+# any other process that needs that name resolves it via LD_LIBRARY_PATH to
+# our own copy -- mid-write and truncated -- instead of the system's,
+# producing "file too short" or a segfault depending on exact timing. Clear
+# LD_LIBRARY_PATH for these plain file operations so they use the system's
+# own libraries instead of racing ours.
+if compgen -G "install/lib64/*.so" > /dev/null
+then
+    LD_LIBRARY_PATH= cp install/lib64/*.so install/lib/
+fi
+for f in install/lib/*.so
+do
+    LD_LIBRARY_PATH= strip --strip-debug "$f" || echo "warning: strip failed on $f, leaving it unstripped"
+done
 
 ./scripts/versions.sh > ecmwflibs/versions.txt

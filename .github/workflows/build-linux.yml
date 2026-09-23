@@ -38,31 +38,68 @@ on:
 jobs:
   build_manylinux2014:
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            docker-arch: x64
+          - arch: aarch64
+            docker-arch: aarch64
+
+    # dockcross's "aarch64" images are amd64-only cross-compilers, so both arches build here.
     runs-on: ubuntu-latest
 
-    name: Build manylinux2014
+    name: Build manylinux2014 (${{ matrix.arch }})
 
     steps:
       - uses: actions/checkout@v6
+
+      # Reuses already-built dependencies across runs so an edit to
+      # build-linux.sh doesn't force a full ~20min rebuild of every
+      # unrelated (already-working) step -- only what the edit actually
+      # touches, plus whatever comes after it in the script, re-runs.
+      # Falls back to the most recent same-arch cache when the exact
+      # hash doesn't match (restore-keys), and build-linux.sh's meson_setup
+      # helper (in common.sh) handles reconfiguring an already-built dir.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            src
+            install
+            build-other
+          key: build-linux2014-${{ matrix.arch }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
+          restore-keys: |
+            build-linux2014-${{ matrix.arch }}-
 
       - run: |
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/build-linux.sh'
+
+      # The docker container runs as root, so files it creates under
+      # src/install/build-other land on the runner's filesystem owned by
+      # root with whatever (sometimes restrictive) permissions the build
+      # left them with. actions/cache's post-job save step runs as the
+      # unprivileged runner user and silently fails to tar them up
+      # ("Permission denied", visible only as a ##[warning], not a job
+      # failure) otherwise -- so the cache never actually got populated.
+      - name: Fix permissions for caching
+        run: sudo chmod -R a+rX src install build-other
 
       ################################################################
       - run: |
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.10'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.10
         with:
-          name: wheel-manylinux2014-3.10
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.10
           path: wheelhouse/*.whl
 
       ################################################################
@@ -70,12 +107,12 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.11'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.11
         with:
-          name: wheel-manylinux2014-3.11
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.11
           path: wheelhouse/*.whl
 
       ################################################################
@@ -83,12 +120,12 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.12'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.12
         with:
-          name: wheel-manylinux2014-3.12
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.12
           path: wheelhouse/*.whl
 
       ################################################################
@@ -96,41 +133,66 @@ jobs:
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux2014-x64:latest \
+            dockcross/manylinux2014-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.13'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.13
         with:
-          name: wheel-manylinux2014-3.13
+          name: wheel-manylinux2014-${{ matrix.arch }}-3.13
           path: wheelhouse/*.whl
 
   build_manylinux_2_28:
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            docker-arch: x64
+          - arch: aarch64
+            docker-arch: aarch64
+
+    # Same reasoning as build_manylinux2014.
     runs-on: ubuntu-latest
 
-    name: Build manylinux_2_28
+    name: Build manylinux_2_28 (${{ matrix.arch }})
 
     steps:
       - uses: actions/checkout@v6
+
+      # See build_manylinux2014's cache step for why this is here.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            src
+            install
+            build-other
+          key: build-linux228-${{ matrix.arch }}-${{ hashFiles('scripts/build-linux.sh', 'scripts/common.sh') }}
+          restore-keys: |
+            build-linux228-${{ matrix.arch }}-
 
       - run: |
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux_2_28-x64:latest \
+            dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/build-linux.sh'
+
+      # See build_manylinux2014's "Fix permissions for caching" step for why.
+      - name: Fix permissions for caching
+        run: sudo chmod -R a+rX src install build-other
 
       ################################################################
       - run: |
           docker run --rm \
             -v "$PWD:/workspace" \
             -w /workspace \
-            dockcross/manylinux_2_28-x64:latest \
+            dockcross/manylinux_2_28-${{ matrix.docker-arch }}:latest \
             bash -lc './scripts/wheel-linux.sh 3.14'
       - uses: actions/upload-artifact@v4
         name: Upload wheel 3.14
         with:
-          name: wheel-manylinux_2_28-3.14
+          name: wheel-manylinux_2_28-${{ matrix.arch }}-3.14
           path: wheelhouse/*.whl
 
   test:
@@ -143,20 +205,40 @@ jobs:
         include:
           - python-version: "3.10"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.11"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.12"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.13"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.14"
             wheel-tag: manylinux_2_28
+            arch: x86_64
+          - python-version: "3.10"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.11"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.12"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.13"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.14"
+            wheel-tag: manylinux_2_28
+            arch: aarch64
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     env:
       ECCODES_PYTHON_USE_FINDLIBS: "1"
 
-    name: Test with ${{ matrix.python-version }}
+    name: Test ${{ matrix.arch }} with ${{ matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v6
@@ -168,7 +250,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.arch }}-${{ matrix.python-version }}
 
       - run: pip install *.whl
 
@@ -191,7 +273,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tests-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: tests-${{ matrix.wheel-tag }}-${{ matrix.arch }}-${{ matrix.python-version }}
           path: tests/*.png
 
   deploy:
@@ -203,16 +285,36 @@ jobs:
         include:
           - python-version: "3.10"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.11"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.12"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.13"
             wheel-tag: manylinux2014
+            arch: x86_64
           - python-version: "3.14"
             wheel-tag: manylinux_2_28
+            arch: x86_64
+          - python-version: "3.10"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.11"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.12"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.13"
+            wheel-tag: manylinux2014
+            arch: aarch64
+          - python-version: "3.14"
+            wheel-tag: manylinux_2_28
+            arch: aarch64
     needs: [ test, build_manylinux2014, build_manylinux_2_28 ]
-    name: Deploy wheel ${{ matrix.python-version }}
+    name: Deploy wheel ${{ matrix.arch }} ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
     steps:
@@ -226,7 +328,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.python-version }}
+          name: wheel-${{ matrix.wheel-tag }}-${{ matrix.arch }}-${{ matrix.python-version }}
 
       - run: twine upload *.whl
         env:

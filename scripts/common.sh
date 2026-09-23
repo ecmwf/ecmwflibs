@@ -27,7 +27,31 @@ GIT_PROJ=https://github.com/OSGeo/PROJ.git
 PROJ_VERSION=master
 
 GIT_AEC=https://github.com/MathisRosenhauer/libaec.git
-AEC_VERSION=v1.1.3
+AEC_VERSION=v1.1.7
+
+GIT_ZLIB=https://github.com/madler/zlib.git
+ZLIB_VERSION=v1.3.1
+
+GIT_PNG=https://github.com/pnggroup/libpng.git
+PNG_VERSION=v1.6.45
+
+GIT_FREETYPE=https://gitlab.freedesktop.org/freetype/freetype.git
+FREETYPE_VERSION=VER-2-13-3
+
+GIT_EXPAT=https://github.com/libexpat/libexpat.git
+EXPAT_VERSION=R_2_6_4
+
+GIT_FONTCONFIG=https://gitlab.freedesktop.org/fontconfig/fontconfig.git
+FONTCONFIG_VERSION=2.16.2
+
+GIT_LIBFFI=https://github.com/libffi/libffi.git
+LIBFFI_VERSION=v3.4.6
+
+GIT_PCRE2=https://github.com/PCRE2Project/pcre2.git
+PCRE2_VERSION=pcre2-10.44
+
+GIT_GLIB=https://gitlab.gnome.org/GNOME/glib.git
+GLIB_VERSION=2.78.6
 
 GIT_PIXMAN=https://gitlab.freedesktop.org/pixman/pixman
 PIXMAN_VERSION=master
@@ -58,6 +82,22 @@ JPEG_VERSION=3.1.4.1
 
 GIT_JASPER=https://github.com/jasper-software/jasper.git
 JASPER_VERSION=version-4.2.9
+
+# CI caches install/, build-other/ and src/ across runs so an unrelated
+# script edit doesn't force a ~20min rebuild of every already-working
+# dependency. A restored build-other/X is already `meson setup` and needs
+# --reconfigure (plain `meson setup` errors out on an existing build dir);
+# --reconfigure also makes sure a cache hit still picks up new flags (e.g.
+# a changed LDFLAGS/meson option), rather than silently keeping stale ones.
+meson_setup() {
+    local builddir="${!#}"
+    if [[ -f "$builddir/build.ninja" ]]
+    then
+        meson setup --reconfigure "$@"
+    else
+        meson setup "$@"
+    fi
+}
 
 mkdir -p src
 rm -fr src/ecbuild src/eccodes src/magics

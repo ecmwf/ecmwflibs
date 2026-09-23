@@ -249,6 +249,10 @@ ENTRIES = {
         "home": "https://github.com/leethomason/tinyxml2",
         "copying": "https://raw.githubusercontent.com/leethomason/tinyxml2/master/LICENSE.txt",
     },
+    "libwebp": {
+        "home": "https://github.com/webmproject/libwebp",
+        "copying": "https://raw.githubusercontent.com/webmproject/libwebp/main/COPYING",
+    },
 }
 
 PATTERNS = {
@@ -276,6 +280,8 @@ ALIASES = {
     "libXdmcp": "libX11",
     "libXau": "libX11",
     "libXext": "libX11",
+    # sharpyuv is bundled inside the libwebp repo and shares its license.
+    "libsharpyuv": "libwebp",
 }
 
 if False:
