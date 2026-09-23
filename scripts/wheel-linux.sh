@@ -48,20 +48,26 @@ $pybin -m pip install --quiet --upgrade auditwheel
 # platform.machine(), i.e. this container's kernel/uname -- x86_64, even
 # though we're cross-compiling) -- so the dockcross image's baked-in
 # AUDITWHEEL_PLAT=manylinux*_aarch64 always gets rejected as an "invalid
-# choice" here, no matter which auditwheel is installed. But when repairing,
-# auditwheel separately determines the *wheel's own* architecture straight
-# from the ELF machine type of the .so's inside it -- so "auto" mode (which
-# every auditwheel version accepts, unlike a specific aarch64 policy name)
-# still repairs the wheel correctly for its actual (aarch64) contents.
-audit_plat_opt=""
-[[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]] && audit_plat_opt="--plat=auto"
+# choice", no matter which auditwheel is installed. Passing --plat=auto on
+# the command line does NOT fix this: auditwheel's argparse validates
+# $AUDITWHEEL_PLAT against those choices inside the *argument definition*
+# itself (EnvironmentDefault.__init__, invoked while building the parser),
+# which blows up before a single command-line argument is even looked at.
+# The env var itself has to be overridden. When repairing, auditwheel
+# separately determines the *wheel's own* architecture straight from the ELF
+# machine type of the .so's inside it, so plain "auto" mode still repairs the
+# wheel correctly for its actual (aarch64) contents.
+if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+then
+    export AUDITWHEEL_PLAT=auto
+fi
 
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel $plat_name_opt
 
 # Do it twice to get the list of libraries
 
-$pybin -m auditwheel repair $audit_plat_opt dist/*.whl
+$pybin -m auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
 pip3 install -r tools/requirements.txt
 
@@ -69,5 +75,5 @@ python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 $pybin setup.py bdist_wheel $plat_name_opt
-$pybin -m auditwheel repair $audit_plat_opt dist/*.whl
+$pybin -m auditwheel repair dist/*.whl
 rm -fr dist
