@@ -1,0 +1,160 @@
+# (C) Copyright 2020 ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
+name: Build Linux
+
+on:
+
+  workflow_dispatch: {}
+
+  release:
+    types: [created]
+
+  # repository_dispatch:
+  #   types: [eccodes-updated, magics-updated]
+
+  push:
+    branches:
+    - master
+    paths:
+    - 'scripts/common.sh'
+    - 'scripts/build-linux.sh'
+    - 'scripts/wheel-linux.sh'
+    - 'tools/copy-licences.py'
+  pull_request:
+    branches:
+    - master
+    paths:
+    - 'scripts/common.sh'
+    - 'scripts/build-linux.sh'
+    - 'scripts/wheel-linux.sh'
+    - 'tools/copy-licences.py'
+
+
+jobs:
+  build_arm64:
+
+    runs-on: ubuntu-latest
+    container: dockcross/manylinux2014-aarch64:latest
+
+    name: Build manylinux2014 for ARM64
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: ./scripts/build-linux.sh
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.7
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.7
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.8
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.8
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.9
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.9
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.10
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.10
+        path: wheelhouse/*.whl
+
+    ################################################################
+    - run: ./scripts/wheel-linux.sh 3.11
+    - uses: actions/upload-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-3.11
+        path: wheelhouse/*.whl
+
+  test_arm64:
+
+    needs: build_arm64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    runs-on: [self-hosted, ARM64]  # Use an ARM64 runner
+
+    name: Test with ARM64 - ${{ matrix.python-version }}
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-manylinux2014-aarch64-${{ matrix.python-version }}
+
+    - run: pip install *.whl
+
+    - run: pip install -r tests/requirements.txt
+
+    - run: pip freeze
+
+    - run: env | sort
+
+    - name: Run tests
+      run: pytest -v -s
+      working-directory: tests
+      
+    
+  deploy:
+
+    if: ${{ github.event_name == 'release' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        arch: ["aarch64"]
+
+    needs: [test_arm64, build_arm64]
+
+    name: Deploy wheel ${{ matrix.python-version }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        # We cannot use 3.6 as it is not supported anymore by github actions
+        # but we still want to deploy the wheels we built for it
+        python-version: "3.10"
+
+    - run: pip install twine
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: wheel-manylinux2014-${{ matrix.python-version }}
+
+    - run: twine upload *.whl
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
