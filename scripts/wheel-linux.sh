@@ -9,6 +9,9 @@
 
 set -eaux
 
+# See build-linux.sh for why this is needed on a native (non-dockcross) build.
+CC="${CC:-}"
+
 version=$(echo $1| sed 's/\.//')
 
 pybin=$(ls -1d /opt/python/cp${version}-cp${version}*/bin/python3 2>/dev/null | head -1)
@@ -40,7 +43,10 @@ plat_name_opt=""
 # /usr/local/bin (an internal pipx install). A bare `auditwheel` on PATH
 # resolves to that one, so install our own into $pybin's own site-packages
 # and invoke it explicitly via -m instead.
-$pybin -m pip install --quiet --upgrade auditwheel
+# dockcross's image had setuptools/wheel preinstalled on its bootstrap
+# pythons; the real manylinux2014_aarch64 image's cp310 doesn't. Install
+# them explicitly instead of relying on what a given image happens to bundle.
+$pybin -m pip install --quiet --upgrade auditwheel setuptools wheel
 
 # auditwheel's --plat/$AUDITWHEEL_PLAT choices are always restricted to
 # policies for auditwheel's *own* auto-detected host architecture
@@ -94,9 +100,12 @@ build_wheel
 
 $pybin -m auditwheel repair dist/*.whl
 unzip -l wheelhouse/*.whl | grep 'ecmwflibs.libs/' > libs
-pip3 install -r tools/requirements.txt
+# Bare pip3/python3 aren't on PATH in the real manylinux images (unlike
+# dockcross's, which exposed a distro-level default) -- use $pybin, same
+# as everywhere else in this script.
+$pybin -m pip install --quiet -r tools/requirements.txt
 
-python3 ./tools/copy-licences.py libs
+$pybin ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
 build_wheel
