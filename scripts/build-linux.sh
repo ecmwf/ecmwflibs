@@ -101,8 +101,21 @@ $SUDO pip3 install ninja auditwheel meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/meson /usr/local/bin/meson
 $SUDO ln -sf $(dirname "$bootstrap_python")/ninja /usr/local/bin/ninja
 
-export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
-export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig:$PKG_CONFIG_PATH
+if [[ "$CC" == aarch64* && "$(uname -m)" != aarch64* ]]
+then
+    # Cross-compiling: keep pkg-config scoped to our own from-source
+    # install prefix only. The host's system pkgconfig dirs (/usr/lib64,
+    # /usr/lib) only contain host-arch (x86_64) .pc files -- notably
+    # Xft/Xrender/X11, pulled in transitively by cairo-devel -- which
+    # pango auto-detects (dependency('xft', required: false), no meson
+    # option to turn it off) and then fails to link against on the
+    # aarch64 target ("File in wrong format"). We don't need X11 support
+    # in the wheel, so just don't let pkg-config see those .pc files.
+    export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig
+else
+    export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}
+    export PKG_CONFIG_PATH=$TOPDIR/install/lib/pkgconfig:$TOPDIR/install/lib64/pkgconfig:$TOPDIR/install/share/pkgconfig:$PKG_CONFIG_PATH
+fi
 export LD_LIBRARY_PATH=$TOPDIR/install/lib:$TOPDIR/install/lib64:${LD_LIBRARY_PATH:-}
 
 # meson/autotools only add -L/-rpath-link for a target's *direct*
