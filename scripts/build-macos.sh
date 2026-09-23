@@ -19,6 +19,11 @@ arch=$(arch)
 
 ARCH="arch -$arch"
 
+# Without this, compiled libraries default to whatever macOS version the
+# CI runner happens to be on, so the deployment target silently drifts
+# with every runner image update instead of staying at a fixed baseline.
+export MACOSX_DEPLOYMENT_TARGET=11.0
+
 source scripts/common.sh
 
 brew_home=$(brew config | grep HOMEBREW_PREFIX | sed 's/.* //')
@@ -67,6 +72,7 @@ $ARCH $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/eccodes \
     -GNinja \
     -DCMAKE_OSX_ARCHITECTURES=$arch \
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOSX_DEPLOYMENT_TARGET \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \
@@ -88,6 +94,7 @@ $ARCH $TOPDIR/src/ecbuild/bin/ecbuild \
     $TOPDIR/src/magics \
     -GNinja \
     -DCMAKE_OSX_ARCHITECTURES=$arch \
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOSX_DEPLOYMENT_TARGET \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DENABLE_PYTHON=0 \
     -DENABLE_FORTRAN=0 \

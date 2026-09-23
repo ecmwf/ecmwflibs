@@ -11,6 +11,17 @@ set -eaux
 echo $PATH
 VERSION=${1:-""}
 
+arch=$(arch)
+[[ $arch == "i386" ]] && arch="x86_64" # GitHub Actions on macOS declare i386
+
+# Without this, bdist_wheel defaults the deployment target to whatever
+# macOS version the runner is currently on, and delocate tags the wheel
+# for a phantom second architecture inherited from the universal2
+# interpreter's own build metadata (no matching binary is actually
+# bundled). Pinning both keeps the tag honest and stable across runners.
+export MACOSX_DEPLOYMENT_TARGET=11.0
+plat_name="macosx_$(echo $MACOSX_DEPLOYMENT_TARGET | tr '.' '_')_${arch}"
+
 echo ${GITHUB_PATH:-""} || true
 if [[ -n "${GITHUB_PATH:-}" && -f "${GITHUB_PATH}" ]]
 then
@@ -43,7 +54,7 @@ python3 --version
 which delocate-wheel
 
 rm -fr dist wheelhouse
-python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel --plat-name $plat_name
 
 # Do it twice to get the list of libraries
 
@@ -53,5 +64,5 @@ python3 -m pip install -r tools/requirements.txt
 python3 ./tools/copy-licences.py libs
 
 rm -fr dist wheelhouse
-python3 setup.py bdist_wheel
+python3 setup.py bdist_wheel --plat-name $plat_name
 delocate-wheel -w wheelhouse dist/*.whl
